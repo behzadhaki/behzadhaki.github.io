@@ -9,8 +9,8 @@ profile:
   image: prof_pic.jpg
   image_circular: true # crops the image to make it circular
   address: >
-    <p>Music Technology Group (MTG)</p>
-    <p>Universitat Pompeu Fabra (UPF)</p>
+    <p>Music Technology Group</p>
+    <p>Universitat Pompeu Fabra</p>
     <p>Office 55.326</p>
     <p>Roc Boronat, 138</p>
     <p>08018 Barcelona, Spain</p>
