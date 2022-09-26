@@ -9,8 +9,8 @@ profile:
   image: prof_pic.jpg
   image_circular: true # crops the image to make it circular
   address: >
-    <p>55.326r</p>
-    <p>Roc Boronat, 138</p>
+    <p>MMIL Lab of the Music Technology Group (MTG)</p>
+    <p>Office 55.326, Roc Boronat, 138</p>
     <p>08018 Barcelona, Spain</p>
 
 news: true  # includes a list of news items
