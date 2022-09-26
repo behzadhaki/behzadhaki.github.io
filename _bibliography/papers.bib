@@ -3,80 +3,57 @@
 
 @string{aps = {American Physical Society,}}
 
-@book{einstein1956investigations,
-  bibtex_show={true},
-  title={Investigations on the Theory of the Brownian Movement},
-  author={Einstein, Albert},
-  year={1956},
-  publisher={Courier Corporation,},
-  preview={brownian-motion.gif}
-}
 
-@article{einstein1950meaning,
-  abbr={AJP},
-  bibtex_show={true},
-  title={The meaning of relativity},
-  author={Einstein, Albert and Taub, AH},
-  journal={American Journal of Physics,},
-  volume={18},
-  number={6},
-  pages={403--404},
-  year={1950},
-  publisher={American Association of Physics Teachers,}
-}
-
-@article{PhysRev.47.777,
-  abbr={PhysRev},
-  title={Can Quantum-Mechanical Description of Physical Reality Be Considered Complete?},
-  author={Einstein, A. and Podolsky, B. and Rosen, N.},
-  abstract={In a complete theory there is an element corresponding to each element of reality. A sufficient condition for the reality of a physical quantity is the possibility of predicting it with certainty, without disturbing the system. In quantum mechanics in the case of two physical quantities described by non-commuting operators, the knowledge of one precludes the knowledge of the other. Then either (1) the description of reality given by the wave function in quantum mechanics is not complete or (2) these two quantities cannot have simultaneous reality. Consideration of the problem of making predictions concerning a system on the basis of measurements made on another system that had previously interacted with it leads to the result that if (1) is false then (2) is also false. One is thus led to conclude that the description of reality as given by a wave function is not complete.},
-  journal={Phys. Rev.,},
-  volume={47},
-  issue={10},
-  pages={777--780},
-  numpages={0},
-  year={1935},
-  month={May},
-  publisher=aps,
-  doi={10.1103/PhysRev.47.777},
-  url={http://link.aps.org/doi/10.1103/PhysRev.47.777},
-  html={https://journals.aps.org/pr/abstract/10.1103/PhysRev.47.777},
-  pdf={example_pdf.pdf},
-  selected={true}
-}
-
-@article{einstein1905molekularkinetischen,
-  title={{\"U}ber die von der molekularkinetischen Theorie der W{\"a}rme geforderte Bewegung von in ruhenden Fl{\"u}ssigkeiten suspendierten Teilchen},
-  author={Einstein, A.},
-  journal={Annalen der physik,},
-  volume={322},
-  number={8},
-  pages={549--560},
-  year={1905},
-  publisher={Wiley Online Library}
-}
-
-@article{einstein1905movement,
-  abbr={Ann. Phys.},
-  title={Un the movement of small particles suspended in statiunary liquids required by the molecular-kinetic theory 0f heat},
-  author={Einstein, A.},
-  journal={Ann. Phys.,},
-  volume={17},
-  pages={549--560},
-  year={1905}
-}
-
-@article{einstein1905electrodynamics,
-  title={On the electrodynamics of moving bodies},
-  author={Einstein, A.},
-  year={1905}
-}
-
-@book{przibram1967letters,
-  bibtex_show={true},
-  title={Letters on wave mechanics},
-  author={Einstein, Albert and Schrödinger, Erwin and Planck, Max and Lorentz, Hendrik Antoon and Przibram, Karl},
-  year={1967},
-  publisher={Vision},
+@inproceedings{haki_behzad_2022_7088343,
+  author       = {Haki, Behzad and
+                  Nieto, Marina and
+                  Pelinski, Teresa and
+                  Jordà, Sergi},
+  title        = {{Real-Time Drum Accompaniment Using Transformer
+                   Architecture}},
+  booktitle    = {{Proceedings of the 3rd Conference on AI Music
+                   Creativity}},
+  year         = {2022},
+  abstract     = {This paper presents a real-time drum generation system capable of accompanying a human instrumentalist. The drum generation model is a transformer encoder trained to predict a short drum pattern given a reduced rhythmic representation. We demonstrate that with certain design considerations, the short drum pattern generator can be used as a real-time accompaniment in musical sessions lasting much longer than the duration of the training samples. A discussion on the potentials, limitations and possible future continuations of this work is provided.},
+  publisher    = {AIMC},
+  month        = sep,
+  doi          = {10.5281/zenodo.7088343},
+  url          = {https://doi.org/10.5281/zenodo.7088343},
   preview={wave-mechanics.gif}
 }
+
+
+@inproceedings{NIME21_33,
+  article-number = {33},
+  author = {Nuttall, Thomas and Haki, Behzad and Jorda, Sergi},
+  title = {Transformer Neural Networks for Automated Rhythm Generation},
+  booktitle = {Proceedings of the International Conference on New Interfaces for Musical Expression},
+  year = {2021},
+  month = jun,
+  address = {Shanghai, China},
+  issn = {2220-4806},
+  doi = {10.21428/92fbeb44.fe9a0d82},
+  url = {https://nime.pubpub.org/pub/8947fhly},
+  abstract = {Recent applications of Transformer neural networks in the field of music have demonstrated their ability to effectively capture and emulate long-term dependencies characteristic of human notions of musicality and creative merit. We propose a novel approach to automated symbolic rhythm generation, where a Transformer-XL model trained on the Magenta Groove MIDI Dataset is used for the tasks of sequence generation and continuation. Hundreds of generations are evaluated using blind-listening tests to determine the extent to which the aspects of rhythm we understand to be valuable are learnt and reproduced. Our model is able to achieve a standard of rhythmic production comparable to human playing across arbitrarily long time periods and multiple playing styles.},
+  presentation-video = {https://youtu.be/Ul9s8qSMUgU},
+  preview={wave-mechanics.gif}
+
+}
+
+@inproceedings{haki2019,
+  author = {behzad haki and Jorda, Sergi},
+  title = {A Bassline Generation System Based on Sequence-to-Sequence Learning},
+  pages = {204--209},
+  booktitle = {Proceedings of the International Conference on New Interfaces for Musical Expression},
+  editor = {Queiroz, Marcelo and Sedó, Anna Xambó},
+  year = {2019},
+  month = jun,
+  publisher = {UFRGS},
+  address = {Porto Alegre, Brazil},
+  issn = {2220-4806},
+  doi = {10.5281/zenodo.3672928},
+  abstract     = {This paper presents a detailed explanation of a system generating basslines that are stylistically and rhythmically interlocked with a provided audio drum loop. The proposed system is based on a natural language processing technique: word-based sequence-to-sequence learning using LSTM units. The novelty of the proposed method lies in the fact that the system is not reliant on a voice-by-voice transcription of drums; instead, in this method, a drum representation is used as an input sequence from which a translated bassline is obtained at the output. The drum representation consists of fixed size sequences of onsets detected from a 2-bar audio drum loop in eight different frequency bands. The basslines generated by this method consist of pitched notes with different duration. The proposed system was trained on two distinct datasets compiled for this project by the authors. Each dataset contains a variety of 2-bar drum loops with annotated basslines from two different styles of dance music: House and Soca. A listening experiment designed based on the system revealed that the proposed system is capable of generating basslines that are interesting and are well rhythmically interlocked with the drum loops from which they were generated.},
+  url = {http://www.nime.org/proceedings/2019/nime2019_paper040.pdf},
+  preview={wave-mechanics.gif}
+}
+
