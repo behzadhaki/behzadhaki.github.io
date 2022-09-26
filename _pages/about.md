@@ -9,10 +9,8 @@ profile:
   image: prof_pic.jpg
   image_circular: true # crops the image to make it circular
   address: >
-    <p>Music Technology Group (MTG)</p>
-    <p>Universitat Pompeu Fabra (UPF)</p>
-    <p>Office 55.326</p>
-    <p>Roc Boronat, 138</p>
+    <p>MMIL Lab of the Music Technology Group (MTG)</p>
+    <p>Office 55.326, Roc Boronat, 138</p>
     <p>08018 Barcelona, Spain</p>
 
 news: true  # includes a list of news items
@@ -20,8 +18,8 @@ selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true  # includes social icons at the bottom of the page
 ---
 
-I am a Ph.D. Candidate at [Music Technology Group](https://www.upf.edu/web/mtg) of the `University of Pompeu Fabra`. My work is focused on performance-oriented real-time drum generation. 
+Write your biography here. Tell the world about yourself. Link to your favorite [subreddit](http://reddit.com). You can put a picture in, too. The code is already in, just name your picture `prof_pic.jpg` and put it in the `img/` folder.
 
-I have a bachelors degree in Electrical Engineering from the `University of British Columbia`. In the last year of my undergraduate studies, I focused my work on `Acoustics`, and subsequently, worked as an Acoustic Engineering for a number of years. 
+Put your address / P.O. box / other info right below your picture. You can also disable any these elements by editing `profile` property of the YAML header of your `_pages/about.md`. Edit `_bibliography/papers.bib` and Jekyll will render your [publications page](/al-folio/publications/) automatically.
 
-In 2017, I went back to school to study a masters in `music technology` at the MTG. During my master’s degree, I was fortunate to work on `generative music` under the supervision of [Dr. Sergi Jordà](https://www.upf.edu/web/sergi-jorda). Having immensely enjoyed this experience, I have been continuing my studies in this field as a Ph.D. Candidate.
+Link to your social media connections, too. This theme is set up to use [Font Awesome icons](http://fortawesome.github.io/Font-Awesome/) and [Academicons](https://jpswalsh.github.io/academicons/), like the ones below. Add your Facebook, Twitter, LinkedIn, Google Scholar, or just disable all of them.
