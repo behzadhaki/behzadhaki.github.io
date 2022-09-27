@@ -22,6 +22,6 @@ social: true  # includes social icons at the bottom of the page
 
 I am a Ph.D. Candidate at [Music Technology Group](https://www.upf.edu/web/mtg) of the `University of Pompeu Fabra`. My work is focused on performance-oriented real-time drum generation. 
 
-I have a bachelors degree in Electrical Engineering from the `University of British Columbia`. In the last year of my undergraduate studies, I focused my work on `Acoustics`, and subsequently, worked as an Acoustic Engineering for a number of years. 
+I have a bachelors degree in Electrical Engineering from the `University of British Columbia`. In the last year of my undergraduate studies, I focused my work on `Acoustics`, and subsequently, worked as an Acoustic Engineer for a number of years. 
 
 In 2017, I went back to school to study a masters in `music technology` at the MTG. During my master’s degree, I was fortunate to work on `generative music` under the supervision of [Dr. Sergi Jordà](https://www.upf.edu/web/sergi-jorda). Having immensely enjoyed this experience, I have been continuing my studies in this field as a Ph.D. Candidate.
