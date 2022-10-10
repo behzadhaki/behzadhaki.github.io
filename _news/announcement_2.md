@@ -11,10 +11,7 @@ Presentation at AIMC 2022: Real-Time Drum Accompaniment Using Transformer Archit
 
 We just presented the following paper at AIMC 2022. 
 
-<!-- -->
-<div class="publications">
-{% bibliography   %}
-</div>
 
+<div>
 {% bibliography -f papers -q @*[title={{Real-Time Drum Accompaniment Using Transformer Architecture}}]* %}
-
+</div>div
