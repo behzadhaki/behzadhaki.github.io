@@ -10,4 +10,5 @@ A guide on training a transformer neural network on drum kit piano rolls.
 
 ***
 
-https://behzadhaki.com/blog/2022/trainingGrooveTransformer/
+Blog post can be found [here](https://behzadhaki.com/blog/2022/trainingGrooveTransformer/)
+
