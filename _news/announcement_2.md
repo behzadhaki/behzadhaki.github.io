@@ -1,11 +1,16 @@
 ---
 layout: post
-title: A long announcement with details
-date: 2015-11-07 16:11:00-0400
+title: Presentation at AIMC 2022: Real-Time Drum Accompaniment Using Transformer Architecture
+date: 2022-09-15 16:11:00-0400
 inline: false
 ---
 
-Announcements and news can be much longer than just quick inline posts. In fact, they can have all the features available for the standard blog posts. See below.
+We just presented the following paper at AIMC 2022:
+
+{% bibliography haki_behzad_2022_7088343 %}
+
+
+
 
 ***
 
