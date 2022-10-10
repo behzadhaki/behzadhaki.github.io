@@ -16,6 +16,6 @@ We just presented the following paper at AIMC 2022.
 
 <!-- _pages/publications.md -->
 <div class="publications">
-{% bibliography haki_behzad_2022_7088343 %}
+{% bibliography haki_behzad_2022_7088343 -f papers%}
 </div>
 
