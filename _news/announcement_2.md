@@ -13,6 +13,8 @@ We just presented the following paper at AIMC 2022.
 
 <!-- -->
 <div class="publications">
-{% bibliography haki_behzad_2022_7088343  %}
+{% bibliography   %}
 </div>
+
+{% bibliography -f papers -q @*[title={{Real-Time Drum Accompaniment Using Transformer Architecture}}]* %}
 
