@@ -8,7 +8,7 @@ middle_name:
 last_name: Haki
 email: behzad.haki@upf.edu
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  A simple, whitespace theme for academics. Based on [*folio](https://github.com/bogoli/-folio) design.
+  ML/AI Researcher focused on Music Generation, specifically real-time drum generation.
 footer_text: >
   Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
@@ -94,7 +94,7 @@ facebook_id: # your facebook id
 discord_id: # your discord id (18-digit unique numerical identifier)
 
 contact_note: >
-  It's best to contact me via email behzad.haki@upf.edu
+  It's best to contact me via email: behzad.haki [at] upf.edu
 
 # -----------------------------------------------------------------------------
 # Analytics and search engine verification
