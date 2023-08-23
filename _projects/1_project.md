@@ -2,7 +2,7 @@
 layout: page
 title: NeuralMidiFx
 description: A Wrapper Template for Deploying Neural Networks as VST3 Plugins
-img: assets/img/nmfx.jpg
+img: assets/img/nmfx.png
 importance: 1
 category: work
 permalink: /AIMC2023
@@ -21,7 +21,7 @@ permalink: /AIMC2023
 
 ## Documentation and Source Code
 
-- Full Documentation [here](neuralmidifx.github.io)
+- Full Documentation [here](https://neuralmidifx.github.io)
 - Source Code [here](https://github.com/behzadhaki/NeuralMidiFXPlugin)
 
 ## Tutorials
