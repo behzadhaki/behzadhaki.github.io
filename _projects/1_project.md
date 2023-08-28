@@ -13,10 +13,11 @@ permalink: /AIMC2023
 ## AIMC 2023 Content
 
 - Presentation slides can be downloaded [here][1]
-- Poster can be downloaded [here][1]
+- Poster can be downloaded [here][2]
 - Paper is available [here](https://aimc2023.pubpub.org/pub/givwzz98/draft?access=mxqkwrij)
   
-[1]:{{ site.url }}/assets/pdf/example_pdf.pdf
+[1]:{{ site.url }}/assets/pdf/AIMC2023Slides.pdf
+[2]:{{ site.url }}/assets/pdf/AIMC2023Poster.pdf
 
 
 ## Documentation and Source Code
