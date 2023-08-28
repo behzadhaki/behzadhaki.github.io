@@ -7,4 +7,6 @@ nav_order: 3
 cv_pdf: example_pdf.pdf
 ---
 
-<object data="assets/pdf/example_pdf.pdf" width="1000" height="1000" type='application/pdf'></object>
+<iframe src="/assets/pdf/example_pdf.pdf" width="100%" height="500px">
+    This browser does not support PDFs. Please download the PDF to view it: <a href="/assets/pdf/example_pdf.pdf">Download PDF</a>
+</iframe>
