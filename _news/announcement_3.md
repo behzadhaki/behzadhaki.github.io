@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Presentation at NIME 2023
-date: 2022-05-28 16:11:00-0400
+date: 2023-05-28 16:11:00-0400
 inline: false
 ---
 
