@@ -1,19 +1,19 @@
 ---
 layout: post
-title: RAIN+ festival and SONAR+D 2023
-date: 2022-09-01 13:23:32-0400
+title: Presentation at NIME 2023
+date: 2022-05-28 16:11:00-0400
 inline: false
 ---
 
-RAIN+ festival and SONAR+D 2023
+I'll be presenting the following paper at NIME 2023. The schedule can be found [here](https://www.nime2023.org/program).
 
 *** 
 
-My colleague, Nick Evans, will be performing with the GrooveTransformer Eurorack Module at [RAIN+ festival](https://www.upf.edu/es/web/rainfilmfest/rain).
+We just presented the following paper at NIME 2023. 
 
-Moreover, we will be having a booth at [SONAR+D 2023](https://www.upf.edu/web/mtg/home/-/asset_publisher/sWCQhjdDLWwE/content/participation-of-the-mtg-in-different-activities-of-the-sonar-festival-2023-rain-creative-summit-project-area/maximized) to showcase the GrooveTransformer Eurorack Module.
+<!-- _pages/publications.md -->
+<div class="publications">
 
-This is a module that Nick and I have been working on for the past year. It is a Eurorack module that uses the GrooveTransformer model to generate drum accompaniment in real-time.
+  {% bibliography -f papers -q @*[title={Completing Audio Drum oops with Symbolic Drum Suggestions}]* %}
 
-![Description of the Image](/assets/images/grooveTransformer.PNG)
-
+</div>

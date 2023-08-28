@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Real-Time Drum Accompaniment Using Transformer Architecture Presented at AIMC 2022
+title: Presentation at AIMC 2022
 date: 2022-09-15 16:11:00-0400
 inline: false
 ---
