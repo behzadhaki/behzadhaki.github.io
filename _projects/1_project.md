@@ -27,4 +27,4 @@ permalink: /AIMC2023
 
 ## Tutorials
 
-A number of tutorials are available [here](neuralmidifx.github.io/tutorials)
+A number of tutorials are available [here](https://neuralmidifx.github.io/tutorials)
