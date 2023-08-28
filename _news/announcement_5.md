@@ -1,7 +1,7 @@
 ---
 layout: post
 title: NeuralMidiFx Workshop and Presentation at AIMC 2023
-date: 2022-09-15 16:11:00-0400
+date: 2022-08-20 16:11:00-0400
 inline: false
 ---
 
