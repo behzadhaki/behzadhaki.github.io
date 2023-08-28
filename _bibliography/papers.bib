@@ -3,6 +3,22 @@
 
 @string{aps = {American Physical Society,}}
 
+
+@inproceedings{Haki2023NeuralMidiFx,
+	author = {Haki, Behzad and Lenz, Julian and Jorda, Sergi},
+	booktitle = {{Proceedings of the 4th International Conference on on AI and Musical Creativity}},
+	publisher = {},
+	title = {NeuralMidiFx: A {Wrapper} {Template} for {Deploying} {Neural} {Networks} as {VST3} {Plugins}},
+	abstract = {Proper research, development and evaluation of AI-based generative systems of music that focus on performance or composition require active user-system interactions. To include a diverse group of users that can properly engage with a given system, researchers should provide easy access to their developed systems. Given that many users (i.e. musicians) are non-technical to the field of AI and the development frameworks involved, the researchers should aim to make their systems accessible within the environments commonly used in production/composition workflows (e.g. in the form of plugins hosted in digital audio workstations). Unfortunately, deploying generative systems in this manner is highly expensive. As such, researchers with limited resources are often unable to provide easy access to their works, and subsequently, are not able to properly evaluate and encourage active engagement with their systems. Facing these limitations, we have been working on a solution that allows for easy, effective and accessible deployment of generative systems. To this end, we propose a wrapper/template called NeuralMidiFx, which streamlines the deployment of neural network based symbolic music generation systems as VST3 plugins. The proposed wrapper is intended to allow researchers to develop plugins with ease while requiring minimal familiarity with plugin development. },
+	year = {2023},
+	month = {Sep 1},
+	pdf = {NeuralMidiFxPaper.pdf},
+	slides = {https://aimc2023.pubpub.org/pub/givwzz98},
+	code = {https://neuralmidifx.github.io/},
+	preview={NMFX.JPG},
+	selected={true}
+}
+
 @inproceedings{Haki2023Completing,
   bibtex_show={true},
 	author = {Haki, Behzad and Pelinski, Teresa and Nieto, Marina and Jorda, Sergi},
@@ -12,7 +28,7 @@
 	publisher = {NIME},
 	abstract = {Sampled drums can be used as an affordable way of creating human-like drum tracks, or perhaps more interestingly, can be used as a mean of experimentation with rhythm and groove. Similarly, AI-based drum generation tools can focus on creating human-like drum patterns, or alternatively, focus on providing producers/musicians with means of experimentation with rhythm. In this work, we aimed to explore the latter approach. To this end, we present a suite of Transformer-based models aimed at completing audio drum loops with stylistically consistent symbolic drum events. Our proposed models rely on a reduced spectral representation of the drum loop, striking a balance between a raw audio recording and an exact symbolic transcription. Using a number of objective evaluations, we explore the validity of our approach and identify several challenges that need to be further studied in future iterations of this work. Lastly, we provide a real-time VST plugin that allows musicians/producers to utilize the models in real-time production settings.},
 	pdf = {CompletingAudioLoops.pdf},
-	code = {transformergrooveinfilling.github.io},
+	code = {https://transformergrooveinfilling.github.io},
 	slides = {},
 	preview={Completing.JPG},
 	title = {Completing {Audio} {Drum} {Loops} with {Symbolic} {Drum} {Suggestions}},
@@ -26,8 +42,7 @@
                   Pelinski, Teresa and
                   Jordà, Sergi},
   title        = {{Real-Time Drum Accompaniment Using Transformer Architecture}},
-  booktitle    = {{Proceedings of the 3rd Conference on AI Music
-                   Creativity}},
+  booktitle    = {{Proceedings of the 3rd International Conference on on AI and Musical Creativity}},
   year         = {2022},
   abstract     = {This paper presents a real-time drum generation system capable of accompanying a human instrumentalist. The drum generation model is a transformer encoder trained to predict a short drum pattern given a reduced rhythmic representation. We demonstrate that with certain design considerations, the short drum pattern generator can be used as a real-time accompaniment in musical sessions lasting much longer than the duration of the training samples. A discussion on the potentials, limitations and possible future continuations of this work is provided.},
   publisher    = {AIMC},
