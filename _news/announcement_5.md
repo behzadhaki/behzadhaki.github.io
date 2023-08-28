@@ -5,7 +5,7 @@ date: 2023-08-20 16:11:00-0400
 inline: false
 ---
 
-NeuralMidiFx Workshop and Presentation at AIMC 2023
+NeuralMidiFx Workshop and Presentation at AIMC 2023 
 
 *** 
 
