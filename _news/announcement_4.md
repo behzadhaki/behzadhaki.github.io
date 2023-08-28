@@ -15,5 +15,3 @@ Moreover, we will be having a booth at [SONAR+D 2023](https://www.upf.edu/web/mt
 
 This is a module that Nick and I have been working on for the past year. It is a Eurorack module that uses the GrooveTransformer model to generate drum accompaniment in real-time.
 
-![Description of the Image](/assets/images/grooveTransformer.PNG)
-
