@@ -1,7 +1,7 @@
 ---
 layout: post
 title: RAIN+ festival and SONAR+D 2023
-date: 2023-09-01 13:23:32-0400
+date: 2023-06-01 13:23:32-0400
 inline: false
 ---
 
