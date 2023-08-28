@@ -14,6 +14,6 @@ We just presented the following paper at NIME 2023.
 <!-- _pages/publications.md -->
 <div class="publications">
 
-  {% bibliography -f papers -q @*[title={Completing Audio Drum oops with Symbolic Drum Suggestions}]* %}
+  {% bibliography -f papers -q @*[title={Completing Audio Drum Loops with Symbolic Drum Suggestions}]* %}
 
 </div>
