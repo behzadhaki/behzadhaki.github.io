@@ -15,6 +15,6 @@ If you are interested in attending, please register [here](https://aimc2023.pubp
 <!-- _pages/publications.md -->
 <div class="publications">
 
-  {% bibliography -f papers -q @*[title={NeuralMidiFx{:} A Wrapper Template for Deploying Neural Networks as VST3 Plugins}]* %}
+  {% bibliography -f papers -q @*[title={NeuralMidiFx: A Wrapper Template for Deploying Neural Networks as VST3 Plugins}]* %}
 
 </div>
