@@ -1,8 +1,8 @@
 ---
 layout: page
-title: Groove2Drum VST3
+title: Groove2Drum Plugin
 description: A plugin for generating midi drum accompaniments in real-time
-img: assets/img/nmfx.png
+img: assets/img/groove2drum.jpg
 importance: 2
 category: Software
 permalink: /Groove2DrumVST3
