@@ -23,7 +23,7 @@ In Proceedings of the 3rd International Conference on on AI and Musical Creativi
 
 To read the full paper, please visit the [conference page](https://zenodo.org/records/7088343).
 
-<iframe width="420" height="315" src="https://youtu.be/-9dA2MdjCPo" frameborder="0" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-9dA2MdjCPo?si=hDsMSNqtb2eMfWSQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 # Code and Documentation
 
