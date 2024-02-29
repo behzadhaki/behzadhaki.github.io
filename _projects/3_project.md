@@ -22,7 +22,15 @@ We are currently in the process of publishing this work. Stay tuned for updates!
 
 # Demos
 
-We have prepared many demos that are available [here](https://groovetransformer.github.io/).
+My colleague Nicholas Evans and I  have prepared many demos that are available [here](https://groovetransformer.github.io/).
+
+# Hardware Version
+
+A variant of this plugin is also available as a [Eurorack module](/groovetransformerEurorack). 
+This module was developed by `Nicholas Evans` and me. 
+
+This module is not commercially available, we are happy to share the design files with anyone interested in building their own.
+All the resources are available on the [GrooveTransformer Eurorack Module](https://groovetransformer.github.io/Eurorack/) page.
 
 # Code and Documentation
 
@@ -35,3 +43,4 @@ However, we have not tested the plugin on M-series Macs yet. We will be updating
 
 I will release packaged versions of the plugin soon. Stay tuned! However, if you have experience
 with compiling plugins from source, you can compile the plugin from the source code available on GitHub.
+
