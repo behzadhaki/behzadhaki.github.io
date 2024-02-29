@@ -20,6 +20,10 @@ We are currently in the process of publishing this work. Stay tuned for updates!
 
 <img src="/assets/img/groovetransformer.jpg" alt="Glass" style="width: 25%;">
 
+# Demos
+
+We have prepared many demos that are available [here](https://groovetransformer.github.io/).
+
 # Code and Documentation
 
 For now, the source code is only available by direct download. 

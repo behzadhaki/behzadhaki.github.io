@@ -5,7 +5,7 @@ permalink: /projects/
 description: A growing collection of your cool projects.
 nav: true
 nav_order: 5
-display_categories: [Software, Dataset, Hardware]
+display_categories: [Software, Hardware, Dataset]
 horizontal: false
 ---
 
