@@ -5,7 +5,7 @@ description: A plugin for generating midi drum patterns as well as accompaniment
 img: assets/img/groovetransformer.jpg
 importance: 3
 category: Software
-permalink: /Groove2DrumVST3
+permalink: /groovetransformerVST3
 ---
 
 # Description
