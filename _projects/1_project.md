@@ -20,9 +20,9 @@ This project was presented at the [AIMC 2023](https://aimc2023.pubpub.org/pub/gi
 the links to the content presented at the conference.
 
 
-`NOTE: The following content corresponds to the first release of the NeuralMidiFx wrapper.
+`NOTE: `The following content corresponds to the first release of the NeuralMidiFx wrapper.
 The wrapper has been updated since the conference. For the latest release, please visit the
-[project page](https://neuralmidifx.github.io).`
+[project page](https://neuralmidifx.github.io).
 
 
 
