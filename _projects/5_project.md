@@ -1,8 +1,8 @@
 ---
 layout: page
 title: A Dataset of reduced drum patterns
-description: Eurorack drum module by Nicholas Evans and me 
-img: assets/img/grooveTransformer.PNG
+description: Presented at ISMIR 2023
+img: assets/img/taptamdrum.png
 redirect: https://taptamdrum.github.io/
 importance: 1
 category: Dataset
