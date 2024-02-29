@@ -8,7 +8,7 @@ category: Software
 permalink: /AIMC2023
 ---
 
-# Quick Links
+# Description
 
 I developed `NeuralMidiFx` wrapper to simplify the deployment of neural networks as VST3 plugins. 
 The wrapper is based on the [JUCE](https://juce.com/) framework and is designed to be used with the
