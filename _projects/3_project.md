@@ -44,3 +44,10 @@ However, we have not tested the plugin on M-series Macs yet. We will be updating
 I will release packaged versions of the plugin soon. Stay tuned! However, if you have experience
 with compiling plugins from source, you can compile the plugin from the source code available on GitHub.
 
+# Contact
+
+Contact for `Music Technology Group` at `Universitat Pompeu Fabra` can be found [here](https://www.upf.edu/web/mtg/about)
+
+If you have any questions about the plugin, feel free to contact me at `behzad.haki [at] upf.edu`, or my supervisor, `Sergi Jordà` at `sergi.jorda [at] upf.edu`.
+
+If you have any questions about the Eurorack module, you can contact Nicholas Evans at `nicholas.evans [at] upf.edu` or me.
