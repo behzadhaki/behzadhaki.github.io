@@ -7,6 +7,11 @@ nav: false
 nav_order: 4
 ---
 
+> **SCAN THIS QR CODE TO ACCESS THIS PAGE ON YOUR MOBILE DEVICE**
+> summary_qr
+> <img src="{{ site.baseurl }}/assets/img/summary_qr.png" alt="dev_stages" style="width: 200px;"/>
+> **OR go to `https://behzadhaki.github.io/summary/`**
+
 
 <br><br><br>
 ---
@@ -436,3 +441,13 @@ Kick: Schlappi Engineering Angle Grinder + Make Noise Moddemix VCA + Intellijel 
 > 
 > <audio width="600" height="200" controls><source src="/assets/audio/G2GTest2_June22Edit.mp3" type="audio/mp3">Your browser does not support the video tag.</audio>
 
+
+<br><br><br>
+--- 
+## **9 - Final Experiment (On-going): Long-term Accompaniment Generation**
+---
+
+- The main objective here is to develop a system that can generate long-term accompaniments without overdubbing
+- That is, we want the system to consider the entirety of the performance prior to generate the accompaniment.
+
+<img src="{{ site.baseurl }}/assets/img/LongPerformanceArch.png" alt="dev_stages" style="width: 700px;"/>
