@@ -3,6 +3,169 @@
 
 @string{aps = {American Physical Society,}}
 
+@misc{kotowski_2025_16946740,
+  author       = {Kotowski, Błażej and
+                  Evans, Nicholas and
+                  Haki, Behzad and
+                  Font, Frederic and
+                  Jordà, Sergi},
+  title        = {{Exploring Situated Stabilities of a Rhythm Generation System Through Variational Cross-Examination}},
+  month        = sep,
+  year         = 2025,
+  doi          = {10.5281/zenodo.16946740},
+  url          = {https://doi.org/10.5281/zenodo.16946740},
+  address = {Brussels, Belgium},
+  abstract     = {This paper investigates GrooveTransformer, a real-time rhythm generation system, through the postphenomenological framework of Variational Cross-Examination (VCE). By reflecting on its deployment across three distinct artistic contexts, we identify three stabilities: an autonomous drum accompaniment generator, a rhythmic control voltage sequencer in Eurorack format, and a rhythm driver for a harmonic accompaniment system. The versatility of its applications was not an explicit goal from the outset of the project. Thus, we ask: how did this multistability emerge? Through VCE, we identify three key contributors to its emergence: the affordances of system invariants, the interdisciplinary collaboration, and the situated nature of its development. We conclude by reflecting on the viability of VCE as a descriptive and analytical method for Digital Musical Instrument (DMI) design, emphasizing its value in uncovering how technologies mediate, co-shape, and are co-shaped by users and contexts.},
+  preview = {situated.png},
+  pdf = {https://arxiv.org/pdf/2509.05145},
+  website = {https://situatedstabilities-aimc2025.github.io/},
+
+}
+
+@inproceedings{mishra2025learning,
+  title={{Learning Microrhythm in Uruguayan Candombe using Transformers}},
+  author={Mishra, Anmol and Prabhu, Satyajeet and Haki, Behzad and Rocamora, Mart{\'\i}n},
+  year={2025},
+  month = {June},
+  abstract = {Musicians rely on nuanced microrhythm, slight variations in timing, dynamics, and other aspects, to create an expressive rhythmic feel in music performance. Electronic music production often attempts to replicate these qualities through algorithmic manipulations to achieve similar effects. In this work, we address the generation of microrhythm using a method that learns microtiming and dynamics from onset timing and strength annotations of drum performances. We frame microrhythm learning as a sequence modeling task, leveraging a Transformer-based model. Our focus is on Uruguayan candombe drumming, where we explore its rhythmic patterns at both the beat and rhythmic cycle levels. To evaluate the model’s effectiveness in replicating the original microrhythm, we compare the mean, standard deviation, and histogram intersection of timing deviations and dynamics values at each subdivision for the original and the generated data. The model is deployed as a VST enabling artists to incorporate candombe grooves into drum scores. With this work, we aim to bridge the gap between algorithmic rhythm creation and the expressive qualities of live performance, striving to produce music with the authentic grooves of various Latin American genres.},
+  booktitle = {{Proceedings of the International Computer Music Conference (ICMC)}},
+  address = {Boston, Massachusetts},
+  pdf = {https://repositori.upf.edu/items/50a67dd2-6d94-4600-9b90-c2c09a6eda29},
+  website = {https://mtg-toolbox.github.io/ready-to-use-apps/candombe-vst/},
+  slides = {https://mtg-toolbox.github.io/ready-to-use-apps/candombe-vst/#technical-details},
+  code = {https://github.com/dhunstack/candombe-groove-vst},
+  preview = {candombe-vst.png}
+}
+
+@inproceedings{nime2025_16,
+ abstract = {This paper presents an overview of a human-machine collaborative musical performance by Raül Refree utilizing multiple MIDI-enabled pipe organs at Palau Güell, as part of the Organic concert series. Our earlier collaboration focused on live performances using drum generation systems, where generative models captured rhythmic transient structures while ignoring harmonic information. For the organ performance, we required a system capable of generating harmonic sequences in real-time, conditioned on Refree's performance. Instead of developing a comprehensive state-of-the-art model, we integrated a more traditional generative method to convert our pitch-agnostic rhythmic patterns into harmonic sequences. This paper details the development process, the creative and technical considerations behind the final performance, and a reflection on the efficacy and adaptability of the chosen methodology.},
+ address = {Canberra, Australia},
+ articleno = {16},
+ author = {Nicholas Evans and Behzad Haki and Sergi Jordà},
+ booktitle = {Proceedings of the International Conference on New Interfaces for Musical Expression (NIME)},
+ doi = {10.5281/zenodo.15698807},
+ issn = {2220-4806},
+ month = {June},
+ numpages = {5},
+ pages = {116--120},
+ title = {{Repurposing a Rhythm Accompaniment System for Pipe Organ Performance}},
+ track = {Paper},
+ pdf = {http://nime.org/proceedings/2025/nime2025_16.pdf},
+ website = {https://nime2025organperformance.github.io/},
+ code = {https://mtg-toolbox.github.io/ready-to-use-apps/markov-accompaniment-patch/},
+address = {Canberra, Australia },
+ year = {2025},
+ selected = {true},
+ preview={guell.png},
+ slides = {https://youtu.be/MyxkZgdQmBA}
+}
+
+@phdthesis{HakiPhDThesis,
+  title        = {{Design, development, and deployment of real-time drum accompaniment systems}},
+  author       = {Behzad Haki},
+  year         = 2024,
+  selected = {true},
+  abstract = {This dissertation examines the generation of real-time symbolic drum accompaniments, with a particular focus on live improvisation contexts. While the
+research does occasionally focus on the audio domain, the majority of the research is centered on symbolic-to-symbolic systems. This dissertation addresses
+real-time drum accompaniment from multiple perspectives: (1) conceptual,
+where a target application is designed based on a set of specified requirements,
+(2) architectural, where specific generative models are designed and developed
+for the selected conceptual design, and (3) deployment, where the conceptual
+design is realized and evaluated. Throughout this work, three accompaniment
+systems were developed and refined.
+The first work, detailed in Chapters 3 and 4, was aimed to develop a lightweight system on which future more sophisticated designs could be based.
+This system was based on a transformer model that was developed to convert a monotonic (single voice) rhythmic loop (groove) into a full multi-voice
+drum loop. The concept explored here was to investigate whether a loopbased system could be effectively used for generating drum accompaniments
+in long evolving improvisational sessions. The resulting system was evaluated
+by professional musician Raül Refree, who provided valuable insights on how
+the design could be modified to better suit the task.
+Following these evaluations, the second system, GrooveTransformer, was developed (discussed in Chapter 5). In this work, rather than relying on our
+personal speculations, we collaborated with Refree from the outset of the project. As such, we were able to develop a system that was far more suitable for
+the task at hand, to the extent that the musician felt comfortable to perform
+with the system in a public live improvisational session. While still loop-based,
+the generative model in this work was based on a variational transformer that
+enabled us to address the majority of the collaborating musician’s requirements
+for the system. Although initially deployed as software, we also developed a
+hardware Eurorack version (discussed in Chapter 6). The Eurorack module
+was designed to encourage experimentation and exploration beyond the system’s original intent.
+In the third system (discussed in Chapter 7), we moved beyond the loop-based
+approach. The primary goal was to enhance the system’s awareness of the
+evolving performance over extended durations. To this end, we developed a
+new generative model with a much larger context. The larger model’s computational demands required a thorough exploration of both conceptual and technical deployment strategies.
+All of these systems focused on converting a monotonic groove into a multivoice drum pattern. In Chapter 8, we first discuss the limitations and affordances of basing the generations solely on groove. Additionally, several works
+and proposals surrounding this groove-to-drum approach are discussed in detail: (1) how to improve the process of extracting grooves from polyphonic
+sources, (2) how to make this approach more accommodating for individuals with varying levels of musical experience, (3) how to expand the concept
+to generate general rhythms rather than exclusively drums, and (4) how to
+extract groove from audio sources.
+Beyond the primary objectives, this research also yielded several significant
+secondary contributions that arose from the explorations conducted. One such
+achievement was that we were able to establish that our systems can also be
+adapted to work with audios without major architectural changes (Appendix
+A). Moreover, we created NeuralMidiFx (Appendix B), a wrapper designed to
+facilitate the deployment of neural networks in VST (Virtual Studio Technology) format. This tool was developed to overcome the technical challenges
+encountered during the real-time deployment of the generative models. Furthermore, two novel datasets, TapTamDrum (Appendix C) and El Bongosero
+(Appendix D), were created as part of this research. These datasets serve as
+valuable resources for future studies on both rhythm generation and rhythm
+analysis.},
+  month        = {December},
+  address      = {Barcelona, Spain},
+  school       = {Music Technology Group, Universitat Pompeu Fabra},
+  type         = {PhD thesis},
+  slides = {https://www.youtube.com/watch?v=n6vAphDe8tg},
+  pdf = {https://www.tdx.cat/bitstream/handle/10803/693304/tbh.pdf?sequence=1&isAllowed=y},
+    preview={PhdThesis.png},
+  website = {https://www.rtdrac.github.io}
+
+}
+
+@inproceedings{Haki2024ELBNG,
+  bibtex_show={true},
+   title = {{El Bongosero: A Crowd-sourced Symbolic Dataset of Improvised Hand Percussion Rhythms Paired with Drum Patterns}},
+   author = {Evans, Nicholas and Haki, Behzad and Gomez, Daniel and Jorda, Sergi},
+    booktitle = {{Proceedings of the 24th International Society for Music Information Retrieval Conference}},
+    year = {2024},
+    month = {November},
+    publisher = {ISMIR},
+    abstract = {We present El Bongosero, a large-scale, open-source symbolic dataset comprising expressive, improvised drum performances crowd-sourced from a pool of individuals with
+varying levels of musical expertise. Originating from an
+interactive installation hosted at Centre de Cultura Contemporània de Barcelona, our dataset consists of 6,035
+unique tapped sequences performed by 3,184 participants.
+To our knowledge, this is the only symbolic dataset of its
+size and type that includes expressive timing and dynamics
+information as well as each participant’s level of expertise.
+These unique characteristics could prove to be valuable to
+future research, particularly in the areas of music generation and music education. Preliminary analysis, including a step-wise Jaccard similarity analysis on a subset of
+the data, demonstrate that this dataset is a diverse, nonrandom, and musically meaningful collection. To facilitate
+prompt exploration and understanding of the data, we have
+also prepared a dedicated website and an open-source API
+in order to interact with the data.},
+    pdf = {https://repositori-api.upf.edu/api/core/bitstreams/bedeb352-3108-46e7-ab66-fec3ce2bc947/content},
+    slides = {slides_024_NicholasEvans.pdf},
+    poster = {poster_024_NicholasEvans.pdf},
+    website = {https://elbongosero.github.io/},
+    preview={thumbnail_024_NicholasEvans.png},
+    selected={true}
+}
+
+@inproceedings{Mishra2024LBD,
+  bibtex_show={true},
+    author = {Mishra, Anmol and Haki, Behzad and Prabhu, Satyajeet and Rocamora, Martín},
+  booktitle = {{the 25th International Society for Music Information Retrieval Conference (ISMIR)}},
+	year = {2024},
+	month = {November},
+	publisher = {ISMIR},
+	abstract = {Latin American music relies on groove—small variations in timing, dynamics, and other aspects—to create an expressive rhythmic feel in music performance. Electronic music production often attempts to replicate these qualities through algorithmic manipulations to achieve similar effects. In this work, we employ a transformer-based model to learn microtiming and dynamics from onset timing and
+strength annotations of Uruguayan Candombe drum performances. The model is then deployed as a VST allowing users to apply the learnt candombe microrhythms to quantized midi drum performances. With this work, we
+aim to bridge the gap between algorithmic rhythm creation and the expressive qualities of live performance, striving to produce music with the authentic grooves of various Latin American genres.},
+	pdf = {https://ismir2024program.ismir.net/lbd_428.html},
+	code = {https://github.com/dhunstack/candombe-groove-vst},
+	slides = {https://www.youtube.com/watch?v=qlYFX0FnDqg},
+	preview={candombeLBD.png},
+    title = {{Groove Transfer VST for Latin American Rhythms}},
+	website = {https://mtg-toolbox.github.io/ready-to-use-apps/candombe-vst/},
+	 selected={false}
+}
+
 @inproceedings{Haki2024GrooveTransformer,
   bibtex_show={true},
 	author = {Evans, Nicholas and Haki, Behzad and Jorda, Sergi},
