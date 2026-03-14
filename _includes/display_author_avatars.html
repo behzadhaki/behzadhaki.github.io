@@ -1,0 +1,48 @@
+{% assign raw_authors = doc.author %}
+{% if raw_authors %}
+  {% if raw_authors contains ',' or raw_authors contains '[' or raw_authors contains ']' or raw_authors contains '"' %}
+    {% assign authors = raw_authors | replace: '[', '' | replace: ']', '' | replace: '"', '' | split: ',' %}
+  {% elsif raw_authors | join: '' != raw_authors %}
+    {% assign authors = raw_authors %}
+  {% else %}
+    {% assign authors = raw_authors | split: ' ' %}
+  {% endif %}
+{% else %}
+  {% assign authors = nil %}
+{% endif %}
+
+{% if authors %}
+{% comment %} Build sorted list: behzad-haki first, then others {% endcomment %}
+{% assign primary_id = 'behzad-haki' %}
+{% assign sorted_authors = '' | split: '' %}
+{% for a_id in authors %}
+  {% assign a_id_clean = a_id | strip %}
+  {% if a_id_clean == primary_id %}
+    {% assign sorted_authors = sorted_authors | unshift: a_id_clean %}
+  {% else %}
+    {% assign sorted_authors = sorted_authors | push: a_id_clean %}
+  {% endif %}
+{% endfor %}
+
+<div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; font-size: 0.88rem; color: rgba(238,238,238,0.65);">
+  {% for a_id in sorted_authors %}
+    {% assign a = site.data.authors[a_id] %}
+    {% if a %}
+      {% assign display_name = a.name %}
+    {% else %}
+      {% assign name_parts = a_id | replace: '-', ' ' | split: ' ' %}
+      {% assign display_name = '' %}
+      {% for part in name_parts %}
+        {% assign display_name = display_name | append: part | capitalize | append: ' ' %}
+      {% endfor %}
+      {% assign display_name = display_name | strip %}
+    {% endif %}
+    {% unless forloop.first %}<span style="opacity:0.4;">·</span>{% endunless %}
+    {% if a_id == primary_id %}
+    <span style="color: rgba(238,238,238,0.9); font-weight: 500;">{{ display_name }}</span>
+    {% else %}
+    <span>{{ display_name }}</span>
+    {% endif %}
+  {% endfor %}
+</div>
+{% endif %}

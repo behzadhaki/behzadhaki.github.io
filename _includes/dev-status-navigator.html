@@ -1,0 +1,66 @@
+<div class="dev-status-navigator" data-level="{{ include.level | default: 1 }}" style="width: 300px; font-family: sans-serif; margin: 2rem 0;">
+  <div style="background: rgba(113,113,113,0.3); border-radius: 10px; height: 20px; overflow: hidden; position: relative;">
+
+    <!-- Label now floats over the entire bar -->
+    <span class="status-label" style="
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.7rem;
+      color: white;
+      font-weight: normal;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: calc(100% - 16px);
+      z-index: 2;
+    ">Loading...</span>
+
+    <div class="progress-fill" style="
+      height: 100%;
+      width: 0%;
+      background-color: rgba(76, 175, 80, 0.3);
+      transition: width 0.4s ease;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    "></div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.dev-status-navigator').forEach(function (statusEl) {
+      const fillEl = statusEl.querySelector('.progress-fill');
+      const labelEl = statusEl.querySelector('.status-label');
+
+      const statusMap = {
+        1: { label: "Early Stages", color: "rgba(244,67,54,0.3)" },
+        2: { label: "Actively Ongoing", color: "rgba(255,152,0,0.3)" },
+        3: { label: "Late Stages", color: "rgba(33,150,243,0.3)" },
+        4: { label: "Finished, under maintenance", color: "rgba(76,175,80,0.3)" },
+        5: { label: "Finished, no active maintenance", color: "rgba(76,175,80,0.5)" }
+      };
+
+      const level = parseInt(statusEl.dataset.level, 10);
+      const status = statusMap[level] || { label: "Unknown", color: "rgba(200,200,200,0.3)" };
+
+      // Adjusted progress logic: 1–3 → 5–80%, 4–5 → 90–100%
+      let percent = 0;
+      if (level >= 1 && level <= 3) {
+        percent = 5 + ((level - 1) / 2) * 75; // level 1: 5%, level 2: ~42.5%, level 3: 80%
+      } else if (level === 4) {
+        percent = 90;
+      } else if (level === 5) {
+        percent = 100;
+      }
+
+      fillEl.style.width = percent + "%";
+      fillEl.style.backgroundColor = status.color;
+      labelEl.textContent = "Development Status: " + status.label;
+      labelEl.title = labelEl.textContent;
+    });
+  });
+</script>

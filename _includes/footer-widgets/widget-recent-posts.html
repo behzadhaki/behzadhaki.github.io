@@ -1,0 +1,32 @@
+{% assign key          = include.collection_key | default: "nativeapps" %}
+{% assign header_title = include.section_title  | default: key | capitalize %}
+{% assign slice_limit  = include.limit | default: 5 %}
+
+{% assign all_docs = site.posts %}
+
+{% assign sorted_matches = all_docs | sort: "date" | reverse %}
+{% assign limited_matches = sorted_matches | slice: 0, slice_limit %}
+
+{% if limited_matches.size > 0 %}
+<!-- begin {{ key }} recent posts widget -->
+<section class="featured-{{ key | slugify }}">
+  <div class="container">
+    <div class="row">
+      <div class="col col-12">
+        <div class="container__inner">
+          <div class="widget widget-recent">
+            <div class="widget__head">
+              <h3 class="widget__title">Latest Additions</h3>
+            </div>
+            {% for doc in limited_matches %}
+              {% include display_post_card.html doc=doc %}
+            {% endfor %}
+
+          </div><!-- /.widget -->
+        </div><!-- /.container__inner -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end {{ key }} recent posts widget -->
+{% endif %}

@@ -1,0 +1,30 @@
+<!-- Mandatory Tabs -->
+<div class="post-tabs">
+
+  <!-- Navigation Tabs -->
+  <ul class="tab-nav">
+    {% assign mandatory_tabs = "access,license,cite,contact" | split: "," %}
+    {% for tab in mandatory_tabs %}
+    <li class="{% if forloop.first %}active{% endif %}" data-tab="{{ tab }}">
+      {% if tab == "cite" %}Publication{% else %}{{ tab | capitalize }}{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+
+  <!-- Tab Panes -->
+  <div class="tab-content">
+    {% for tab in mandatory_tabs %}
+    {% assign file_name = tab | append: ".md" %}
+    <div class="tab-pane {% if forloop.first %}active{% endif %}" id="{{ tab }}">
+      <div class="markdown-body">
+        {% capture file_path %}_includes/{{ file_name }}{% endcapture %}
+        {% if site.static_files | map: "path" | where: "==", file_path | size > 0 %}
+          {% include safe-include.md file=file_name %}
+        {% else %}
+          <p style="color: red;"><strong>Missing file:</strong> <code>{{ file_name }}</code> not found.</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>

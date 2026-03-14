@@ -1,0 +1,27 @@
+
+
+<ul class="nav__list list-reset">
+  {% assign menu_items = site.data.settings.menu-settings.menu-items %}
+  {% for item in menu_items %}
+    <li class="nav__item {% if item.sub_menus %}has-dropdown{% endif %}">
+      <a href="{{ item.url | relative_url }}" class="nav__link">
+        {{ item.title }}
+        {% if item.sub_menus %}
+          <span class="dropdown-indicator">▼</span>
+        {% endif %}
+      </a>
+
+      {% if item.sub_menus and item.sub_menus.size > 0 %}
+        <ul class="dropdown list-reset">
+          {% for coll in item.sub_menus %}
+            <li class="dropdown__item">
+              <a href="{{ coll.url | relative_url }}" class="dropdown__link">
+                {{ coll.title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>

@@ -1,0 +1,39 @@
+<!-- begin hero -->
+{% assign hero_image       = include.image       | default: nil %}
+{% assign hero_title       = include.title       | default: nil %}
+{% assign hero_description = include.description | default: nil %}
+
+{% if hero_image %}
+<section class="hero">
+  <div class="hero__inner">
+    <div class="hero__image">
+      <img class="lazy"
+           data-src="{{ hero_image | relative_url }}"
+           alt="{{ hero_title | escape }}">
+    </div>
+
+    <div class="hero__content">
+      {% if hero_title %}
+        <h1 class="hero__title">{{ hero_title }}</h1>
+      {% endif %}
+      {% if hero_description %}
+        <p class="hero__desc">{{ hero_description }}</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% else %}
+<section class="hero-without-image">
+  <div class="hero-inner">
+    <div class="hero-content">
+      {% if hero_title %}
+        <h1 class="hero__title">{{ hero_title }}</h1>
+      {% endif %}
+      {% if hero_description %}
+        <p class="hero__desc">{{ hero_description }}</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endif %}
+<!-- end hero -->

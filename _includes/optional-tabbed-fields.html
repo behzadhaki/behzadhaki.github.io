@@ -1,0 +1,26 @@
+{% if page.tabs and page.tabs_content %}
+<div class="post-tabs">
+  <!-- Navigation Tabs -->
+  <ul class="tab-nav">
+    {% for tab in page.tabs %}
+    <li class="{% if forloop.first %}active{% endif %}" data-tab="{{ tab }}">
+      {{ tab | capitalize }}
+    </li>
+    {% endfor %}
+  </ul>
+
+  <!-- Tab Panes -->
+  <div class="tab-content">
+    {% for tab in page.tabs %}
+    {% assign file = page.tabs_content[forloop.index0] %}
+    <div class="tab-pane {% if forloop.first %}active{% endif %}" id="{{ tab }}">
+      <div class="markdown-body">
+        {% include safe-include.md file=file %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+

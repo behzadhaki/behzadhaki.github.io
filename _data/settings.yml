@@ -1,0 +1,71 @@
+#-------------------------------
+# Site Settings
+title: Behzad Haki
+description: Researcher &amp; Developer · Music Technology · Barcelona
+logo: # Leave blank to use text title
+
+#-------------------------------
+# Hero Settings (text-only hero on homepage)
+hero:
+  title: Behzad Haki
+  description: Researcher &amp; Developer · Music Technology · Barcelona
+
+#-------------------------------
+# Author Settings
+author:
+  name: Behzad Haki
+  avatar: /assets/img/prof_pic.jpg
+
+#-------------------------------
+# Navigation Settings
+menu-settings:
+  menu-items:
+    - title: Publications
+      url: /publications/
+    - title: Projects
+      url: /projects/
+    - title: Tutorials
+      url: /tutorials/
+    - title: CV
+      url: /cv/
+
+#-------------------------------
+# Homepage Section Cards
+sections:
+  - title: Publications
+    description: Research papers and conference proceedings.
+    url: /publications/
+    image: /assets/gifs/A.gif           # source: https://www.behance.net/gallery/3401305/L1GHT_F0RM5_gifs?locale=ko_KR
+  - title: Projects
+    description: Software tools, VST plugins, hardware devices, and datasets.
+    url: /projects/
+    image: /assets/gifs/B.gif           # source: https://www.behance.net/gallery/3401305/L1GHT_F0RM5_gifs?locale=ko_KR
+  - title: Tutorials
+    description: Step-by-step guides for developing audio/MIDI applications.
+    url: /tutorials/
+    image: /assets/gifs/C.gif           # source: https://www.behance.net/gallery/3401305/L1GHT_F0RM5_gifs?locale=ko_KR
+  - title: CV
+    description: An overview of my academic and professional background.
+    url: /cv/
+    image: /assets/gifs/D.gif           # source: https://www.behance.net/gallery/3401305/L1GHT_F0RM5_gifs?locale=ko_KR
+
+#-------------------------------
+# Footer Social Links
+social:
+  - { icon: "fa-brands fa-github", name: "GitHub", link: "https://github.com/behzadhaki" }
+  - { icon: "ai ai-orcid", name: "ORCID", link: "https://orcid.org/0000-0002-8390-8190" }
+  - { icon: "ai ai-researchgate", name: "ResearchGate", link: "https://www.researchgate.net/profile/behzad-haki" }
+
+#-------------------------------
+# Contact Settings
+contact:
+  email: behzad.haki@upf.edu
+  description: It's best to contact me via email.
+
+#-------------------------------
+# Comment Section (Disqus) — leave blank to disable
+disqus-identifier:
+
+#-------------------------------
+# Google Analytics — leave blank to disable
+google-analytics:

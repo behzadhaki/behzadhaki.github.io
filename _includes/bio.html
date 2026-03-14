@@ -1,0 +1,49 @@
+<!-- begin bio -->
+<section class="bio-section">
+  <div class="container">
+    <div class="bio-inner">
+
+      <div class="bio-photo">
+        <img src="{{ '/assets/img/prof_pic.jpg' | relative_url }}"
+             alt="{{ site.data.settings.author.name }}"
+             class="bio-photo__img">
+      </div>
+
+      <div class="bio-content">
+        <h2 class="bio-name">{{ site.data.settings.author.name }}</h2>
+        <p class="bio-subtitle">PhD · Researcher &amp; Developer · Music Technology · Barcelona</p>
+
+        <div class="bio-text">
+          <p>
+            I recently completed my PhD at the <a href="https://www.upf.edu/web/mtg" target="_blank" rel="noopener">Music Technology Group (MTG)</a>, Universitat Pompeu Fabra, where my research centered on interactive real-time generative systems for music.
+            Specifically, I worked on designing and training lightweight neural networks for real-time music generation, and on deploying them as practical digital instruments — ranging from VST plugins to embedded hardware systems.
+          </p>
+          <p>
+            Alongside my research, I have hands-on development experience building audio software and tools, including open-source VST/AUv2 plugins, Max4Live devices, and hardware prototypes.
+            My academic background spans signal processing, machine learning, music acoustics, and sound and music computing — through a BASc in Electrical Engineering (with a focus on DSP and acoustics) from the University of British Columbia and a Master's in Sound and Music Computing from UPF.
+          </p>
+          <p>
+            📍 Barcelona, Spain<br>
+            ✉️ <a href="mailto:behzad.haki@upf.edu">behzad.haki@upf.edu</a>
+          </p>
+        </div>
+
+        <div class="bio-social">
+          {% if site.data.settings.social %}
+          <ul class="social__list list-reset" style="display:flex; gap:1rem; list-style:none; padding:0; margin:0;">
+            {% for social in site.data.settings.social %}
+            <li>
+              <a class="social__link" href="{{ social.link }}" target="_blank" rel="noopener" aria-label="{{ social.name }} link" title="{{ social.name }}">
+                <i class="{{ social.icon }}" style="font-size: 1.4rem;"></i>
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- end bio -->

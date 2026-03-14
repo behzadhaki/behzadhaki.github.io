@@ -1,0 +1,31 @@
+behzad-haki:
+  name: Behzad Haki
+  avatar: /assets/img/prof_pic.jpg
+  description: PhD Candidate at the Music Technology Group, UPF, Barcelona. Research focus on real-time drum generation.
+  email: behzad.haki@upf.edu
+  website: https://behzadhaki.github.io
+
+nick-evans:
+  name: Nick Evans
+  avatar: /assets/img/prof_pic.jpg
+  description: Researcher at Music Technology Group, UPF.
+
+anmol-mishra:
+  name: Anmol Mishra
+  avatar:
+  description: Researcher at Music Technology Group, UPF.
+
+antonio-ramires:
+  name: Antonio Ramires
+  avatar:
+  description: Researcher at Music Technology Group, UPF.
+
+frederic-font:
+  name: Frederic Font
+  avatar:
+  description: Researcher at Music Technology Group, UPF.
+
+satyajeet-prabhu:
+  name: Satyajeet Prabhu
+  avatar:
+  description: Researcher.
