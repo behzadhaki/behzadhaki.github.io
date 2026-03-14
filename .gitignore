@@ -9,3 +9,7 @@ _site
 Gemfile.lock
 vendor
 
+# Large video files — host these on YouTube/Vimeo instead
+assets/projects/GrooveTransformer/SequencingDrumsAndParams.mp4
+assets/projects/GrooveTransformer/ModSource.mp4
+
