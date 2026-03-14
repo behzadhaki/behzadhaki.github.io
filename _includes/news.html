@@ -1,31 +1,59 @@
-          
-          <div class="news">
-            <h2>news</h2>
-            {% if site.news != blank -%} 
-            {%- assign news_size = site.news | size -%}
-            <div class="table-responsive" {% if site.news_scrollable and news_size > 3 %}style="max-height: 10vw"{% endif %}>
-              <table class="table table-sm table-borderless">
-              {%- assign news = site.news | reverse -%}
-              {% if site.news_limit %}
-              {% assign news_limit = site.news_limit %}
-              {% else %}
-              {% assign news_limit = news_size %}
-              {% endif %}
-              {% for item in news limit: news_limit %} 
-                <tr>
-                  <th scope="row">{{ item.date | date: "%b %-d, %Y" }}</th>
-                  <td>
-                    {% if item.inline -%} 
-                      {{ item.content | remove: '<p>' | remove: '</p>' | emojify }}
-                    {%- else -%} 
-                      <a class="news-title" href="{{ item.url | relative_url }}">{{ item.title }}</a>
-                    {%- endif %} 
-                  </td>
-                </tr>
-              {%- endfor %} 
-              </table>
-            </div>
-          {%- else -%} 
-            <p>No news so far...</p>
-          {%- endif %} 
+<!-- begin news -->
+{% assign news_limit = site.news_limit | default: 5 %}
+{% assign news_items = site.news | sort: "date" | reverse %}
+
+{% if news_items.size > 0 %}
+<section class="news-section">
+  <div class="container">
+    <div class="widget__head" style="margin-bottom: 1.5rem;">
+      <h3 class="widget__title">News</h3>
+    </div>
+
+    <div class="news-list" id="news-list">
+      {% for item in news_items limit: news_limit %}
+      <div class="news-card">
+        <div class="news-card__header">
+          <time class="news-card__date" datetime="{{ item.date | date_to_xmlschema }}">
+            {{ item.date | date: "%b %-d, %Y" }}
+          </time>
+          <span class="news-card__title">{{ item.title }}</span>
+        </div>
+        <details class="news-card__details">
+          <summary>Read More</summary>
+          <div class="news-card__body">
+            {{ item.content | markdownify }}
           </div>
+        </details>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if news_items.size > news_limit %}
+    <div id="news-more" style="display:none;">
+      {% for item in news_items offset: news_limit %}
+      <div class="news-card">
+        <div class="news-card__header">
+          <time class="news-card__date" datetime="{{ item.date | date_to_xmlschema }}">
+            {{ item.date | date: "%b %-d, %Y" }}
+          </time>
+          <span class="news-card__title">{{ item.title }}</span>
+        </div>
+        <details class="news-card__details">
+          <summary>Read More</summary>
+          <div class="news-card__body">
+            {{ item.content | markdownify }}
+          </div>
+        </details>
+      </div>
+      {% endfor %}
+    </div>
+    <button onclick="document.getElementById('news-more').style.display='block'; this.style.display='none';"
+            class="news-show-more">
+      Show more
+    </button>
+    {% endif %}
+
+  </div>
+</section>
+{% endif %}
+<!-- end news -->

@@ -1,34 +1,24 @@
 <!DOCTYPE html>
-<html lang="{{ site.lang }}">
+<html lang="en">
 
-  <!-- Head -->
-  <head>
-  {%- if page.redirect -%}
-    <meta http-equiv="refresh" content="3; url={{ site.baseurl }}/" />
-  {%- endif -%}
-  {% include head.html %}
-  </head>
+{% include head.html %}
 
-  <!-- Body -->
-  <body class="{% if site.navbar_fixed %}fixed-top-nav{% endif %} {% unless site.footer_fixed %}sticky-bottom-footer{% endunless %}">
+<body>
+  {% if site.data.settings.google-analytics %}
+    {% include google-analytics.html %}
+  {% endif %}
 
-    <!-- Header -->
-    {%- include header.html %}
+  {% include header.html %}
 
-    <!-- Content -->
-    <div class="container mt-5">
-      {{ content }}
-    </div>
+  <!-- begin content -->
+  <main class="content" aria-label="Content">
+    {{ content }}
+  </main>
+  <!-- end content -->
 
-    <!-- Footer -->
-    {%- include footer.html %}
+  <div class="top" title="Top"><i class="fa-solid fa-chevron-up"></i></div>
 
-    <!-- JavaScripts -->
-    {% include scripts/jquery.html %}
-    {% include scripts/bootstrap.html %}
-    {% include scripts/masonry.html %}
-    {% include scripts/misc.html %}
-    {% include scripts/mathjax.html %}
-    {% include scripts/analytics.html %}
-  </body>
+  {% include javascripts.html %}
+</body>
+
 </html>

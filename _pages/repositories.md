@@ -1,16 +1,14 @@
 ---
 layout: page
 permalink: /repositories/
-title: repositories
-description: 
-nav: true
-nav_order: 2
+title: Repositories
+description: GitHub repositories and activity
 ---
 
-## GitHub users
+## GitHub Users
 
 {% if site.data.repositories.github_users %}
-<div class="repositories d-flex flex-wrap flex-md-row flex-column justify-content-between align-items-center">
+<div style="display: flex; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem;">
   {% for user in site.data.repositories.github_users %}
     {% include repository/repo_user.html username=user %}
   {% endfor %}
@@ -22,7 +20,7 @@ nav_order: 2
 ## GitHub Repositories
 
 {% if site.data.repositories.github_repos %}
-<div class="repositories d-flex flex-wrap flex-md-row flex-column justify-content-between align-items-center">
+<div style="display: flex; flex-wrap: wrap; gap: 1.5rem;">
   {% for repo in site.data.repositories.github_repos %}
     {% include repository/repo.html repository=repo %}
   {% endfor %}
