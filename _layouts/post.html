@@ -77,7 +77,7 @@ layout: default
 </div>
 <!-- end post -->
 
-{% include related-posts.html %}
+{% if site.related_posts_include %}{% include related-posts.html %}{% endif %}
 
 <!-- Scoped Tab JavaScript -->
 <script>
