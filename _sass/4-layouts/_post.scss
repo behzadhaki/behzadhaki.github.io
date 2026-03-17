@@ -153,6 +153,15 @@
   }
 }
 
+/* Add breathing room when the hero title is hidden — matches .hero-without-image spacing */
+.page--no-hero {
+  margin-top: 192px;
+
+  @media only screen and (max-width: $mobile) {
+    margin-top: 144px;
+  }
+}
+
 .post__content,
 .page__content {
   color: $gray;

@@ -2,6 +2,7 @@
 layout: page
 title: Tutorials
 permalink: /tutorials/
+hide_title: true
 description: Step-by-step guides for developing audio applications with JUCE, Freesound, and related tools.
 ---
 

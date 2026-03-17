@@ -3,6 +3,7 @@ layout: page
 title: Projects
 permalink: /projects/
 description: Software tools, hardware devices, and datasets I have developed.
+hide_title: true
 ---
 
 <!-- Projects page: lists all posts from _posts/projects/ -->

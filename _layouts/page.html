@@ -3,6 +3,7 @@ layout: default
 ---
 
 <!-- begin hero -->
+{% unless page.hide_title %}
 {% if page.image %}
 <section class="hero">
   <div class="hero__inner">
@@ -24,10 +25,11 @@ layout: default
   </div>
 </section>
 {% endif %}
+{% endunless %}
 <!-- end hero -->
 
 <!-- begin page -->
-<div class="container">
+<div class="container{% if page.hide_title %} page--no-hero{% endif %}">
   <article class="page animate">
     <div class="page__content">
       {{ content }}
