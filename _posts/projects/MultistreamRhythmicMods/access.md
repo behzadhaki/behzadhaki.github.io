@@ -1,5 +1,5 @@
 
-This MaxForLive patch can be downloaded directly from [here]({{site.baseurl}}/assets/ready-to-use-apps/MultiStream-Rhythmic-Modulations/GrooveTransformerForModulation.zip).
+This MaxForLive patch can be downloaded directly from [here]({{site.baseurl}}/assets/projects/MultiStream-Rhythmic-Modulations/GrooveTransformerForModulation.zip).
 
 To get this patch working, you will need to install the [GrooveTransformer VST]({{site.baseurl}}/ready-to-use-apps/groovetransformer-vst/).
 

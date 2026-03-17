@@ -13,5 +13,5 @@
     title="Inline Frame Example" 
     width="10" 
     height="10" 
-    src="{{site.baseurl}}/assets/ready-to-use-apps/Candombe-VST/candombe_technical_info.pdf"> 
+    src="{{site.baseurl}}/assets/projects/Candombe-VST/candombe_technical_info.pdf"> 
 </iframe> 

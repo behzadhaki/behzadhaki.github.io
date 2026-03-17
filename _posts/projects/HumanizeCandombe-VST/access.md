@@ -13,7 +13,7 @@ If you are a linux user, you can build the plugin from source.
 
 ### Locating the Plugin After Installation
 
-<img src="/assets/ready-to-use-apps/Candombe-VST/HumanizeCandombeLocator.png" alt="Thumbnail" width="30%">
+<img src="/assets/projects/Candombe-VST/HumanizeCandombeLocator.png" alt="Thumbnail" width="30%">
 
 
 ### Source Code

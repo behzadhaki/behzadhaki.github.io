@@ -13,6 +13,6 @@
 # A demo with an early version of the patch
 
 <video width="90%" controls>
-  <source src="/assets/ready-to-use-apps/Markov-Accompaniment/markov_shortest.mp4" type="video/mp4">
+  <source src="/assets/projects/Markov-Accompaniment/markov_shortest.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>

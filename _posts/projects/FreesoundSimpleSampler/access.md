@@ -12,7 +12,7 @@ If you are a linux user, you can build the plugin from source.
 
 ### Locating the Plugin After Installation
 
-<img src="/assets/ready-to-use-apps/Freesound-vst/FreesoundSimpleSamplerLocator.png" alt="Thumbnail" width="30%">
+<img src="/assets/projects/Freesound-vst/FreesoundSimpleSamplerLocator.png" alt="Thumbnail" width="30%">
 
 ### Source Code
 

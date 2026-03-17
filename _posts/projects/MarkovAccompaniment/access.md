@@ -1,7 +1,7 @@
 
 # Download
 
-Download the Max Patch from [here]({{site.baseurl}}/assets/ready-to-use-apps/Markov-Accompaniment/Markov_Groove_Device.zip). 
+Download the Max Patch from [here]({{site.baseurl}}/assets/projects/Markov-Accompaniment/Markov_Groove_Device.zip). 
 
 The latest version is available at the github repository [below](https://github.com/evans398/markov_compose/).
 

@@ -15,18 +15,18 @@
 <a href="https://groovetransformer.github.io/assets/zip/LibreBoardCode.zip" download>Download File</a>
 
 ### `Additional Info`
-<a href="https://groovetransformer.github.io/assets/pdf/AdditionalNotes.pdf" download>Download File</a>
+<a href="/assets/projects/GrooveTransformerEurorack/AdditionalNotes.pdf" download>Download File</a>
 
 
 ---
-## PCB 
+## PCB
 ---
 
 ### `Schematics`
 
-<a href="https://groovetransformer.github.io/assets/pdf/Schematic_FrontPCB.pdf" download>Download File: Front PCB</a>
+<a href="/assets/projects/GrooveTransformerEurorack/Schematic_FrontPCB.pdf" download>Download File: Front PCB</a>
 
-<a href="https://groovetransformer.github.io/assetshttps://groovetransformer.github.io/assets/pdf/Schematic_BottomPCB.pdf" download>Download File: Bottom PCB</a>
+<a href="/assets/projects/GrooveTransformerEurorack/Schematic_BottomPCB.pdf" download>Download File: Bottom PCB</a>
 
 ### `Gerber Files`
 <a href="https://groovetransformer.github.io/assets/zip/PCB_Gerber_Files.zip" download>Download File</a>
@@ -36,11 +36,11 @@
 
 ### `Images`
 
-<img src="https://groovetransformer.github.io/assets/img/pcb/BackPCB.png" alt="BackPCP 1" style="width: 25%;">
-<img src="https://groovetransformer.github.io/assets/img/pcb/BackPCB2.png" alt="BackPCP 2" style="width: 25%;">
+<img src="/assets/projects/GrooveTransformerEurorack/pcb/BackPCB.png" alt="BackPCP 1" style="width: 25%;">
+<img src="/assets/projects/GrooveTransformerEurorack/pcb/BackPCB2.png" alt="BackPCP 2" style="width: 25%;">
 
-<img src="https://groovetransformer.github.io/assets/img/pcb/FrontPCB.png" alt="FrontPCP 1" style="width: 25%;">
-<img src="https://groovetransformer.github.io/assets/img/pcb/FrontPCB2.png" alt="FrontPCP 2" style="width: 25%;">
+<img src="/assets/projects/GrooveTransformerEurorack/pcb/FrontPCB.png" alt="FrontPCP 1" style="width: 25%;">
+<img src="/assets/projects/GrooveTransformerEurorack/pcb/FrontPCB2.png" alt="FrontPCP 2" style="width: 25%;">
 
 ---
 ## Faceplate
@@ -48,25 +48,25 @@
 
 ### `Design`
 
-<img src="https://groovetransformer.github.io/assets/img/pcb/Panel Design.jpg" alt="Panel Design" style="width: 25%;">
+<img src="/assets/projects/GrooveTransformerEurorack/pcb/Panel Design.jpg" alt="Panel Design" style="width: 25%;">
 
 ### `Different Finishes`
 
 `No Faceplate:`
 
-<img src="https://groovetransformer.github.io/assets/img/faceplate/NoFaceplate.jpg" alt="NoFaceplate" style="width: 25%;">
+<img src="/assets/projects/GrooveTransformerEurorack/faceplate/NoFaceplate.jpg" alt="NoFaceplate" style="width: 25%;">
 
 `Laser Cut and Laser Etched Wood:`
 
-<img src="https://groovetransformer.github.io/assets/img/faceplate/Wood.jpg" alt="Wood" style="width: 25%;">
+<img src="/assets/projects/GrooveTransformerEurorack/faceplate/Wood.jpg" alt="Wood" style="width: 25%;">
 
 `Glass:`
 
-<img src="https://groovetransformer.github.io/assets/img/faceplate/Glass.jpg" alt="Glass" style="width: 25%;">
+<img src="/assets/projects/GrooveTransformerEurorack/faceplate/Glass.jpg" alt="Glass" style="width: 25%;">
 
 `Glass with Printed Sticker:`
 
-<img src="https://groovetransformer.github.io/assets/img/faceplate/print_.jpg" alt="Sticker" style="width: 25%;">
+<img src="/assets/projects/GrooveTransformerEurorack/faceplate/print_.jpg" alt="Sticker" style="width: 25%;">
 
 
 ---

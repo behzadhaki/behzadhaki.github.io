@@ -2,7 +2,7 @@
 ## Demo
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/MultiStream-Rhythmic-Modulations/Demo.mp4" type="video/mp4">
+  <source src="/assets/projects/MultiStream-Rhythmic-Modulations/Demo.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -38,4 +38,4 @@ For each stream, 3 destinations can be set. However, if you need more, you can d
 
 The current max patch (shown below) is in early development. It is functional, but it is not yet fully polished. We are currently working on improving the user interface and adding more features.
 
-![](/assets/ready-to-use-apps/MultiStream-Rhythmic-Modulations/prototype.png)
+![](/assets/projects/MultiStream-Rhythmic-Modulations/prototype.png)

@@ -49,7 +49,7 @@ The resulting plugin will be named **Freesound Simple Sampler** and will be buil
 In your host (in my case, Ableton Live), it will appear under the company name **MusicTechnologyGroup**.
 
 
-<img src="/assets/ready-to-use-apps/Freesound-vst/FreesoundSimpleSamplerLocator.png" alt="Thumbnail" width="30%">
+<img src="/assets/projects/Freesound-vst/FreesoundSimpleSamplerLocator.png" alt="Thumbnail" width="30%">
 
 
 ### Customizing JUCE Version

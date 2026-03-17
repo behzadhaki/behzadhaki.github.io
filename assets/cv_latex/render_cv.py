@@ -514,6 +514,10 @@ def cvitemwithcomment_html(entry: dict) -> str:
 def bib_section_html(bib_entries: list) -> str:
     by_year = defaultdict(list)
     for e in bib_entries:
+        # Entries marked "Under review" are PDF-only — skip on website
+        if "under review" in e.get("note", "").lower():
+            print (f"  ⚠  Skipping 'Under review' publication in web CV: {e.get('title', e.get('key', ''))}")
+            continue
         by_year[e.get("year", "n.d.")].append(e)
     parts = []
     for year in sorted(by_year.keys(), reverse=True):

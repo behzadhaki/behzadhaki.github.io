@@ -10,7 +10,7 @@ See the following tables for the download links for the GrooveTransformer VST pl
 
 ### Locating the Plugin After Installation
 
-<img src="/assets/ready-to-use-apps/Freesound-Rack/FreesoundRackLocator.png" alt="Thumbnail" width="30%">
+<img src="/assets/projects/Freesound-Rack/FreesoundRackLocator.png" alt="Thumbnail" width="30%">
 
 ### Plugin Source Code
 

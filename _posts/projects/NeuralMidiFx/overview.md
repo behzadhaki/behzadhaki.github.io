@@ -10,8 +10,8 @@ This project was presented at [AIMC 2023](https://aimc2023.pubpub.org/pub/givwzz
 
 ### AIMC 2023 Content
 
-- [Presentation Slides]({{ site.url }}/assets/pdf/AIMC2023Slides.pdf)
-- [Poster]({{ site.url }}/assets/pdf/AIMC2023Poster.pdf)
+- [Presentation Slides]({{ site.url }}/assets/projects/NeuralMidiFx/AIMC2023Slides.pdf)
+- [Poster]({{ site.url }}/assets/projects/NeuralMidiFx/AIMC2023Poster.pdf)
 - [Paper](https://aimc2023.pubpub.org/pub/givwzz98/draft?access=mxqkwrij)
 
 ### Tutorials

@@ -23,14 +23,14 @@ The Intellijel Plonk has a dedicated velocity input that we utilized rather than
 ##### Video 1
 
 <video width="600" height="400" controls>
-  <source src="/assets/hardware/GrooveTransformerEurorack/Jam 3 - Pt1 - compressed_compressed.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformerEurorack/Jam 3 - Pt1 - compressed_compressed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
 ##### Video 2
 
 <video width="320" height="240" controls>
-  <source src="/assets/hardware/GrooveTransformerEurorack/Jam 3 - Pt2 - compressed_compressed.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformerEurorack/Jam 3 - Pt2 - compressed_compressed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -38,14 +38,14 @@ The Intellijel Plonk has a dedicated velocity input that we utilized rather than
 
 
 <video width="320" height="240" controls>
-  <source src="/assets/hardware/GrooveTransformerEurorack/Jam 3 - Pt3 - compressed_compressed.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformerEurorack/Jam 3 - Pt3 - compressed_compressed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
 ##### Video 4
 
 <video width="320" height="240" controls>
-  <source src="/assets/hardware/GrooveTransformerEurorack/Jam2 - pt1 - compressed_compressed.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformerEurorack/Jam2 - pt1 - compressed_compressed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -53,20 +53,20 @@ The Intellijel Plonk has a dedicated velocity input that we utilized rather than
 
 #### Module Videos (Exploring Synthesis)
 <video width="320" height="240" controls>
-  <source src="/assets/hardware/GrooveTransformerEurorack/GT Demo_compressed.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformerEurorack/GT Demo_compressed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
 `Hardware 1`
 
 <video width="320" height="240" controls>
-  <source src="/assets/hardware/GrooveTransformerEurorack/20230621_112345_compressed.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformerEurorack/20230621_112345_compressed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
 `Hardware 2`
 
 <video width="320" height="240" controls>
-  <source src="/assets/hardware/GrooveTransformerEurorack/20230621_114659_compressed.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformerEurorack/20230621_114659_compressed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>

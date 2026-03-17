@@ -28,7 +28,7 @@ The simplest way to use the GrooveTransformer is to use the A/B patterns to swit
 In the following example, we simply morph from pattern A to pattern B. 
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/GrooveTransformer/AB_Interpolation.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformer/AB_Interpolation.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -41,21 +41,21 @@ The external sources can be anything from loops, other sequencers, or a live per
 
 In the following example, we have a bass sequence (MIDI) and a drum loop (audio) that we constantly feed to the plugin. During the performance, we control the plugin by navigating the triangular area.
 
-[//]: # (<iframe width="800" width="800" height="600" src="/assets/ready-to-use-apps/GrooveTransformer/ABG.mp4" frameborder="20" allowfullscreen autoplay="false"></iframe>)
+[//]: # (<iframe width="800" width="800" height="600" src="/assets/projects/GrooveTransformer/ABG.mp4" frameborder="20" allowfullscreen autoplay="false"></iframe>)
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/GrooveTransformer/ABG.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformer/ABG.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
 Let's make this a bit more interesting. In the following example, we have a few drum loops fed to the GrooveTransformer. We also have two patterns stored in the A/B slots. 
 This time, during the performance, we not only navigate the triangular area but also change the patterns in real-time using the voicing controls. 
 
-[//]: # (<iframe width="800" width="800" height="600" src="/assets/ready-to-use-apps/GrooveTransformer/AccompanimentToPre-arrangedClips.mp4" frameborder="20" allowfullscreen autoplay="false"></iframe>)
+[//]: # (<iframe width="800" width="800" height="600" src="/assets/projects/GrooveTransformer/AccompanimentToPre-arrangedClips.mp4" frameborder="20" allowfullscreen autoplay="false"></iframe>)
 
 [//]: # (<video width="50%" controls>)
 
-[//]: # (  <source src="/assets/ready-to-use-apps/GrooveTransformer/AccompanimentToPre-arrangedClips.mp4" type="video/mp4">)
+[//]: # (  <source src="/assets/projects/GrooveTransformer/AccompanimentToPre-arrangedClips.mp4" type="video/mp4">)
 
 [//]: # (  Your browser does not support the video tag.)
 
@@ -65,7 +65,7 @@ This time, during the performance, we not only navigate the triangular area but 
 
 
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/GT_SequencerAccompaniment.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/GT_SequencerAccompaniment.png" alt="Thumbnail" width="50%">
 
 
 <div style="max-width: 600px;">
@@ -87,13 +87,13 @@ Ok! Let's take it up a notch. So far, we've been using the generations to trigge
 In the following example, we feed a few drum loops to the GrooveTransformer, and we use the generations to trigger two separate sample kits, one containing hand percussion samples and the other containing audio samples that are not necessarily percussive.
 During the session, we navigate the triangular area and change the patterns in real-time using the voicing controls.
 
-[//]: # (<iframe width="800" width="800" height="600" src="/assets/ready-to-use-apps/GrooveTransformer/Non-drum Extra Sequencing.mp4" frameborder="20" allowfullscreen autoplay="false"></iframe>)
+[//]: # (<iframe width="800" width="800" height="600" src="/assets/projects/GrooveTransformer/Non-drum Extra Sequencing.mp4" frameborder="20" allowfullscreen autoplay="false"></iframe>)
 
 [TBD INSERT SESSION OVERVIEW]
 
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/GrooveTransformer/Non-drum%20Extra%20Sequencing_trimmed.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformer/Non-drum%20Extra%20Sequencing_trimmed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -106,7 +106,7 @@ detected by the GrooveTransformer, and the rest are ignored.
 
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/GrooveTransformer/NonPercussiveAudioInputs_trimmed.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformer/NonPercussiveAudioInputs_trimmed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -122,7 +122,7 @@ In the following example, we start from A, morph to B, and then to morph to G (f
 [TBD INSERT SESSION OVERVIEW]
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/GrooveTransformer/PatternMorph3Grooves_trimmed.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformer/PatternMorph3Grooves_trimmed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -145,7 +145,7 @@ The plugin then generates the accompaniment based on the input and we synthesize
 
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/GrooveTransformer/AutonomousPerformingClips.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformer/AutonomousPerformingClips.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -153,27 +153,27 @@ The plugin then generates the accompaniment based on the input and we synthesize
 Alternatively, we can allow the plugin to play a pattern and we can start jamming on top of it, using any instrument we like. Below is an example of how we can use the GrooveTransformer as a pseudo-autonomous rhythm generator, while we play a pattern on an external synthesizer.
 
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/Keyboard%20Accompaniment.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/Keyboard%20Accompaniment.png" alt="Thumbnail" width="50%">
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/GrooveTransformer/FullAutoAccomp.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformer/FullAutoAccomp.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/GrooveTransformer/snippet3_ms20.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformer/snippet3_ms20.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
 The performance on the external instrument is not limited to performing the keys! In the following example, we are sequencing the external synth and play with the synthesis parameters in real-time.
 
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/SynthAccompaniment.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/SynthAccompaniment.png" alt="Thumbnail" width="50%">
 
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/GrooveTransformer/snippet1_ms20_trimmed.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformer/snippet1_ms20_trimmed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -193,14 +193,14 @@ In the following example, we have prepared a virtual modular patch (in [VCV Rack
 
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/GrooveTransformer/UsingVelocityFeaturesForParameterSequencing.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformer/UsingVelocityFeaturesForParameterSequencing.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
 
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/GrooveTransformer/SequencingDrumsAndParams.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformer/SequencingDrumsAndParams.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -215,10 +215,10 @@ For this, we need to make custom processing chains that can take the output of t
 In the following example, we have a custom patch in [VCV Rack](https://vcvrack.com/) that takes the output of the GrooveTransformer and uses the trigger/velocity of the generations to activate three voltage-controlled amplifiers (VCAs). Each VCA is connected to a different audio source, and the output of the VCAs is mixed together.
 
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/GT_ModulationSource.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/GT_ModulationSource.png" alt="Thumbnail" width="50%">
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/GrooveTransformer/RhythmicManipulation%20of%20Audio_trimmed.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformer/RhythmicManipulation%20of%20Audio_trimmed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -226,10 +226,10 @@ In the following example, we have a custom patch in [VCV Rack](https://vcvrack.c
 Moreover, we can use multiple instances of the plugin each for a separate purpose. For example, we can use one instance of the GrooveTransformer to generate a drum pattern, and another instance to manipulate audio in real-time.
 
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/GT_ModulationSource.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/GT_ModulationSource.png" alt="Thumbnail" width="50%">
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/GrooveTransformer/ModSource.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformer/ModSource.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -245,9 +245,9 @@ The pitch of the generated sequences are all modulated randomly or via a MIDI co
 
 
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/PitchSequencing.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/PitchSequencing.png" alt="Thumbnail" width="50%">
 
 <video width="50%" controls>
-  <source src="/assets/ready-to-use-apps/GrooveTransformer/PitchSequencing_trimmed.mp4" type="video/mp4">
+  <source src="/assets/projects/GrooveTransformer/PitchSequencing_trimmed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>

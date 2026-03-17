@@ -59,7 +59,7 @@ For the GrooveTransformer, we trained a generative neural network that would be 
 
 Rhythmic patterns are in this case represented as a 1D sequence with micro-timing and velocity. That is, we specify on which steps (16th note grid) we want a drum hit, and also how hard the hit should be, and how much it should be offset from the grid.
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/Groove2Drum.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/Groove2Drum.png" alt="Thumbnail" width="50%">
 
 
 
@@ -68,7 +68,7 @@ The specific architecture of the neural network is not important for this discus
 1. _**<u>randomly generate</u>**_ new drum loops without any rhythmic input, 
 2. _**<u>interpolate</u>**_ between two given drum loops!
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/model_functionalities.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/model_functionalities.png" alt="Thumbnail" width="50%">
 
 With these capabilities in mind, we can now consider how the plugin operates.
 
@@ -86,7 +86,7 @@ Interpolating between these two patterns, allows for a smooth transition between
 In other words, in this case, the system would work as a sequencer! A sequencer that is ofcourse programmed in a very different way than traditional sequencers!
 
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/AB_Interp.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/AB_Interp.png" alt="Thumbnail" width="50%">
 
 
 ### Reacting to a Live Rhythmic Source
@@ -95,7 +95,7 @@ While operating in this mode is interesting, we can take this idea further by in
 This means that not only can we interpolate between `A` and `B` which are most-likely pre-programmed, but also we can use a rhythmic pattern that dynamically changes during the performance.
 Hence, the system can also _**<u>accompany</u>**_  an incoming rhythmic pattern!
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/ABG_Via_Sliders.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/ABG_Via_Sliders.png" alt="Thumbnail" width="50%">
 
 
     The best way to think about this is that the system can playback pre-programmed patterns, while also adapting the playback to a live rhythmic source in real-time.
@@ -104,12 +104,12 @@ Hence, the system can also _**<u>accompany</u>**_  an incoming rhythmic pattern!
 The introduction of the third pattern results in a triangular space, where the user can navigate between the three patterns.
 
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/overview_1.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/overview_1.png" alt="Thumbnail" width="50%">
 
 
 In this space, each region will have varying degrees of influence from the three patterns, `A`, `B`, and `G`.
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/ABG_Interp_Annotated.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/ABG_Interp_Annotated.png" alt="Thumbnail" width="50%">
 
 
 What's interesting is that at the edges of the space, only two of the three corner patterns will be influential, hence allowing the user to not only modify the generations but also dynamically modify the role of the system in the performance.
@@ -118,7 +118,7 @@ That is, to decide whether the system should be a sequencer, an accompaniment ge
 
 
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/overview_3.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/overview_3.png" alt="Thumbnail" width="50%">
 
 
 
@@ -134,7 +134,7 @@ While trained on MIDI sequences, we have external processes that allow for autom
 
 Keep in mind that the rhythm extraction from audio sources is not perfect, and it works best with very transient (percussive) sources.
  
-<img src="/assets/ready-to-use-apps/GrooveTransformer/overview_4.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/overview_4.png" alt="Thumbnail" width="50%">
 
 
 ### Manual or Automatic Navigation
@@ -145,7 +145,7 @@ We also have implemented mechanisms that allow for automatic navigation of the s
 
 In this case, the system will automatically interpolate between the three patterns, `A`, `B`, and `G`, based on a set of rules that are implemented in the plugin.
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/overview_5.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/overview_5.png" alt="Thumbnail" width="50%">
 
 
 ### Manipulating the Generations
@@ -159,7 +159,7 @@ A set of "style" buttons allow manipulation of the overall velocity/timing/densi
 Also, a separate set of controls allow for quick manipulation of voicing of the generations, while **trying** to keep the overall feel of the loop.
 
 
-<img src="/assets/ready-to-use-apps/GrooveTransformer/overview_2.png" alt="Thumbnail" width="50%">
+<img src="/assets/projects/GrooveTransformer/overview_2.png" alt="Thumbnail" width="50%">
 
 
 We'd love to hear your thoughts on the system, and we are always open to suggestions on how to improve the system! Please feel free to [reach out to us]({{site.BaseUrl}}/ready-to-use-apps/groovetransformer-vst/#contact)!

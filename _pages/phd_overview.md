@@ -64,7 +64,7 @@ whether we could use a very simple representation of our sequences.
 > 
 > Grid relative piano-roll representation. Tempo-agnostic, and focus on 4/4 time signature.
 > 
-> <img src="{{ site.baseurl }}/assets/img/aimc2021/hvo.jpeg" alt="hvo" style="width: 700px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/Groove2Drum/aimc2021/hvo.jpeg" alt="hvo" style="width: 700px;"/>
 
 <br> 
 
@@ -72,7 +72,7 @@ whether we could use a very simple representation of our sequences.
 > 
 > Use a simple rhythm extracted from the input performance. Then, develop a system that can convert this rhythm into a drum loop.
 > 
-> <img src="{{ site.baseurl }}/assets/img/aimc2021/groove2drum.png" alt="dev_stages" style="width: 700px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/Groove2Drum/aimc2021/groove2drum.png" alt="dev_stages" style="width: 700px;"/>
 
 <br> 
 
@@ -80,13 +80,13 @@ whether we could use a very simple representation of our sequences.
 > 
 > Simply flatten all the notes into a single track, then represent similar to the drum loop representation.
 > 
-> <img src="{{ site.baseurl }}/assets/img/aimc2021/flatten.png" alt="dev_stages" style="width: 350px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/Groove2Drum/aimc2021/flatten.png" alt="dev_stages" style="width: 350px;"/>
 
 <br> 
 
 > **Final Architecture to Train**
 > 
-> <img src="{{ site.baseurl }}/assets/img/aimc2021/arch_aimc.jpeg" alt="dev_stages" style="width: 700px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/Groove2Drum/aimc2021/arch_aimc.jpeg" alt="dev_stages" style="width: 700px;"/>
 
 <br> 
 
@@ -124,7 +124,7 @@ whether we could use a very simple representation of our sequences.
 > 
 > In real-time, extract rhythms from a MIDI performance, convert into a drum loop. 
 > 
-> <img src="{{ site.baseurl }}/assets/img/aimc2021/real-time-context-camera-ready.png" alt="dev_stages" style="width: 700px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/Groove2Drum/aimc2021/real-time-context-camera-ready.png" alt="dev_stages" style="width: 700px;"/>
 
 <br>
 
@@ -134,7 +134,7 @@ whether we could use a very simple representation of our sequences.
 > 
 > In real-time inference, replace drum groove with instrumental groove. 
 > 
-> <img src="{{ site.baseurl }}/assets/img/aimc2021/pipeline_camera_ready.png" alt="dev_stages" style="width: 700px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/Groove2Drum/aimc2021/pipeline_camera_ready.png" alt="dev_stages" style="width: 700px;"/>
 
 
 <br>
@@ -153,7 +153,7 @@ whether we could use a very simple representation of our sequences.
 > 
 > In real-time inference, replace drum groove with instrumental groove. 
 > 
-> <img src="{{ site.baseurl }}/assets/img/aimc2021/real-time-implemented_camera_ready.png" alt="dev_stages" style="width: 700px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/Groove2Drum/aimc2021/real-time-implemented_camera_ready.png" alt="dev_stages" style="width: 700px;"/>
 
 
 > **Further details can be found in the following publication:**
@@ -164,10 +164,10 @@ whether we could use a very simple representation of our sequences.
 
 > **System Demo**
 > 
-> <video width="600" height="400" controls><source src="/assets/videos/RT_AIMC_trimmed.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
+> <video width="600" height="400" controls><source src="/assets/projects/Groove2Drum/RT_AIMC_trimmed.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
 > <br>
 > 
-> <audio width="600" height="200" controls><source src="/assets/audio/AIMC_Audio_firstAccomp.mp3" type="audio/mp3">Your browser does not support the video tag.</audio>
+> <audio width="600" height="200" controls><source src="/assets/projects/Groove2Drum/AIMC_Audio_firstAccomp.mp3" type="audio/mp3">Your browser does not support the video tag.</audio>
 
 
 
@@ -190,7 +190,7 @@ whether we could use a very simple representation of our sequences.
 
 > **Standalone Groove2Drum Accompaniment System**
 > 
-> <video width="600" height="400" controls><source src="/assets/videos/Groove2Drum.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
+> <video width="600" height="400" controls><source src="/assets/projects/Groove2Drum/Groove2Drum.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
 > <br>
 
 [Source Code](https://github.com/behzadhaki/Groove2DrumVST){: .btn}
@@ -216,13 +216,13 @@ and I hope that it will be useful for other researchers as well.
 > **Main Idea Behind NeuralMidiFx: Division of Responsibilities**
 >
 > 
-> <img src="{{ site.baseurl }}/assets/img/nmfx/NMFX_responsibilities.png" alt="dev_stages" style="width: 700px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/NeuralMidiFx/NMFX_responsibilities.png" alt="dev_stages" style="width: 700px;"/>
 
 <br>
 
 > **NeuralMidiFx Architecture**
 > 
-> <img src="{{ site.baseurl }}/assets/img/nmfx/NMFX_Arch.png" alt="dev_stages" style="width: 700px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/NeuralMidiFx/NMFX_Arch.png" alt="dev_stages" style="width: 700px;"/>
 
 <br> 
 
@@ -272,7 +272,7 @@ This was the main focus of the `GrooveTransformer` system, discussed in the foll
 > **Concept**
 > If we develop a VAE model, then we could achieve the above objectives as follows:
 > 
-> <img src="{{ site.baseurl }}/assets/img/GT/latent.png" alt="dev_stages" style="width: 700px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/GrooveTransformer/latent.png" alt="dev_stages" style="width: 700px;"/>
 
 <br>
 
@@ -280,7 +280,7 @@ This was the main focus of the `GrooveTransformer` system, discussed in the foll
 > 
 > same as before, except the variational layer.
 > 
-> <img src="{{ site.baseurl }}/assets/img/GT/ARCH.PNG" alt="dev_stages" style="width: 200px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/GrooveTransformer/ARCH.PNG" alt="dev_stages" style="width: 200px;"/>
 
 <br>
 
@@ -288,14 +288,14 @@ This was the main focus of the `GrooveTransformer` system, discussed in the foll
 > 
 > The system was deployed in a standalone system using the NeuralMidiFx framework.
 > 
-> <video width="600" height="400" controls><source src="/assets/videos/plugin.webm" type="video/webm"> Your browser does not support the video tag. </video>
+> <video width="600" height="400" controls><source src="/assets/projects/GrooveTransformer/plugin.webm" type="video/webm"> Your browser does not support the video tag. </video>
 > 
 
 <br>
 
 > **Demos**
 > 
-> <video width="600" height="400" controls><source src="/assets/videos/VCV_VST_Keyboard_LowRes.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
+> <video width="600" height="400" controls><source src="/assets/projects/GrooveTransformer/VCV_VST_Keyboard_LowRes.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
 > 
 > <br>
 > [More Recordings Here](https://generativedata.github.io/generated_examples/jam_session_recordings/){: .btn}
@@ -305,11 +305,11 @@ This was the main focus of the `GrooveTransformer` system, discussed in the foll
 
 > **Refree's Live Rehearsal at CCCB**
 > 
-> <video width="600" height="400" controls><source src="/assets/videos/arturia.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
+> <video width="600" height="400" controls><source src="/assets/projects/GrooveTransformer/arturia.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
 > 
 > <br>
 >  
-> <video width="600" height="400" controls><source src="/assets/videos/phone.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
+> <video width="600" height="400" controls><source src="/assets/projects/GrooveTransformer/phone.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
 
 <br><br><br>
 
@@ -325,13 +325,13 @@ This was the main focus of the `GrooveTransformer` system, discussed in the foll
 
 > **Final Prototype**
 >
-> <img src="{{ site.baseurl }}/assets/img/GT/GT_Euro_.jpg" alt="dev_stages" style="width: 700px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/GrooveTransformerEurorack/GT_Euro_.jpg" alt="dev_stages" style="width: 700px;"/>
 
 <br>
 
 > **Deployment Procedure**
 > 
-> <img src="{{ site.baseurl }}/assets/img/GT/hardware.png" alt="dev_stages" style="width: 700px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/GrooveTransformerEurorack/hardware.png" alt="dev_stages" style="width: 700px;"/>
 
 <br>
 
@@ -347,7 +347,7 @@ This was the main focus of the `GrooveTransformer` system, discussed in the foll
 Kick: Schlappi Engineering Angle Grinder + Make Noise Moddemix VCA + Intellijel Quadrax envelope generator Snare: Intellijel Plonk Open and Closed Hi-Hats: Basimilus Iteritas Alter Lo, Mid, Hi Toms: Akemie’s Taiko
 > 
 > To retain generated dynamics, the kick, hi-hats, and toms are routed to individual channels on a Mutable Instruments Veils. The level of each channel is controlled with the velocity sequence associated with the corresponding voice The Intellijel Plonk has a dedicated velocity input that we utilized rather than routing the signal to Veils
-> <video width="600" height="400" controls><source src="/assets/videos/eurorackJam.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
+> <video width="600" height="400" controls><source src="/assets/projects/GrooveTransformerEurorack/eurorackJam.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
 > 
 
 <br>
@@ -371,7 +371,7 @@ Kick: Schlappi Engineering Angle Grinder + Make Noise Moddemix VCA + Intellijel 
 
 > **Architecture**
 > 
-> <img src="{{ site.baseurl }}/assets/img/control_GT/control_models.png" alt="dev_stages" style="width: 700px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/GrooveTransformer/control_models.png" alt="dev_stages" style="width: 700px;"/>
 
 <br>
 
@@ -400,7 +400,7 @@ Kick: Schlappi Engineering Angle Grinder + Make Noise Moddemix VCA + Intellijel 
 
 > **Previous Work on Audio Input**
 > 
-> <img src="{{ site.baseurl }}/assets/img/audio2drum/pipeline_1.5x.png" alt="dev_stages" style="width: 700px;"/>
+> <img src="{{ site.baseurl }}/assets/projects/Groove2Drum/pipeline_1.5x.png" alt="dev_stages" style="width: 700px;"/>
 
 <br> 
 
@@ -417,7 +417,7 @@ Kick: Schlappi Engineering Angle Grinder + Make Noise Moddemix VCA + Intellijel 
 
 > **Demos**
 > 
-> <video width="600" height="400" controls><source src="/assets/videos/AudioInputDemo1.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
+> <video width="600" height="400" controls><source src="/assets/projects/GrooveTransformer/AudioInputDemo1.mp4" type="video/mp4"> Your browser does not support the video tag. </video>
 > 
 
 
@@ -439,7 +439,7 @@ Kick: Schlappi Engineering Angle Grinder + Make Noise Moddemix VCA + Intellijel 
 
 > **Demos**
 > 
-> <audio width="600" height="200" controls><source src="/assets/audio/G2GTest2_June22Edit.mp3" type="audio/mp3">Your browser does not support the video tag.</audio>
+> <audio width="600" height="200" controls><source src="/assets/projects/Groove2Drum/G2GTest2_June22Edit.mp3" type="audio/mp3">Your browser does not support the video tag.</audio>
 
 
 <br><br><br>
@@ -450,4 +450,4 @@ Kick: Schlappi Engineering Angle Grinder + Make Noise Moddemix VCA + Intellijel 
 - The main objective here is to develop a system that can generate long-term accompaniments without overdubbing
 - That is, we want the system to consider the entirety of the performance prior to generate the accompaniment.
 
-<img src="{{ site.baseurl }}/assets/img/LongPerformanceArch.png" alt="dev_stages" style="width: 700px;"/>
+<img src="{{ site.baseurl }}/assets/projects/GrooveTransformer/LongPerformanceArch.png" alt="dev_stages" style="width: 700px;"/>
