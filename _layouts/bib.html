@@ -135,7 +135,12 @@
     <!-- Collapsible BibTeX -->
     {%- if entry.bibtex_show -%}
     <details class="pub-card__details">
-      <summary>BibTeX</summary>
+      <summary>
+        BibTeX
+        <button class="bibtex-copy-btn" title="Copy BibTeX" onclick="event.stopPropagation(); copyBibtex(this)" aria-label="Copy BibTeX to clipboard">
+          <i class="fa-regular fa-copy"></i>
+        </button>
+      </summary>
       <div class="pub-card__bibtex">
         {% highlight bibtex %}{{ entry.bibtex | hideCustomBibtex }}{% endhighlight %}
       </div>

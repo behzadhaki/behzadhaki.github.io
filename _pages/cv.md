@@ -3,7 +3,6 @@ layout: page
 title: CV
 permalink: /cv/
 description: Curriculum Vitae
-hide_title: true
 ---
 
 <div style="text-align:right; margin-bottom:1.5rem;">

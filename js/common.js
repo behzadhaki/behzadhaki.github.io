@@ -107,6 +107,39 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
   /* =======================
+  // BibTeX Copy to Clipboard
+  ======================= */
+  window.copyBibtex = function(btn) {
+    const details = btn.closest('details');
+    const code = details.querySelector('.pub-card__bibtex code');
+    if (!code) return;
+    const text = code.textContent;
+    const icon = btn.querySelector('i');
+
+    function onSuccess() {
+      icon.className = 'fa-solid fa-check';
+      setTimeout(() => { icon.className = 'fa-regular fa-copy'; }, 1500);
+    }
+
+    function fallbackCopy() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); onSuccess(); } catch(e) {}
+      document.body.removeChild(ta);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(onSuccess).catch(fallbackCopy);
+    } else {
+      fallbackCopy();
+    }
+  };
+
+
+  /* =======================
   // Scroll Top Button
   ======================= */
   window.addEventListener("scroll", function () {

@@ -741,6 +741,22 @@ hr {
     transform: rotate(90deg);
   }
 
+  .bibtex-copy-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $gray;
+    opacity: 0.6;
+    padding: 0 0 0 0.3rem;
+    font-size: 0.85em;
+    line-height: 1;
+    vertical-align: middle;
+    transition: opacity 0.2s, color 0.2s;
+
+    &:hover { opacity: 1; color: $light-gray; }
+    .fa-check { color: #6abf6a; opacity: 1; }
+  }
+
   p {
     margin: 0.6rem 0 0;
     font-size: 0.83rem;
