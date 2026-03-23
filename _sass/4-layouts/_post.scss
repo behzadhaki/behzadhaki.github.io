@@ -485,61 +485,209 @@
 
 }
 
-/* Tabbed Sections (Mandatory + Optional) */
-.post-tabs {
-  margin-top: 2rem;
-  border: 0.5px solid #ccc;
+/* Expandable Project Sections (Mandatory + Optional) */
+.project-section {
+  margin-top: 1rem;
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 10px;
   overflow: hidden;
 
-  .tab-nav {
-    list-style: none;
+  .project-section__header {
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.2rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: $blue-dark;
+    text-transform: capitalize;
+    user-select: none;
+    list-style: none;
+    color: $light-gray;
+
+    &::-webkit-details-marker { display: none; }
+
+    &::before {
+      content: "▶";
+      font-size: 0.6rem;
+      transition: transform 0.2s;
+      display: inline-block;
+      color: $gray;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: rgba(255,255,255,0.04);
+    }
+
+    .section-anchor {
+      margin-left: auto;
+      opacity: 0;
+      font-size: 0.65rem;
+      color: rgba($light-gray, 0.5);
+      border-bottom: none !important;
+      line-height: 1;
+      transition: opacity 0.15s;
+      padding: 0.2rem 0.3rem;
+      &:hover { color: $brand-color; border-bottom: none !important; }
+    }
+    &:hover .section-anchor { opacity: 1; }
+  }
+
+  &[open] .project-section__header::before {
+    transform: rotate(90deg);
+  }
+
+  .project-section__body {
+    padding: 1.2rem 1.4rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: rgba($light-gray, 0.8);
+
+    h1, h2, h3, h4, h5, h6 {
+      color: $light-gray;
+      font-weight: 600;
+      margin: 1.6rem 0 0.5rem;
+      line-height: 1.3;
+      position: relative;
+      &:first-child { margin-top: 0.4rem; }
+
+      .heading-anchor {
+        position: absolute;
+        left: -1.1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        font-size: 0.6em;
+        color: rgba($light-gray, 0.4);
+        border-bottom: none !important;
+        line-height: 1;
+        transition: opacity 0.15s;
+        &:hover { color: $brand-color; border-bottom: none !important; }
+      }
+      &:hover .heading-anchor { opacity: 1; }
+    }
+    h1 { font-size: 1.15rem; margin-top: 2rem; &:first-child { margin-top: 0.4rem; } }
+    h2 { font-size: 1.05rem; margin-top: 1.8rem; &:first-child { margin-top: 0.4rem; } }
+    h3 { font-size: 0.95rem; margin-top: 1.4rem; &:first-child { margin-top: 0.4rem; } }
+    h4, h5, h6 { font-size: 0.85rem; margin-top: 1.2rem; &:first-child { margin-top: 0.4rem; } }
+
+    p { margin: 0 0 0.6rem; }
+    ul, ol { padding-left: 1.4rem; margin: 0 0 0.6rem; }
+    li { margin-bottom: 0.2rem; }
+
+    a {
+      color: $light-gray;
+      border-bottom: 1px solid rgba($light-gray, 0.2);
+      &:hover { border-color: $brand-color; color: $light-gray; text-decoration: none; }
+    }
+
+    code {
+      font-size: 0.8rem;
+      background: rgba(255,255,255,0.07);
+      padding: 0.1em 0.35em;
+      border-radius: 4px;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      font-size: 0.78rem;
+    }
+
+    table {
+      width: auto;
+      max-width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin: 0 auto 0.6rem 0;
+
+      th, td {
+        padding: 0.3rem 0.7rem;
+        border: 1px solid rgba(255,255,255,0.1);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        background: rgba(255,255,255,0.06);
+        font-weight: 600;
+        color: $light-gray;
+      }
+    }
+
+    /* Collapsible sub-sections within a tab body (split by top-level headings) */
+    .content-section {
+      border-top: 1px solid rgba(255,255,255,0.06);
+
+      &:first-child { border-top: none; }
+
+      .content-section__header {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        cursor: pointer;
+        list-style: none;
+        user-select: none;
+        padding: 0.35rem 0;
+
+        &::-webkit-details-marker { display: none; }
+
+        &::before {
+          content: "▶";
+          font-size: 0.5rem;
+          transition: transform 0.2s;
+          display: inline-block;
+          color: $gray;
+          flex-shrink: 0;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+          margin: 0;
+          flex: 1;
+          // inherit font-size from parent rules; just strip margins
+        }
+
+        .content-anchor {
+          flex-shrink: 0;
+          opacity: 0;
+          font-size: 0.6rem;
+          color: rgba($light-gray, 0.4);
+          border-bottom: none !important;
+          line-height: 1;
+          transition: opacity 0.15s;
+          padding: 0.2rem 0.1rem;
+          &:hover { color: $brand-color; border-bottom: none !important; }
+        }
+        &:hover .content-anchor { opacity: 1; }
+      }
+
+      &[open] > .content-section__header::before { transform: rotate(90deg); }
+
+      .content-section__body {
+        padding: 0 0 0.5rem 1.2rem;
+        border-left: 2px solid rgba(255,255,255,0.05);
+        margin-left: 0.25rem;
+      }
+    }
+  }
+}
+
+/* Publication cards inside project sections (single-column stack) */
+.project-pubs {
+  ol.bibliography {
+    display: block;
+    list-style: none;
     padding-left: 0;
     margin: 0;
-    border-bottom: 1px solid #ccc;
 
     li {
-      margin: 0;
-      padding: 0.5rem 0.75rem;
-      font-weight: bold;
-      font-size: 0.7rem;
-      cursor: pointer;
-      box-sizing: border-box;
-      border-right: 1px solid #ccc;
-      background-color: transparent;
-      color: inherit;
-
-      &.active {
-        background-color: #f7f7f7;
-        color: black;
-      }
-    }
-  }
-
-  .tab-content {
-    padding: 1rem;
-  }
-
-  .tab-pane {
-    display: none;
-
-    &.active {
       display: block;
-    }
-  }
+      margin-bottom: 0.75rem;
 
-  @media (max-width: 600px) {
-    .tab-nav {
-      flex-direction: column;
-
-      li {
-        width: 100%;
-        text-align: center;
-        border-right: none !important;
-        border-bottom: 1px solid #ccc;
-      }
+      &:last-child { margin-bottom: 0; }
     }
   }
 }

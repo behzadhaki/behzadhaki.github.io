@@ -1,26 +1,16 @@
 {% if page.tabs and page.tabs_content %}
-<div class="post-tabs">
-  <!-- Navigation Tabs -->
-  <ul class="tab-nav">
-    {% for tab in page.tabs %}
-    <li class="{% if forloop.first %}active{% endif %}" data-tab="{{ tab }}">
-      {{ tab | capitalize }}
-    </li>
-    {% endfor %}
-  </ul>
-
-  <!-- Tab Panes -->
-  <div class="tab-content">
-    {% for tab in page.tabs %}
-    {% assign file = page.tabs_content[forloop.index0] %}
-    <div class="tab-pane {% if forloop.first %}active{% endif %}" id="{{ tab }}">
-      <div class="markdown-body">
-        {% include safe-include.md file=file %}
-      </div>
-    </div>
-    {% endfor %}
+{% for tab in page.tabs %}
+{% assign file = page.tabs_content[forloop.index0] %}
+{% assign section_label = tab | replace: "-", " " | capitalize %}
+{% assign section_id = section_label | slugify %}
+<details class="project-section" id="{{ section_id }}">
+  <summary class="project-section__header">
+    {{ section_label }}
+    <a class="section-anchor" href="#{{ section_id }}" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
+  </summary>
+  <div class="project-section__body markdown-body">
+    {% include safe-include.md file=file %}
   </div>
-</div>
+</details>
+{% endfor %}
 {% endif %}
-
-

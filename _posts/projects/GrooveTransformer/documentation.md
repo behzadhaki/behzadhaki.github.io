@@ -1,11 +1,4 @@
 
-## Table of contents
-{: .no_toc .text-delta }
-
-1. TOC
-{:toc}
-
----
 
 # Setup in DAW
 
@@ -104,15 +97,15 @@ This is done by either clicking anywhere within the triangular area or by draggi
 
 <img src="/assets/projects/GrooveTransformer/DragginNav.gif" alt="Thumbnail" width="30%">
 
-_**<u>Navigation Via Host</u>**_: The triangular area is controlled using two parameters called <u>Interpolate</uand <u>Follow</u>. These are exposed to the host, so you can either map these to a controller, automate them, or use modulation sources to control them.
+_**<u>Navigation Via Host</u>**_: The triangular area is controlled using two parameters called <u>Interpolate</u> and <u>Follow</u>. These are exposed to the host, so you can either map these to a controller, automate them, or use modulation sources to control them.
 
 <img src="/assets/projects/GrooveTransformer/HostParamNav.gif" alt="Thumbnail" width="30%">
 
-_**<u>Oscillating between A/B</u>**_: You can find a slider below the triangular area called <u>AB Oscillation Rate</u>. When moved anywhere but the very left, the playback position will oscillate between the A and B patterns at the specified rate. This is similar to modulating the <u>Interpolate</uparameter externally from the host.
+_**<u>Oscillating between A/B</u>**_: You can find a slider below the triangular area called <u>AB Oscillation Rate</u>. When moved anywhere but the very left, the playback position will oscillate between the A and B patterns at the specified rate. This is similar to modulating the <u>Interpolate</u> parameter externally from the host.
 
 <img src="/assets/projects/GrooveTransformer/ABOscillation.gif" alt="Thumbnail" width="30%">
 
-_**<u>Adaptive Follow</u>**_: A button called <u>Adaptive Follow</uis provided to automatically adjust the <u>Follow</uparameter based on the incoming rhythm. The way it works is that as the groove becomes more active (dense), the playback position moves more and more towards the top of the triangle. 
+_**<u>Adaptive Follow</u>**_: A button called <u>Adaptive Follow</u> is provided to automatically adjust the <u>Follow</u> parameter based on the incoming rhythm. The way it works is that as the groove becomes more active (dense), the playback position moves more and more towards the top of the triangle. 
 The highest point reached by the playback position is determined by a slider called <u>Max Follow</u>, placed below the Adaptive Follow button.
 
 <img src="/assets/projects/GrooveTransformer/AdaptFollow.gif" alt="Thumbnail" width="30%">
@@ -142,7 +135,7 @@ The 9-drum voices are grouped into 5 categories:
 | Cymbal   | Crash, Ride |
 |-|-|
 
-For each category, the groups can be <u>Muted</uor <u>Redistributed</u>. 
+For each category, the groups can be <u>Muted</u> or <u>Redistributed</u>. 
 
 Muting simply removed the drum voices from the generated rhythms while keeping the rest as is.
 

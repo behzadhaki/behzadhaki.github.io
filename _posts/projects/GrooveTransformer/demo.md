@@ -1,12 +1,4 @@
 
-## Table of contents
-{: .no_toc .text-delta }
-
-1. TOC
-{:toc}
-
----
-
 GrooveTransformer can be used either as an _**<u>instrument</u>**_ on which you perform (i.e. a _**<u>sequencer</u>**_), a _**<u>(pseudo-)autonomous rhythm generator</u>**_, or anything in between.
 
 Below are some examples of how you can use the GrooveTransformer VST in different scenarios.

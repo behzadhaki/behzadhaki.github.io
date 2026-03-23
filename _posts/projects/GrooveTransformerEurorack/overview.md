@@ -1,9 +1,5 @@
 
 
-* TOC
-{:toc}
-
-
 ---
 ## Source Code
 ---

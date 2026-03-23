@@ -79,50 +79,148 @@ layout: default
 
 {% if site.related_posts_include %}{% include related-posts.html %}{% endif %}
 
-<!-- Scoped Tab JavaScript -->
+<!-- Section & Content Anchor JavaScript -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".post-tabs").forEach(tabContainer => {
-      const tabs = tabContainer.querySelectorAll(".tab-nav li");
-      const panes = tabContainer.querySelectorAll(".tab-pane");
 
-      function activateTab(tabName, updateUrl = false) {
-        tabs.forEach(t => {
-          const isActive = t.getAttribute("data-tab") === tabName;
-          t.classList.toggle("active", isActive);
-        });
-        panes.forEach(pane => {
-          const isMatch = pane.id === tabName;
-          pane.classList.toggle("active", isMatch);
-        });
-        if (updateUrl) {
-          const url = new URL(window.location);
-          url.hash = tabName;
-          history.replaceState(null, "", url);
+    // STEP 1: Split section bodies into collapsible sub-sections by top-level headings
+    document.querySelectorAll(".project-section__body").forEach(function (body) {
+      var allHeadings = Array.from(body.querySelectorAll("h1,h2,h3,h4,h5,h6"))
+        .filter(function (h) { return !h.classList.contains("no_toc"); });
+      if (allHeadings.length <= 1) return;
+
+      var minLevel = Math.min.apply(null, allHeadings.map(function (h) { return parseInt(h.tagName[1]); }));
+      var topTag = "H" + minLevel;
+
+      // Only restructure if there are multiple direct-child top-level headings
+      var directTopHeadings = allHeadings.filter(function (h) {
+        return h.tagName === topTag && h.parentElement === body;
+      });
+      if (directTopHeadings.length <= 1) return;
+
+      // Group child nodes into blocks separated by top-level headings
+      var children = Array.from(body.childNodes);
+      var blocks = [];
+      var current = { heading: null, nodes: [] };
+      for (var i = 0; i < children.length; i++) {
+        var node = children[i];
+        if (node.nodeType === 1 && node.tagName === topTag && !node.classList.contains("no_toc")) {
+          if (current.heading || current.nodes.length) blocks.push(current);
+          current = { heading: node, nodes: [] };
+        } else {
+          current.nodes.push(node);
         }
       }
+      if (current.heading || current.nodes.length) blocks.push(current);
+      if (blocks.filter(function (b) { return b.heading; }).length <= 1) return;
 
-      tabs.forEach(tab => {
-        tab.addEventListener("click", function () {
-          const target = this.getAttribute("data-tab");
-          const pane = tabContainer.querySelector(`#${target}`);
-          const isActive = this.classList.contains("active");
-          if (isActive) {
-            this.classList.remove("active");
-            if (pane) pane.classList.remove("active");
-            const url = new URL(window.location);
-            url.hash = "";
-            history.replaceState(null, "", url);
-          } else {
-            activateTab(target, true);
-          }
-        });
+      // Rebuild body with <details> wrappers
+      while (body.firstChild) body.removeChild(body.firstChild);
+
+      blocks.forEach(function (block) {
+        if (!block.heading) {
+          // Pre-heading intro content — keep as-is
+          block.nodes.forEach(function (n) { body.appendChild(n); });
+          return;
+        }
+
+        var text = block.heading.textContent.trim();
+        var id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        block.heading.id = id;
+
+        var details = document.createElement("details");
+        details.className = "content-section";
+
+        var summary = document.createElement("summary");
+        summary.className = "content-section__header";
+        summary.appendChild(block.heading);
+
+        // Link icon (right side of summary)
+        var linkAnchor = document.createElement("a");
+        linkAnchor.className = "content-anchor";
+        linkAnchor.href = "#" + id;
+        linkAnchor.title = "Copy link to this section";
+        linkAnchor.setAttribute("aria-label", "Copy link to this section");
+        linkAnchor.innerHTML = '<i class="fa-solid fa-link"></i>';
+        (function (anchorId) {
+          linkAnchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var url = window.location.origin + window.location.pathname + "#" + anchorId;
+            history.replaceState(null, "", "#" + anchorId);
+            var outer = this.closest("details.project-section");
+            if (outer) outer.open = true;
+            if (navigator.clipboard) navigator.clipboard.writeText(url).catch(function () {});
+          });
+        })(id);
+        summary.appendChild(linkAnchor);
+
+        details.appendChild(summary);
+
+        if (block.nodes.length) {
+          var contentDiv = document.createElement("div");
+          contentDiv.className = "content-section__body";
+          block.nodes.forEach(function (n) { contentDiv.appendChild(n); });
+          details.appendChild(contentDiv);
+        }
+
+        body.appendChild(details);
       });
-
-      const initialHash = window.location.hash.replace("#", "");
-      if (initialHash && tabContainer.querySelector(`#${initialHash}`)) {
-        activateTab(initialHash);
-      }
     });
+
+    // STEP 2: Inject anchor icons into sub-headings (skip headings already inside <summary>)
+    document.querySelectorAll(".project-section__body h1,.project-section__body h2,.project-section__body h3,.project-section__body h4,.project-section__body h5,.project-section__body h6").forEach(function (heading) {
+      if (heading.closest("summary")) return;
+      var text = heading.textContent.trim();
+      var id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      if (!id) return;
+      heading.id = id;
+      var anchor = document.createElement("a");
+      anchor.className = "heading-anchor";
+      anchor.href = "#" + id;
+      anchor.title = "Copy link to this heading";
+      anchor.setAttribute("aria-label", "Copy link to this heading");
+      anchor.innerHTML = '<i class="fa-solid fa-link"></i>';
+      (function (headingId) {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          var url = window.location.origin + window.location.pathname + "#" + headingId;
+          history.replaceState(null, "", "#" + headingId);
+          var el = heading.parentElement;
+          while (el) { if (el.tagName === "DETAILS") el.open = true; el = el.parentElement; }
+          if (navigator.clipboard) navigator.clipboard.writeText(url).catch(function () {});
+        });
+      })(id);
+      heading.prepend(anchor);
+    });
+
+    // STEP 3: Hash navigation — open all ancestor <details> and scroll to target
+    function openFromHash() {
+      var hash = window.location.hash.slice(1);
+      if (!hash) return;
+      var target = document.getElementById(hash);
+      if (!target) return;
+      var el = target.tagName === "DETAILS" ? target : target.parentElement;
+      while (el) { if (el.tagName === "DETAILS") el.open = true; el = el.parentElement; }
+      setTimeout(function () { target.scrollIntoView({ behavior: "smooth", block: "start" }); }, 100);
+    }
+    openFromHash();
+
+    // STEP 4: Section-level anchor clicks (the link icon on the outer <details> headers)
+    document.querySelectorAll(".section-anchor").forEach(function (anchor) {
+      anchor.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var details = this.closest("details.project-section");
+        if (details && details.id) {
+          var url = window.location.origin + window.location.pathname + "#" + details.id;
+          history.replaceState(null, "", "#" + details.id);
+          details.open = true;
+          if (navigator.clipboard) navigator.clipboard.writeText(url).catch(function () {});
+        }
+      });
+    });
+
+    window.addEventListener("hashchange", openFromHash);
   });
 </script>
