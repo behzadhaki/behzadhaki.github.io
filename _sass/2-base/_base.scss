@@ -3,6 +3,10 @@
   box-sizing: border-box;
 }
 
+main.content {
+  flex: 1;
+}
+
 body {
   font-family: $base-font-family;
   font-size: $base-font-size;
@@ -12,6 +16,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   &.is-in {
     &::after {
       visibility: hidden;
