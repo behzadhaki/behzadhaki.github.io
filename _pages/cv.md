@@ -3,7 +3,6 @@ layout: page
 title: CV
 permalink: /cv/
 description: Curriculum Vitae
-hide_title: true
 ---
 
 <div style="text-align:right; margin-bottom:1.5rem;">
@@ -76,7 +75,7 @@ hide_title: true
 
 <div style="margin:0.6rem 0 0.3rem;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(238,238,238,0.35);">2024</div>
 
-<div class="pub-card" style="margin-bottom:0.5rem;"><div class="pub-card__body"><div class="pub-card__title-row"><h3 class="pub-card__title">Design, development, and deployment of real-time drum accompaniment systems</h3></div><div class="pub-card__authors">Behzad Haki</div><div class="pub-card__venue"><em>2024</em></div><div class="pub-card__links"><a href="https://www.tdx.cat/bitstream/handle/10803/693304/tbh.pdf?sequence=1&amp;isAllowed=y" class="pub-link" target="_blank">PDF</a> <a href="https://www.rtdrac.github.io" class="pub-link" target="_blank">Website</a> <a href="https://www.youtube.com/watch?v=n6vAphDe8tg" class="pub-link" target="_blank">Slides</a> </div><details class="pub-card__details"><summary>Abstract</summary><p>This dissertation examines the generation of real-time symbolic drum accompaniments, with a particular focus on live improvisation contexts. While the
+<div class="pub-card" style="margin-bottom:0.5rem;"><div class="pub-card__body"><div class="pub-card__title-row"><h3 class="pub-card__title">Design, development, and deployment of real-time drum accompaniment systems</h3></div><div class="pub-card__authors">Behzad Haki</div><div class="pub-card__venue"><em>2024</em></div><div class="pub-card__links"><a href="https://www.tdx.cat/bitstream/handle/10803/693304/tbh.pdf?sequence=1&amp;isAllowed=y" class="pub-link" target="_blank">PDF</a> <a href="https://rtdrac.github.io/" class="pub-link" target="_blank">Website</a> <a href="https://www.youtube.com/watch?v=n6vAphDe8tg" class="pub-link" target="_blank">Slides</a> </div><details class="pub-card__details"><summary>Abstract</summary><p>This dissertation examines the generation of real-time symbolic drum accompaniments, with a particular focus on live improvisation contexts. While the
 research does occasionally focus on the audio domain, the majority of the research is centered on symbolic-to-symbolic systems. This dissertation addresses
 real-time drum accompaniment from multiple perspectives: (1) conceptual,
 where a target application is designed based on a set of specified requirements,
