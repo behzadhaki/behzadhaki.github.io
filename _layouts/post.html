@@ -61,14 +61,6 @@ layout: default
 <div class="container">
   <article class="post animate">
 
-    <!-- Author credits (shown on project detail page) -->
-    {% if page.author %}
-    {% assign doc = page %}
-    <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
-      {% include display_author_avatars.html %}
-    </div>
-    {% endif %}
-
     <div class="post__content">
       {{ content }}
     </div>
