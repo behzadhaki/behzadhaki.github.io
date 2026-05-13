@@ -273,9 +273,45 @@
 
 
 // Navigation with dropdown
-.nav__list {
+.top-nav .nav__list {
   display: flex;
   gap: 1rem;
+}
+
+// Mobile nav — flat vertical list, no dropdowns
+.mobile-nav {
+  .nav__list {
+    display: block;
+  }
+
+  .dropdown-indicator,
+  .dropdown,
+  .sub-dropdown,
+  .sub-dropdown-indicator {
+    display: none !important;
+  }
+
+  .nav__item {
+    display: block;
+    margin-bottom: 36px;
+    text-align: center;
+
+    &:last-child { margin-bottom: 0; }
+  }
+
+  .nav__link {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 0;
+    background: none;
+
+    &:hover {
+      background: none;
+      color: $brand-color;
+    }
+  }
 }
 
 .nav__item {
