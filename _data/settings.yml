@@ -22,8 +22,39 @@ menu-settings:
   menu-items:
     - title: Publications
       url: /publications/
-    - title: Projects
-      url: /projects/
+    - title: Works
+      url: /works/
+      sub_menus:
+        - title: MAX / M4L
+          url: /works/max/
+          project_type: max
+        - title: Pure Data
+          url: /works/pd/
+          project_type: pd
+        - title: Plugins
+          url: /works/plugins/
+          project_type: plugins
+        - title: Web
+          url: /works/web/
+          project_type: web
+        - title: Hardware
+          url: /works/hardware/
+          project_type: hardware
+        - title: Installations & Performances
+          url: /works/installations-performances/
+          project_type: installations-performances
+        - title: Datasets
+          url: /works/datasets/
+          project_type: datasets
+    - title: Dev Resources
+      url: /dev-resources/
+      sub_menus:
+        - title: Frameworks & Templates
+          url: /dev-resources/frameworks-templates/
+          project_type: frameworks-templates
+        - title: Web Widgets
+          url: /dev-resources/web-widgets/
+          project_type: web-widgets
     - title: Tutorials
       url: /tutorials/
     - title: CV
@@ -36,9 +67,9 @@ sections:
     description: Research papers and conference proceedings.
     url: /publications/
     image: /assets/gifs/A.gif           # source: https://www.behance.net/gallery/3401305/L1GHT_F0RM5_gifs?locale=ko_KR
-  - title: Projects
+  - title: Works
     description: Software tools, VST plugins, hardware devices, and datasets.
-    url: /projects/
+    url: /works/
     image: /assets/gifs/B.gif           # source: https://www.behance.net/gallery/3401305/L1GHT_F0RM5_gifs?locale=ko_KR
   - title: Tutorials
     description: Step-by-step guides for developing audio/MIDI applications.

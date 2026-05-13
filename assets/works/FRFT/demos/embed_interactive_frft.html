@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FRFT Audio</title>
+<script>
+  window._wasmCacheBust = Date.now();
+  // Apply URL params as defaults for interactive controls
+  (function () {
+    const sp = new URLSearchParams(location.search);
+    const w  = sp.get('w'), h = sp.get('h');
+    const s  = document.documentElement.style;
+
+    if (w) s.width  = Math.max(200, +w) + 'px';
+    if (h) s.height = Math.max(100, +h) + 'px';
+
+    const d = parseFloat(sp.get('dur'));
+    if (d > 0)               window._initDur      = d;
+
+    const type = sp.get('type');
+    if (type)                window._initType     = type;                  // sine | sweep | file
+
+    const freq = parseFloat(sp.get('freq'));
+    if (freq > 0)            window._initFreq     = freq;
+
+    const alpha = parseFloat(sp.get('alpha'));
+    if (!isNaN(alpha))       window._initAlpha    = Math.max(0, Math.min(4, alpha));
+
+    const bs = sp.get('blocksize');
+    if (bs)                  window._initBlocksize = bs;
+
+    const ov = parseInt(sp.get('overlap'));
+    if (ov > 0)              window._initOverlap  = ov;
+
+    const hs = sp.get('halfspec');
+    if (hs !== null)         window._initHalfspec = hs === '1';            // 0 | 1
+  })();
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* Force form elements to inherit the cascade — browsers don't do this by default */
+  button, input, select, textarea { font: inherit; }
+
+  :root {
+    --bg:        #1a1a1a;
+    --surface:   #222222;
+    --surface2:  #282828;
+    --border:    #333333;
+    --border2:   #3a3a3a;
+    --accent:    #c8902a;   /* amber/gold */
+    --accent-lo: #7a5418;   /* dim gold for inset buttons */
+    --text:      #d0d0d0;
+    --muted:     #aaaaaa;
+    --ok:        #c8902a;   /* gold for "playing" state too */
+    --warn:      #c8902a;
+    --red:       #cc4444;
+  }
+
+  html { font-size: 12px; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: transparent;
+    color: var(--text);
+    font-family: "Inter", "Segoe UI", -apple-system, sans-serif;
+    overflow: hidden;
+  }
+
+  /* ── Two-column grid ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: 1fr;
+    align-items: stretch;
+    gap: 0.4em;
+    padding: 0.4em;
+    height: 100%;
+  }
+
+  .left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-width: 0;
+    align-self: stretch;
+  }
+
+  .right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+    min-width: 0;
+    min-height: 0;
+    align-self: stretch;
+  }
+
+  /* Left column: Source 45%, FRFT Parameters 55% */
+  .left-col .card:first-child { flex: 45; }
+  .left-col .card:last-child  { flex: 55; }
+
+  /* ── Cards — inset panel, flex column ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 0.55em 0.75em;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03),
+                0 1px 3px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+    min-height: 0;
+  }
+
+  .card h1 {
+    font-size: 0.65em; font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.10em;
+    flex-shrink: 0; flex-grow: 0;  /* always its natural height, never part of row division */
+  }
+
+  /* rows-wrap takes all remaining card height after the h2 */
+  .rows-wrap {
+    flex: 1; min-height: 0;
+    display: flex; flex-direction: column;
+    gap: 0.3em;
+  }
+
+  /* ── Form rows — each takes an equal share of rows-wrap height ── */
+  .row {
+    display: flex; align-items: stretch;
+    gap: 0.45em; min-width: 0; min-height: 0;
+    flex: 1;
+  }
+  /* Labels vertically centre their text inside the stretched row */
+  label.lbl {
+    width: 5em; flex-shrink: 0;
+    color: var(--muted); font-size: 0.82em; letter-spacing: 0.02em;
+    display: flex; align-items: center;
+  }
+
+  select {
+    flex: 1; min-width: 0;
+    height: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 3px;
+    color: var(--text);
+    padding: 0 0.45em;
+    font-size: 0.85em;
+    outline: none;
+    cursor: pointer;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  select:focus { border-color: var(--accent); }
+
+  /* ── File picker button (matches non-interactive embed) ── */
+  #fileLabel {
+    flex: 1; min-width: 0;
+    height: 100%;
+    display: flex; align-items: center;
+    padding: 0 0.7em;
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border2);
+    border-radius: 3px;
+    font-size: 0.82em; font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: filter .12s;
+  }
+  #fileLabel:hover { filter: brightness(1.2); }
+  #fileLabel.has-file {
+    color: var(--accent);
+    border-color: var(--accent-lo);
+    background: #2a2218;
+  }
+  #fileInput { display: none; }
+
+  input[type="number"] {
+    flex-shrink: 0;
+    height: 100%;              /* fill the row height reliably across browsers */
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 3px;
+    color: var(--text);
+    font-size: 0.88em; font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    padding: 0 0.45em;
+    outline: none;
+    text-align: left;
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    appearance: textfield;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  input[type="number"]:focus { border-color: var(--accent); }
+
+  #freqNum  { width: 4.5em; }
+  #durNum   { width: 3.5em; }
+
+  /* ── Buttons ── */
+  button {
+    height: 100%;              /* fills the flex row */
+    padding: 0 0.75em;
+    border-radius: 3px;
+    font-size: 0.82em; font-weight: 700; letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: filter .12s;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  button:hover:not(:disabled) { filter: brightness(1.15); }
+  button:active:not(:disabled) { filter: brightness(0.9); }
+
+  .controls-row button { flex-shrink: 0; }
+  #status               { flex-shrink: 0; }
+  #playBtn              { width: 2.5em; justify-content: center; }
+  button:disabled { opacity: .3; cursor: default; }
+
+  /* Gold-bordered play buttons */
+  .btn-ok {
+    background: #2a2218;
+    color: var(--accent);
+    border-color: var(--accent-lo);
+  }
+  /* Playing state — solid gold fill */
+  .btn-playing {
+    background: var(--accent-lo);
+    color: #f0c060;
+    border-color: var(--accent);
+  }
+  /* Neutral download button */
+  .btn-neutral {
+    background: var(--surface2);
+    color: var(--muted);
+    border-color: var(--border2);
+  }
+
+  /* ── Status text ── */
+  #status {
+    font-size: 0.80em; padding: 0;
+    border: none; background: none;
+    color: var(--muted); white-space: nowrap;
+  }
+  #status.err { color: var(--red); }
+
+  /* ── Source / FRFT toggle tabs ── */
+  .tab-group { display: flex; flex-shrink: 0; }
+  .tab {
+    height: 100%; padding: 0 0.7em;
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border2);
+    border-radius: 0;
+    font-size: 0.80em; font-weight: 600;
+    cursor: pointer;
+  }
+  .tab:first-child { border-radius: 3px; }
+  .tab:last-child  { border-radius: 3px; }
+  .tab.active {
+    background: var(--accent-lo);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ── Right-column pieces ── */
+  .controls-row {
+    display: flex;
+    align-items: stretch;      /* children fill the row height */
+    gap: 0.4em;
+    flex: 1; min-height: 0;
+  }
+  /* While processing: hide every button and the tab group; only status remains */
+  .controls-row.processing > button,
+  .controls-row.processing > .tab-group { display: none; }
+  .controls-row.processing #status { margin-left: 0; }
+
+  /* The card wrapping controls-row participates in right-col flex */
+  .right-col > .card {
+    flex: none;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+
+  /* Make controls-row children (buttons, tabs, status) centre their content */
+  .controls-row > *, .tab { display: flex; align-items: center; }
+
+  /* Detail-boost toggle */
+  #detailBtn {
+    height: 100%; padding: 0 0.65em;
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border2);
+    border-radius: 3px;
+    font-size: 0.78em; font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  #detailBtn.active {
+    background: var(--accent-lo);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ── Spectrum + spectrogram side-by-side ── */
+  .spec-area {
+    flex: 6; min-height: 0;    /* ~6× taller than controls-row */
+    display: flex;
+    gap: 0.4em;
+  }
+
+  #spectrumCanvas {
+    flex-shrink: 0;
+    width: 2.5em;
+    display: block;
+    border-radius: 3px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+
+  #specWrap {
+    flex: 1; min-height: 0; min-width: 0;
+    position: relative;
+  }
+  #specCanvas {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: block;
+    border-radius: 3px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+
+  /* Playhead — between specCanvas and zoomOverlay, pointer-events off */
+  #playheadCanvas {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+
+  /* Zoom selection overlay — sits on top of specCanvas, handles all mouse */
+  #zoomOverlay {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    cursor: crosshair;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ── Left column ──────────────────────────────────────────── -->
+  <div class="left-col">
+
+    <!-- Source -->
+    <div class="card">
+      <h1>Source</h1>
+      <div class="rows-wrap">
+        <!-- Row 1: source type -->
+        <div class="row">
+          <label class="lbl">Type</label>
+          <select id="srcType">
+            <option value="sine">Sine wave</option>
+            <option value="sweep">Sweep 200→4000 Hz</option>
+            <option value="file">Audio file</option>
+          </select>
+        </div>
+        <!-- Row 2: duration + frequency on one line (sine/sweep only) -->
+        <div class="row" id="durRow">
+          <label class="lbl">Duration</label>
+          <input type="number" id="durNum" min="1" max="600" step="1" value="3">
+          <span id="freqRow" style="display:flex;align-items:stretch;gap:0.5em;flex:1;min-width:0">
+            <label class="lbl" style="width:auto;flex-shrink:0">Freq</label>
+            <input type="number" id="freqNum" min="0.01" max="20000" step="0.01" value="440">
+          </span>
+        </div>
+        <!-- Row 3: file picker (file mode only) -->
+        <div class="row" id="fileRow" style="display:none">
+          <label id="fileLabel" for="fileInput">📂 Choose file</label>
+          <input type="file" id="fileInput" accept="audio/*">
+        </div>
+      </div>
+    </div>
+
+    <!-- FRFT Parameters -->
+    <div class="card">
+      <h1>FRFT Parameters</h1>
+      <div class="rows-wrap">
+        <div class="row">
+          <label class="lbl">Mode</label>
+          <select id="modeSel">
+            <option value="full">Full spectrum</option>
+            <option value="half">Half spectrum</option>
+          </select>
+        </div>
+        <div class="row">
+          <label class="lbl">α (order)</label>
+          <input type="number" id="alphaNum" min="0" max="4" step="0.00001" value="0.10" style="flex:1;width:auto">
+        </div>
+        <div class="row">
+          <label class="lbl">Block size</label>
+          <select id="bufSizeSel">
+            <option value="16">16</option>
+            <option value="32">32</option>
+            <option value="64">64</option>
+            <option value="128">128</option>
+            <option value="256">256</option>
+            <option value="512">512</option>
+            <option value="1024">1024</option>
+            <option value="2048">2048</option>
+            <option value="4096">4096</option>
+            <option value="8192">8192</option>
+            <option value="16384" selected>16384</option>
+            <option value="32768">32768</option>
+            <option value="65536">65536</option>
+            <option value="131072">131072</option>
+            <option value="all">All (Windowed)</option>
+            <option value="all-nowin">All (No Window)</option>
+          </select>
+        </div>
+        <div class="row">
+          <label class="lbl">Overlap</label>
+          <select id="overlap">
+            <option value="1">×1</option>
+            <option value="2">×2</option>
+            <option value="4" selected>×4</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left-col -->
+
+  <!-- ── Right column ─────────────────────────────────────────── -->
+  <div class="right-col">
+
+    <!-- Playback controls -->
+    <div class="card" style="padding: 0.4em 0.75em;">
+      <div class="controls-row">
+        <button class="btn-ok" id="playBtn" disabled>▶</button>
+        <div class="tab-group">
+          <button class="tab" id="tabDry">Source</button>
+          <button class="tab active" id="tabWet">FRFT</button>
+          <button class="tab" id="tabBoth">Both</button>
+        </div>
+        <span id="status">loading…</span>
+        <button id="detailBtn" style="margin-left:auto" title="Boost low-amplitude detail">Detail</button>
+        <button class="btn-neutral" id="downloadBtn" disabled>⬇</button>
+      </div>
+    </div>
+
+    <!-- Vertical spectrum strip + spectrogram side by side -->
+    <div class="spec-area">
+      <canvas id="spectrumCanvas" width="40" height="400"></canvas>
+      <div id="specWrap">
+        <canvas id="specCanvas" width="1200" height="400"></canvas>
+        <canvas id="playheadCanvas"></canvas>
+        <canvas id="zoomOverlay"></canvas>
+      </div>
+    </div>
+
+
+  </div><!-- /right-col -->
+
+</div><!-- /layout -->
+
+<script>
+// ── Worker + job tracking ─────────────────────────────────────────────────────
+let frftWorker      = null;
+let workerReady     = false;
+let workerRestarting = false;
+let currentJobId    = 0;
+
+let dryBuf        = null;
+let wetBuf        = null;
+let trimmedDryBuf = null;
+let sampleRate    = 44100;
+
+// Spectrogram state
+let drySTFT      = null;
+let wetSTFT      = null;
+let mixSTFT      = null;   // averaged mix (dry+wet)/2 — used for 'both' tab
+let sharedTopBin = 0;
+let specGamma    = 1.0;    // 1.0 = normal  |  0.4 = detail boost (brightens quiet content)
+let activeTab    = 'wet';
+let zoomView     = null;  // null = full view, or { t0, t1, b0, b1 } in frame/bin indices
+
+// Playback state
+let audioCtx            = null;
+let activeSrc           = null;
+let activeSrc2          = null;   // wet source (always running during playback)
+let masterGain          = null;
+let dryGain             = null;   // per-source gain for smooth mix switching
+let wetGain             = null;
+let playingWhich        = null;
+let playheadInterval    = null;
+let playbackStartTime   = 0;
+let playbackTotalFrames = 0;
+
+// ── DOM ───────────────────────────────────────────────────────────────────────
+const srcType      = document.getElementById('srcType');
+const durNum       = document.getElementById('durNum');
+const freqNum      = document.getElementById('freqNum');
+const fileInput    = document.getElementById('fileInput');
+const fileLabel    = document.getElementById('fileLabel');
+
+const alphaNum    = document.getElementById('alphaNum');
+const modeSel     = document.getElementById('modeSel');
+const bufSizeSel  = document.getElementById('bufSizeSel');
+const overlapSel  = document.getElementById('overlap');
+
+// Apply URL param defaults
+if (window._initDur)                      durNum.value     = Math.max(1, Math.min(600, window._initDur));
+if (window._initFreq)                     freqNum.value    = window._initFreq;
+if (window._initAlpha      !== undefined) alphaNum.value   = window._initAlpha;
+if (window._initBlocksize)                bufSizeSel.value = window._initBlocksize;
+if (window._initOverlap)                  overlapSel.value = String(window._initOverlap);
+if (window._initHalfspec   !== undefined) modeSel.value    = window._initHalfspec ? 'half' : 'full';
+if (window._initType) srcType.value = window._initType;
+const statusEl    = document.getElementById('status');
+const playBtn     = document.getElementById('playBtn');
+const tabDry      = document.getElementById('tabDry');
+const tabWet      = document.getElementById('tabWet');
+const tabBoth     = document.getElementById('tabBoth');
+const downloadBtn = document.getElementById('downloadBtn');
+const detailBtn   = document.getElementById('detailBtn');
+const specCanvas      = document.getElementById('specCanvas');
+const playheadCanvas  = document.getElementById('playheadCanvas');
+const spectrumCanvas  = document.getElementById('spectrumCanvas');
+const specWrap        = document.getElementById('specWrap');
+
+// ── ResizeObserver: keep canvases pixel-crisp (dpr-aware) ────────────────────
+const specRO = new ResizeObserver(() => {
+  const dpr  = window.devicePixelRatio || 1;
+  const rect = specWrap.getBoundingClientRect();
+  const w = Math.max(1, Math.floor(rect.width  * dpr));
+  const h = Math.max(1, Math.floor(rect.height * dpr));
+  if (specCanvas.width !== w || specCanvas.height !== h) {
+    specCanvas.width  = w;
+    specCanvas.height = h;
+    if (wetSTFT) renderActiveTab();
+    else clearSpectrogram();
+  }
+  if (playheadCanvas.width !== w || playheadCanvas.height !== h) {
+    playheadCanvas.width  = w;
+    playheadCanvas.height = h;
+    drawPlayhead();
+  }
+  // Spectrum strip — same height, its own CSS width × dpr
+  const sw = Math.max(1, Math.floor(spectrumCanvas.getBoundingClientRect().width * dpr));
+  if (spectrumCanvas.width !== sw || spectrumCanvas.height !== h) {
+    spectrumCanvas.width  = sw;
+    spectrumCanvas.height = h;
+  }
+});
+specRO.observe(specWrap);
+
+// ── Auto-processing: debounce + worker cancellation ──────────────────────────
+const DEBOUNCE_MS   = 400;
+let   debounceTimer = null;
+
+function invalidateSource() { dryBuf = null; scheduleProcess(); }
+function invalidateFRFT()   { scheduleProcess(); }
+
+function scheduleProcess(immediate = false) {
+  currentJobId++;
+  zoomView = null; clearOverlay();
+  if (workerReady) frftWorker.postMessage({ type: 'cancel' });
+  clearTimeout(debounceTimer);
+  stopPlayback();
+  clearSpectrogram();
+  clearSpectrum();
+  setFrftProgress(0);
+  downloadBtn.disabled = true;
+  playBtn.disabled     = true;
+  wetBuf = null; trimmedDryBuf = null;
+  drySTFT = null; wetSTFT = null; mixSTFT = null;
+  setStatus('pending…', 'busy');
+  if (immediate) autoProcess();
+  else debounceTimer = setTimeout(autoProcess, DEBOUNCE_MS);
+}
+
+async function autoProcess() {
+  if (!workerReady) { setStatus('Loading WASM…', 'busy'); return; }
+  const jobId = currentJobId;
+  try {
+    if (!dryBuf) {
+      if (srcType.value === 'file') {
+        if (!fileInput.files[0]) { setStatus('select a file ↑', ''); return; }
+        setStatus('Decoding…', 'busy');
+        dryBuf = await decodeFile(fileInput.files[0]);
+      } else {
+        sampleRate = 44100;
+        dryBuf = generateSignal(srcType.value, parseInt(durNum.value) || 10, sampleRate, parseFloat(freqNum.value) || 440);
+      }
+      if (jobId !== currentJobId) return;
+    }
+    const alpha            = parseFloat(alphaNum.value);
+    const overlap          = parseInt(overlapSel.value);
+    const isAll            = bufSizeSel.value === 'all' || bufSizeSel.value === 'all-nowin';
+    const noWindow         = bufSizeSel.value === 'all-nowin';
+    const bufSize          = isAll ? dryBuf.length : parseInt(bufSizeSel.value);
+    const effectiveOverlap = isAll ? 1 : overlap;
+    const halfSpectrum = modeSel.value === 'half';
+    setStatus('Processing…', 'busy');
+    frftWorker.postMessage({
+      type: 'process',
+      samples: dryBuf,
+      alpha, bufSize,
+      overlapFactor: effectiveOverlap,
+      halfSpectrum, noWindow,
+      jobId,
+    });
+  } catch (err) {
+    console.error(err);
+    setStatus(err.message || 'Error', 'err');
+  }
+}
+
+// ── Worker message handler ────────────────────────────────────────────────────
+function handleWorkerMessage(e) {
+  const { type } = e.data;
+
+  if (type === 'ready') {
+    workerReady = true;
+    if (workerRestarting) {
+      workerRestarting = false;
+      setStatus('ready — change params to reprocess', '');
+    } else {
+      scheduleProcess(true);
+    }
+    return;
+  }
+
+  if (type === 'progress') {
+    if (e.data.jobId === currentJobId) setFrftProgress(e.data.value);
+    return;
+  }
+
+  if (type === 'result') {
+    if (e.data.jobId !== currentJobId) return;
+
+    wetBuf = e.data.output;
+
+    // Trim dryBuf to the same OLA-valid window the worker used
+    const isAll            = bufSizeSel.value === 'all' || bufSizeSel.value === 'all-nowin';
+    const bufSize          = isAll ? dryBuf.length : parseInt(bufSizeSel.value);
+    const effectiveOverlap = isAll ? 1 : parseInt(overlapSel.value);
+    const H                = Math.max(1, Math.floor(bufSize / effectiveOverlap));
+    const trimAmt          = (effectiveOverlap - 1) * H;
+    trimmedDryBuf = trimAmt > 0 && dryBuf.length > 2 * trimAmt
+      ? dryBuf.slice(trimAmt, dryBuf.length - trimAmt)
+      : dryBuf;
+
+    drySTFT      = computeSTFT(trimmedDryBuf);
+    wetSTFT      = computeSTFT(wetBuf);
+    mixSTFT      = computeMixSTFT(trimmedDryBuf, wetBuf);
+    sharedTopBin = Math.max(drySTFT.topBin, wetSTFT.topBin, mixSTFT.topBin);
+    renderActiveTab();
+
+    setFrftProgress(1);
+    playBtn.disabled     = false;
+    playBtn.className    = 'btn-ok';
+    playBtn.textContent  = '▶';
+    downloadBtn.disabled = false;
+    setStatus('');
+    return;
+  }
+
+  if (type === 'error') {
+    console.error('Worker error:', e.data.message);
+    if ((e.data.message || '').includes('Aborted')) {
+      setStatus('WASM out of memory — reduce block size', 'err');
+      restartWorker();
+    } else {
+      setStatus(e.data.message || 'Worker error', 'err');
+    }
+  }
+}
+
+// ── Source type toggle ────────────────────────────────────────────────────────
+srcType.addEventListener('change', () => {
+  const isSine = srcType.value === 'sine';
+  const isFile = srcType.value === 'file';
+  document.getElementById('durRow').style.display   = isFile ? 'none' : '';
+  document.getElementById('freqRow').style.display  = isSine ? 'inline-flex' : 'none';
+  document.getElementById('fileRow').style.display  = isFile ? '' : 'none';
+  if (!isFile) {
+    // Reset file label when switching away
+    fileLabel.textContent = '📂 Choose file';
+    fileLabel.classList.remove('has-file');
+    invalidateSource();
+  }
+});
+// Sync UI if type was set from URL param
+if (window._initType) srcType.dispatchEvent(new Event('change'));
+
+// ── Duration controls ─────────────────────────────────────────────────────────
+durNum.addEventListener('change', () => {
+  durNum.value = Math.max(1, Math.min(600, parseInt(durNum.value) || 10));
+  invalidateSource();
+});
+
+// ── Frequency controls ────────────────────────────────────────────────────────
+freqNum.addEventListener('change', () => {
+  freqNum.value = Math.max(0.01, Math.min(20000, parseFloat(freqNum.value) || 440));
+  invalidateSource();
+});
+
+// ── Alpha controls ────────────────────────────────────────────────────────────
+alphaNum.addEventListener('change', () => {
+  alphaNum.value = Math.max(0, Math.min(4, parseFloat(alphaNum.value) || 0)).toFixed(5);
+  invalidateFRFT();
+});
+
+// ── Block size + overlap ──────────────────────────────────────────────────────
+modeSel.addEventListener('change', invalidateFRFT);
+bufSizeSel.addEventListener('change', () => {
+  const all = bufSizeSel.value === 'all' || bufSizeSel.value === 'all-nowin';
+  overlapSel.disabled = all;
+  invalidateFRFT();
+});
+overlapSel.addEventListener('change', invalidateFRFT);
+
+// ── File selection ────────────────────────────────────────────────────────────
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files[0];
+  if (file) {
+    fileLabel.textContent = '📂 ' + file.name;
+    fileLabel.classList.add('has-file');
+  }
+  dryBuf = null;
+  scheduleProcess(true);
+});
+
+// ── Render whichever tab is active ───────────────────────────────────────────
+function renderActiveTab() {
+  const stft = activeTab === 'dry' ? drySTFT : activeTab === 'wet' ? wetSTFT : mixSTFT;
+  if (stft) renderSpectrogram(specCanvas, stft, sampleRate, sharedTopBin, zoomView, specGamma);
+}
+
+function setActiveTabs(tab) {
+  activeTab = tab;
+  tabDry.classList.toggle('active', tab === 'dry');
+  tabWet.classList.toggle('active', tab === 'wet');
+  tabBoth.classList.toggle('active', tab === 'both');
+  renderActiveTab();
+}
+
+// ── Spectrogram detail boost ──────────────────────────────────────────────────
+detailBtn.addEventListener('click', () => {
+  specGamma = specGamma === 1.0 ? 0.3 : 1.0;
+  detailBtn.classList.toggle('active', specGamma !== 1.0);
+  if (drySTFT) renderActiveTab();
+});
+
+// ── Play button ───────────────────────────────────────────────────────────────
+playBtn.addEventListener('click', () => {
+  if (playingWhich !== null) {
+    stopPlayback();
+  } else {
+    if (trimmedDryBuf && wetBuf) startPlayback(activeTab);
+  }
+});
+
+// ── Tab switchers — instant mix crossfade, no buffer restart ─────────────────
+tabDry.addEventListener('click', () => {
+  setActiveTabs('dry');
+  if (playingWhich !== null) { applyMix('dry'); playingWhich = 'dry'; }
+});
+tabWet.addEventListener('click', () => {
+  setActiveTabs('wet');
+  if (playingWhich !== null) { applyMix('wet'); playingWhich = 'wet'; }
+});
+tabBoth.addEventListener('click', () => {
+  setActiveTabs('both');
+  if (playingWhich !== null) { applyMix('both'); playingWhich = 'both'; }
+});
+
+// ── Download ZIP ──────────────────────────────────────────────────────────────
+downloadBtn.addEventListener('click', async () => {
+  if (!trimmedDryBuf || !wetBuf) return;
+  const alpha = parseFloat(alphaNum.value).toFixed(5);
+
+  // Render both spectrograms to an off-screen canvas at full resolution
+  const tmp = document.createElement('canvas');
+  tmp.width  = specCanvas.width;
+  tmp.height = specCanvas.height;
+
+  renderSpectrogram(tmp, drySTFT, sampleRate, sharedTopBin, null, specGamma);
+  const srcPNG  = await canvasToPNG(tmp);
+  renderSpectrogram(tmp, wetSTFT, sampleRate, sharedTopBin, null, specGamma);
+  const frftPNG = await canvasToPNG(tmp);
+
+  const zip = buildZip([
+    { name: 'source.wav',                        data: buildWAV(trimmedDryBuf, sampleRate) },
+    { name: `frft_alpha${alpha}.wav`,             data: buildWAV(wetBuf,        sampleRate) },
+    { name: 'source_spectrogram.png',             data: srcPNG  },
+    { name: `frft_alpha${alpha}_spectrogram.png`, data: frftPNG },
+  ]);
+
+  const url = URL.createObjectURL(new Blob([zip], { type: 'application/zip' }));
+  Object.assign(document.createElement('a'), { href: url, download: `frft_alpha${alpha}.zip` }).click();
+  URL.revokeObjectURL(url);
+});
+
+// ── Status helpers ────────────────────────────────────────────────────────────
+const controlsRow = statusEl.closest('.controls-row');
+function setStatus(text, cls = '') {
+  statusEl.textContent = text;
+  statusEl.className   = cls;
+  controlsRow.classList.toggle('processing', cls === 'busy');
+}
+
+function setFrftProgress(frac) {
+  if (frac <= 0) {
+    setStatus('processing…', 'busy');
+  } else if (frac < 1) {
+    setStatus(`processing… ${Math.round(frac * 100)}%`, 'busy');
+  }
+  // frac === 1 is handled by the 'result' handler which sets its own status
+}
+
+function clearSpectrogram() {
+  const ctx2d = specCanvas.getContext('2d');
+  ctx2d.fillStyle = '#0a0a0a';
+  ctx2d.fillRect(0, 0, specCanvas.width, specCanvas.height);
+}
+
+// ── Built-in signal generation ────────────────────────────────────────────────
+function generateSignal(type, seconds, sr, freq) {
+  const n   = Math.floor(seconds * sr);
+  const buf = new Float32Array(n);
+  if (type === 'sine') {
+    for (let i = 0; i < n; i++)
+      buf[i] = Math.sin(2 * Math.PI * freq * i / sr);
+  } else if (type === 'sweep') {
+    const f0 = 20, f1 = 4000;
+    for (let i = 0; i < n; i++) {
+      const t = i / sr;
+      buf[i] = Math.sin(2 * Math.PI * (f0 + (f1 - f0) * (t / seconds)) * t);
+    }
+  }
+  return buf;
+}
+
+// ── Decode audio file ─────────────────────────────────────────────────────────
+async function decodeFile(file) {
+  const arrayBuf = await file.arrayBuffer();
+  const ctx      = new AudioContext();
+  const decoded  = await ctx.decodeAudioData(arrayBuf);
+  const mono     = new Float32Array(decoded.length);
+  for (let ch = 0; ch < decoded.numberOfChannels; ch++) {
+    const chData = decoded.getChannelData(ch);
+    for (let i = 0; i < decoded.length; i++)
+      mono[i] += chData[i] / decoded.numberOfChannels;
+  }
+  sampleRate = decoded.sampleRate;
+  await ctx.close();
+  return mono;
+}
+
+// ── Playback ──────────────────────────────────────────────────────────────────
+
+function clearSpectrum() {
+  if (playheadInterval) { clearInterval(playheadInterval); playheadInterval = null; }
+  const ctx2d = spectrumCanvas.getContext('2d');
+  ctx2d.fillStyle = '#0a0a0a';
+  ctx2d.fillRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
+}
+
+// ── Playhead ──────────────────────────────────────────────────────────────────
+function clearPlayhead() {
+  const ctx2d = playheadCanvas.getContext('2d');
+  ctx2d.clearRect(0, 0, playheadCanvas.width, playheadCanvas.height);
+}
+
+function drawPlayhead() {
+  if (!audioCtx) { clearPlayhead(); return; }
+  const stft = playingWhich === 'dry' ? drySTFT : playingWhich === 'wet' ? wetSTFT : mixSTFT;
+  if (!stft) { clearPlayhead(); return; }
+
+  const W = playheadCanvas.width;
+  const H = playheadCanvas.height;
+  const ctx2d = playheadCanvas.getContext('2d');
+  ctx2d.clearRect(0, 0, W, H);
+
+  const elapsed  = Math.max(0, audioCtx.currentTime - playbackStartTime);
+  const frameIdx = elapsed * sampleRate / stft.HOP;
+
+  const fStart = zoomView ? zoomView.t0 : 0;
+  const fEnd   = zoomView ? zoomView.t1 : stft.numFrames - 1;
+  if (fEnd === fStart) return;
+
+  const x = Math.round((frameIdx - fStart) / (fEnd - fStart) * (W - 1));
+  if (x < 0 || x >= W) return;
+
+  ctx2d.strokeStyle = 'rgba(255,255,255,0.75)';
+  ctx2d.lineWidth   = Math.max(1, Math.round(window.devicePixelRatio || 1));
+  ctx2d.beginPath();
+  ctx2d.moveTo(x + 0.5, 0);
+  ctx2d.lineTo(x + 0.5, H);
+  ctx2d.stroke();
+}
+
+function updateSpectrum() {
+  if (!audioCtx) return;
+  const stft = playingWhich === 'dry' ? drySTFT : playingWhich === 'wet' ? wetSTFT : mixSTFT;
+  if (!stft) return;
+
+  const elapsed  = Math.max(0, audioCtx.currentTime - playbackStartTime);
+  const frameIdx = Math.min(stft.numFrames - 1,
+                            Math.floor(elapsed * sampleRate / stft.HOP));
+
+  const { magDB, NUM_BINS, dBmax, dBmin } = stft;
+  const topBin = sharedTopBin;
+  const detail = specGamma !== 1.0;
+
+  const ctx2d = spectrumCanvas.getContext('2d');
+  const W     = spectrumCanvas.width;
+  const H     = spectrumCanvas.height;
+
+  const imgData = ctx2d.createImageData(W, H);
+  const px4     = imgData.data;
+
+  // Vertical strip — linear frequency axis matching the spectrogram
+  for (let y = 0; y < H; y++) {
+    const ki  = Math.round((1 - (y + 0.5) / H) * topBin);
+    const db  = magDB[frameIdx * NUM_BINS + ki];
+    const t0  = Math.max(0, Math.min(1, (db - dBmin) / (dBmax - dBmin)));
+    const t   = specGamma === 1.0 ? t0 : Math.pow(t0, specGamma);
+    const [r, g, b] = spectrogramColor(t, detail);
+    const barW = Math.round(t * W);
+
+    for (let x = 0; x < W; x++) {
+      const idx = (y * W + x) * 4;
+      if (x >= W - barW) {
+        px4[idx] = r; px4[idx+1] = g; px4[idx+2] = b; px4[idx+3] = 255;
+      } else {
+        px4[idx] = 10; px4[idx+1] = 10; px4[idx+2] = 10; px4[idx+3] = 255;
+      }
+    }
+  }
+  ctx2d.putImageData(imgData, 0, 0);
+
+  drawPlayhead();
+}
+
+function stopPlayback() {
+  clearSpectrum();
+  clearPlayhead();
+  if (activeSrc)  { try { activeSrc.stop();  } catch {} activeSrc  = null; }
+  if (activeSrc2) { try { activeSrc2.stop(); } catch {} activeSrc2 = null; }
+  if (audioCtx)   { audioCtx.close(); audioCtx = null; }
+  masterGain   = null;
+  dryGain      = null;
+  wetGain      = null;
+  playingWhich = null;
+  playBtn.textContent = '▶';
+  playBtn.className   = 'btn-ok';
+}
+
+// Smooth mix crossfade — called when switching tabs during playback.
+function applyMix(which) {
+  if (!dryGain || !wetGain || !audioCtx) return;
+  const t = audioCtx.currentTime, tau = 0.015;
+  dryGain.gain.setTargetAtTime((which === 'dry'  || which === 'both') ? 1 : 0, t, tau);
+  wetGain.gain.setTargetAtTime((which === 'wet'  || which === 'both') ? 1 : 0, t, tau);
+}
+
+// Always starts BOTH dry + wet sources; initial mix set by `which`.
+function startPlayback(which, offset = 0) {
+  // Tear down any existing playback
+  if (activeSrc)  { try { activeSrc.stop();  } catch {} activeSrc  = null; }
+  if (activeSrc2) { try { activeSrc2.stop(); } catch {} activeSrc2 = null; }
+  if (audioCtx)   { audioCtx.close(); audioCtx = null; }
+  if (playheadInterval) { clearInterval(playheadInterval); playheadInterval = null; }
+  masterGain = null; dryGain = null; wetGain = null;
+
+  if (!trimmedDryBuf || !wetBuf) return;
+
+  // Clamp offset to valid range using dry buffer as reference
+  offset = Math.max(0, Math.min(offset, trimmedDryBuf.length / sampleRate - 0.01));
+
+  audioCtx   = new AudioContext({ sampleRate });
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.5;
+  masterGain.connect(audioCtx.destination);
+
+  // Per-source gain nodes — set initial levels immediately (no fade needed at start)
+  dryGain = audioCtx.createGain();
+  wetGain = audioCtx.createGain();
+  dryGain.gain.value = (which === 'dry'  || which === 'both') ? 1 : 0;
+  wetGain.gain.value = (which === 'wet'  || which === 'both') ? 1 : 0;
+  dryGain.connect(masterGain);
+  wetGain.connect(masterGain);
+
+  // Dry source
+  const dryAudioBuf = audioCtx.createBuffer(1, trimmedDryBuf.length, sampleRate);
+  dryAudioBuf.copyToChannel(trimmedDryBuf, 0);
+  activeSrc        = audioCtx.createBufferSource();
+  activeSrc.buffer = dryAudioBuf;
+  activeSrc.connect(dryGain);
+  activeSrc.start(0, offset);
+  activeSrc.onended = stopPlayback;   // dry is the timing reference
+
+  // Wet source (same offset — they stay in sync)
+  const wetAudioBuf = audioCtx.createBuffer(1, wetBuf.length, sampleRate);
+  wetAudioBuf.copyToChannel(wetBuf, 0);
+  activeSrc2        = audioCtx.createBufferSource();
+  activeSrc2.buffer = wetAudioBuf;
+  activeSrc2.connect(wetGain);
+  activeSrc2.start(0, offset);
+
+  const stft = which === 'dry' ? drySTFT : which === 'wet' ? wetSTFT : mixSTFT;
+  playbackStartTime   = audioCtx.currentTime - offset;
+  playbackTotalFrames = stft ? stft.numFrames : Math.ceil(trimmedDryBuf.length / (2048 >> 3));
+  playheadInterval    = setInterval(updateSpectrum, 1000 / 30);
+
+  playingWhich        = which;
+  playBtn.textContent = '■';
+  playBtn.className   = 'btn-playing';
+}
+
+// ── WAV builder (returns Uint8Array) ─────────────────────────────────────────
+function buildWAV(samples, sr) {
+  const numSamples = samples.length;
+  const dataBytes  = numSamples * 2;
+  const buf        = new ArrayBuffer(44 + dataBytes);
+  const v          = new DataView(buf);
+  const str = (off, s) => { for (let i = 0; i < s.length; i++) v.setUint8(off+i, s.charCodeAt(i)); };
+  str(0,  'RIFF'); v.setUint32(4,  36 + dataBytes, true);
+  str(8,  'WAVE'); str(12, 'fmt ');
+  v.setUint32(16, 16,   true);
+  v.setUint16(20, 1,    true);
+  v.setUint16(22, 1,    true);
+  v.setUint32(24, sr,   true);
+  v.setUint32(28, sr*2, true);
+  v.setUint16(32, 2,    true);
+  v.setUint16(34, 16,   true);
+  str(36, 'data'); v.setUint32(40, dataBytes, true);
+  let off = 44;
+  for (let i = 0; i < numSamples; i++) {
+    const s = Math.max(-1, Math.min(1, samples[i]));
+    v.setInt16(off, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+    off += 2;
+  }
+  return new Uint8Array(buf);
+}
+
+// ── Canvas → PNG Uint8Array ───────────────────────────────────────────────────
+function canvasToPNG(canvas) {
+  return new Promise(resolve => {
+    canvas.toBlob(blob => blob.arrayBuffer().then(b => resolve(new Uint8Array(b))), 'image/png');
+  });
+}
+
+// ── Minimal ZIP writer (store / no compression) ───────────────────────────────
+function crc32(data) {
+  if (!crc32._t) {
+    crc32._t = new Uint32Array(256);
+    for (let i = 0; i < 256; i++) {
+      let c = i;
+      for (let j = 0; j < 8; j++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      crc32._t[i] = c;
+    }
+  }
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < data.length; i++) c = crc32._t[(c ^ data[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+
+function buildZip(files) {
+  // files: [{ name: string, data: Uint8Array }]
+  const enc     = new TextEncoder();
+  const locals  = [];
+  const offsets = [];
+  let   pos     = 0;
+
+  for (const f of files) {
+    const name = enc.encode(f.name);
+    const crc  = crc32(f.data);
+    const lh   = new Uint8Array(30 + name.length);
+    const lv   = new DataView(lh.buffer);
+    lv.setUint32(0,  0x04034b50, true); // local file header sig
+    lv.setUint16(4,  20,         true); // version needed
+    lv.setUint16(6,  0,          true); // flags
+    lv.setUint16(8,  0,          true); // method: store
+    lv.setUint16(10, 0,          true); // mod time
+    lv.setUint16(12, 0,          true); // mod date
+    lv.setUint32(14, crc,        true);
+    lv.setUint32(18, f.data.length, true); // compressed size
+    lv.setUint32(22, f.data.length, true); // uncompressed size
+    lv.setUint16(26, name.length,   true);
+    lv.setUint16(28, 0,          true); // extra length
+    lh.set(name, 30);
+    offsets.push(pos);
+    locals.push({ lh, data: f.data, name, crc });
+    pos += lh.length + f.data.length;
+  }
+
+  const cdStart = pos;
+  const cdParts = locals.map(({ lh, data, name, crc }, i) => {
+    const cd = new Uint8Array(46 + name.length);
+    const cv = new DataView(cd.buffer);
+    cv.setUint32(0,  0x02014b50,  true); // central dir sig
+    cv.setUint16(4,  20,          true); // version made by
+    cv.setUint16(6,  20,          true); // version needed
+    cv.setUint16(8,  0,           true);
+    cv.setUint16(10, 0,           true); // method: store
+    cv.setUint16(12, 0,           true);
+    cv.setUint16(14, 0,           true);
+    cv.setUint32(16, crc,         true);
+    cv.setUint32(20, data.length, true);
+    cv.setUint32(24, data.length, true);
+    cv.setUint16(28, name.length, true);
+    cv.setUint16(30, 0,           true);
+    cv.setUint16(32, 0,           true);
+    cv.setUint16(34, 0,           true);
+    cv.setUint16(36, 0,           true);
+    cv.setUint32(38, 0,           true);
+    cv.setUint32(42, offsets[i],  true); // local header offset
+    cd.set(name, 46);
+    return cd;
+  });
+
+  const cdSize = cdParts.reduce((s, p) => s + p.length, 0);
+  const eocd   = new Uint8Array(22);
+  const ev     = new DataView(eocd.buffer);
+  ev.setUint32(0,  0x06054b50,    true); // EOCD sig
+  ev.setUint16(4,  0,             true);
+  ev.setUint16(6,  0,             true);
+  ev.setUint16(8,  files.length,  true);
+  ev.setUint16(10, files.length,  true);
+  ev.setUint32(12, cdSize,        true);
+  ev.setUint32(16, cdStart,       true);
+  ev.setUint16(20, 0,             true);
+
+  const out = new Uint8Array(cdStart + cdSize + 22);
+  let   p   = 0;
+  for (const { lh, data } of locals) { out.set(lh, p); p += lh.length; out.set(data, p); p += data.length; }
+  for (const cd of cdParts)          { out.set(cd, p); p += cd.length; }
+  out.set(eocd, p);
+  return out;
+}
+
+// ── FFT (radix-2 Cooley-Tukey, in-place) ─────────────────────────────────────
+function fftInPlace(re, im, N) {
+  let j = 0;
+  for (let i = 1; i < N; i++) {
+    let bit = N >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) {
+      let t = re[i]; re[i] = re[j]; re[j] = t;
+          t = im[i]; im[i] = im[j]; im[j] = t;
+    }
+  }
+  for (let len = 2; len <= N; len <<= 1) {
+    const half = len >> 1;
+    const ang  = -2 * Math.PI / len;
+    const wcos = Math.cos(ang), wsin = Math.sin(ang);
+    for (let i = 0; i < N; i += len) {
+      let wr = 1, wi = 0;
+      for (let k = 0; k < half; k++) {
+        const tr = wr*re[i+k+half] - wi*im[i+k+half];
+        const ti = wr*im[i+k+half] + wi*re[i+k+half];
+        re[i+k+half] = re[i+k] - tr; im[i+k+half] = im[i+k] - ti;
+        re[i+k] += tr; im[i+k] += ti;
+        const nwr = wr*wcos - wi*wsin;
+        wi = wr*wsin + wi*wcos; wr = nwr;
+      }
+    }
+  }
+}
+
+// ── Colormaps ─────────────────────────────────────────────────────────────────
+// normal: plasma-style (dark → purple → pink → amber → yellow)
+// detail: warm orange-white — noise floor reads as amber, peaks as white
+const CMAP_NORMAL = [
+  [  5,   5,  25],
+  [100,   0, 150],
+  [200,  50, 100],
+  [255, 140,  20],
+  [255, 255, 100],
+];
+// matplotlib 'hot' colormap: black → dark-red → orange → yellow → white
+// Matches the Python script's facecolor='black' + color='orange' aesthetic.
+// R ramps [0→1/3], G ramps [1/3→2/3], B ramps [2/3→1].
+const CMAP_DETAIL = [
+  [  0,   0,   0],   // t=0.00  black   (noise floor)
+  [191,   0,   0],   // t=0.25  dark red
+  [255, 128,   0],   // t=0.50  orange  ← midpoint / typical signal
+  [255, 255,  64],   // t=0.75  yellow
+  [255, 255, 255],   // t=1.00  white   (peak)
+];
+
+function spectrogramColor(t, detail = false) {
+  const stops = detail ? CMAP_DETAIL : CMAP_NORMAL;
+  const s  = t * (stops.length - 1);
+  const lo = Math.floor(s);
+  const hi = Math.min(lo + 1, stops.length - 1);
+  const f  = s - lo;
+  return [
+    Math.round(stops[lo][0] + f*(stops[hi][0]-stops[lo][0])),
+    Math.round(stops[lo][1] + f*(stops[hi][1]-stops[lo][1])),
+    Math.round(stops[lo][2] + f*(stops[hi][2]-stops[lo][2])),
+  ];
+}
+
+// ── STFT computation ──────────────────────────────────────────────────────────
+function computeSTFT(samples) {
+  const FFT_SIZE = 4096;
+  const HOP      = 1024;            // 75% overlap — matches paper settings
+  const NUM_BINS = FFT_SIZE >> 1;
+
+  const win = new Float32Array(FFT_SIZE);
+  for (let i = 0; i < FFT_SIZE; i++)
+    win[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (FFT_SIZE - 1));
+
+  const numFrames = samples && samples.length >= FFT_SIZE
+    ? Math.max(1, Math.floor((samples.length - FFT_SIZE) / HOP) + 1) : 0;
+
+  const magDB = new Float32Array(numFrames * NUM_BINS);
+  const re    = new Float64Array(FFT_SIZE);
+  const im    = new Float64Array(FFT_SIZE);
+  let   dBmax = -Infinity;
+  let   dBmin_actual = Infinity;
+
+  for (let f = 0; f < numFrames; f++) {
+    const start = f * HOP;
+    for (let i = 0; i < FFT_SIZE; i++) {
+      const idx = start + i;
+      re[i] = (idx < samples.length ? samples[idx] : 0.0) * win[i];
+      im[i] = 0.0;
+    }
+    fftInPlace(re, im, FFT_SIZE);
+    for (let k = 0; k < NUM_BINS; k++) {
+      const mag = Math.sqrt(re[k]*re[k] + im[k]*im[k]) / FFT_SIZE;
+      const db  = 20 * Math.log10(mag + 1e-10);
+      magDB[f * NUM_BINS + k] = db;
+      if (db > dBmax) dBmax = db;
+      if (db < dBmin_actual) dBmin_actual = db;
+    }
+  }
+
+  // Data-driven floor: use the actual minimum, but cap the range at 120 dB.
+  const dBmin = Math.max(dBmin_actual, dBmax - 120);
+
+  // Percentile-based range for detail mode — mirrors matplotlib imshow auto-scaling.
+  // Sort a downsampled copy so we don't spend too long on huge arrays.
+  const step     = Math.max(1, Math.floor(magDB.length / 80000));
+  const sample   = [];
+  for (let i = 0; i < magDB.length; i += step) sample.push(magDB[i]);
+  sample.sort((a, b) => a - b);
+  const dBpct02  = sample[Math.floor(sample.length * 0.02)];
+  const dBpct98  = sample[Math.floor(sample.length * 0.98)];
+
+  const threshold = dBmax - 60;
+  let   topBin    = 0;
+  for (let k = 0; k < NUM_BINS; k++)
+    for (let f = 0; f < numFrames; f++)
+      if (magDB[f * NUM_BINS + k] >= threshold) { topBin = k; break; }
+  topBin = Math.min(topBin + 1, NUM_BINS - 1);
+
+  return { magDB, numFrames, NUM_BINS, HOP, dBmax, dBmin, dBpct02, dBpct98, topBin };
+}
+
+// Compute STFT of the averaged mix (dry + wet) / 2 for the 'both' spectrogram view.
+function computeMixSTFT(dryBufIn, wetBufIn) {
+  const len = Math.min(dryBufIn.length, wetBufIn.length);
+  const mix = new Float32Array(len);
+  for (let i = 0; i < len; i++) mix[i] = (dryBufIn[i] + wetBufIn[i]) * 0.5;
+  return computeSTFT(mix);
+}
+
+// ── STFT spectrogram rendering ────────────────────────────────────────────────
+// gamma < 1 = detail mode: narrows dB window to 65 dB and boosts mid-range
+function renderSpectrogram(canvas, stftData, sr, topBinOverride = -1, zoom = null, gamma = 1.0) {
+  const cW  = canvas.width;
+  const cH  = canvas.height;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, cW, cH);
+
+  const { magDB, numFrames, NUM_BINS, dBmax, dBmin, dBpct02, dBpct98 } = stftData;
+  if (numFrames === 0) return;
+
+  const topBin = topBinOverride >= 0 ? topBinOverride : stftData.topBin;
+
+  const detail  = gamma !== 1.0;
+  // Detail mode: stretch colormap over the actual content distribution
+  // (2nd–98th percentile), mirroring matplotlib imshow auto-scaling.
+  const renderMin = detail ? dBpct02 : dBmin;
+  const renderMax = detail ? dBpct98 : dBmax;
+
+  // Apply zoom or use full range
+  const fStart = zoom ? zoom.t0 : 0;
+  const fEnd   = zoom ? zoom.t1 : numFrames - 1;
+  const bStart = zoom ? zoom.b0 : 0;
+  const bEnd   = zoom ? zoom.b1 : topBin;
+
+  // Render at native spectrogram resolution then scale up with bilinear smoothing —
+  // mirrors matplotlib imshow's default interpolation, eliminating block artefacts.
+  const fi0 = Math.round(fStart);
+  const bi0 = Math.round(bStart);
+  const nF  = Math.max(1, Math.round(fEnd) - fi0 + 1);
+  const nB  = Math.max(1, Math.round(bEnd) - bi0 + 1);
+
+  const offCanvas  = document.createElement('canvas');
+  offCanvas.width  = nF;
+  offCanvas.height = nB;
+  const offCtx = offCanvas.getContext('2d');
+  const offImg = offCtx.createImageData(nF, nB);
+  const od     = offImg.data;
+
+  for (let fi = 0; fi < nF; fi++) {
+    const f = Math.min(numFrames - 1, fi0 + fi);
+    for (let bi = 0; bi < nB; bi++) {
+      const k  = Math.min(NUM_BINS - 1, bi0 + bi);
+      const db = magDB[f * NUM_BINS + k];
+      const v0 = Math.max(0, Math.min(1, (db - renderMin) / (renderMax - renderMin)));
+      const v  = gamma === 1.0 ? v0 : Math.pow(v0, gamma);
+      const [r, g, b] = spectrogramColor(v, detail);
+      // bi=0 is low-freq → bottom of canvas (row nB-1); bi=nB-1 → top (row 0)
+      const pi = ((nB - 1 - bi) * nF + fi) * 4;
+      od[pi] = r; od[pi+1] = g; od[pi+2] = b; od[pi+3] = 255;
+    }
+  }
+  offCtx.putImageData(offImg, 0, 0);
+
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(offCanvas, 0, 0, cW, cH);
+
+  // Frequency label (top-left), dpr-compensated
+  const dpr     = window.devicePixelRatio || 1;
+  const nyquist = sr / 2;
+  const dispTopBin = zoom ? zoom.b1 : topBin;
+  const topFreq = (dispTopBin / (NUM_BINS - 1)) * nyquist;
+  const topLabel = topFreq >= 1000
+    ? (topFreq / 1000 % 1 === 0 ? (topFreq/1000)+'k' : (topFreq/1000).toFixed(1)+'k')
+    : Math.round(topFreq)+'';
+  const fontSize = Math.max(9, Math.round(cH / dpr * 0.07)) * dpr;
+  ctx.font      = `${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
+  ctx.fillStyle = 'rgba(255,255,255,0.80)';
+  ctx.fillText(topLabel + ' Hz', 5 * dpr, fontSize + 3);
+
+  // Zoom indicator: bottom-left label when zoomed
+  if (zoom) {
+    const botFreq = (zoom.b0 / (NUM_BINS - 1)) * nyquist;
+    const botLabel = botFreq >= 1000
+      ? (botFreq / 1000 % 1 === 0 ? (botFreq/1000)+'k' : (botFreq/1000).toFixed(1)+'k')
+      : Math.round(botFreq)+'';
+    ctx.fillText(botLabel + ' Hz', 5 * dpr, cH - 4);
+  }
+}
+
+
+
+
+// ── Spectrogram zoom ─────────────────────────────────────────────────────────
+const zoomOverlay = document.getElementById('zoomOverlay');
+let   dragStart   = null;
+let   isDragging  = false;
+
+function clearOverlay() {
+  const ctx = zoomOverlay.getContext('2d');
+  ctx.clearRect(0, 0, zoomOverlay.width, zoomOverlay.height);
+}
+
+function syncOverlaySize() {
+  const r = zoomOverlay.getBoundingClientRect();
+  zoomOverlay.width  = Math.floor(r.width);
+  zoomOverlay.height = Math.floor(r.height);
+}
+
+function drawSelectionBox(x0, y0, x1, y1) {
+  syncOverlaySize();
+  const ctx = zoomOverlay.getContext('2d');
+  ctx.clearRect(0, 0, zoomOverlay.width, zoomOverlay.height);
+  const rx = Math.min(x0, x1), ry = Math.min(y0, y1);
+  const rw = Math.abs(x1 - x0), rh = Math.abs(y1 - y0);
+  ctx.fillStyle   = 'rgba(200,144,42,0.12)';
+  ctx.fillRect(rx, ry, rw, rh);
+  ctx.strokeStyle = 'rgba(200,144,42,0.85)';
+  ctx.lineWidth   = 1.5;
+  ctx.strokeRect(rx, ry, rw, rh);
+}
+
+zoomOverlay.addEventListener('mousedown', e => {
+  if (e.button !== 0) return;
+  const r  = zoomOverlay.getBoundingClientRect();
+  dragStart = { x: e.clientX - r.left, y: e.clientY - r.top };
+  isDragging = true;
+});
+
+zoomOverlay.addEventListener('mousemove', e => {
+  if (!isDragging || !dragStart) return;
+  const r = zoomOverlay.getBoundingClientRect();
+  drawSelectionBox(dragStart.x, dragStart.y,
+                   e.clientX - r.left, e.clientY - r.top);
+});
+
+zoomOverlay.addEventListener('mouseup', e => {
+  if (!isDragging || !dragStart) return;
+  isDragging = false;
+  const r  = zoomOverlay.getBoundingClientRect();
+  const ex = e.clientX - r.left, ey = e.clientY - r.top;
+  clearOverlay();
+
+  if (Math.abs(ex - dragStart.x) < 6 || Math.abs(ey - dragStart.y) < 6) return;
+
+  const stft = activeTab === 'dry' ? drySTFT : activeTab === 'wet' ? wetSTFT : mixSTFT;
+  if (!stft) return;
+
+  const { numFrames, NUM_BINS } = stft;
+  const topBin = sharedTopBin;
+  const W = r.width, H = r.height;
+
+  const x0 = Math.min(dragStart.x, ex) / W;
+  const x1 = Math.max(dragStart.x, ex) / W;
+  const y0 = Math.min(dragStart.y, ey) / H;
+  const y1 = Math.max(dragStart.y, ey) / H;
+
+  zoomView = {
+    t0: Math.round(x0 * (numFrames - 1)),
+    t1: Math.round(x1 * (numFrames - 1)),
+    b0: Math.round((1 - y1) * topBin),   // y is inverted: top = high freq
+    b1: Math.round((1 - y0) * topBin),
+  };
+  renderActiveTab();
+});
+
+zoomOverlay.addEventListener('mouseleave', () => {
+  if (isDragging) { isDragging = false; clearOverlay(); }
+});
+
+zoomOverlay.addEventListener('dblclick', () => {
+  zoomView = null;
+  clearOverlay();
+  renderActiveTab();
+});
+
+// ── Worker init / restart ─────────────────────────────────────────────────────
+function restartWorker() {
+  workerReady      = false;
+  workerRestarting = true;
+  currentJobId++;
+  if (frftWorker) { try { frftWorker.terminate(); } catch {} frftWorker = null; }
+  setTimeout(initWorker, 300);
+}
+
+function initWorker() {
+  const cb          = window._wasmCacheBust;
+  const jsUrl       = new URL('../wasm/dist/frft.js', location.href).href + '?v=' + cb;
+  const wasmBaseUrl = new URL('../wasm/dist/', location.href).href;
+
+  frftWorker = new Worker(new URL('../audio/frft-worker.js', location.href).href + '?v=' + cb);
+  frftWorker.onmessage = handleWorkerMessage;
+  frftWorker.onerror   = (e) => {
+    console.error('Worker uncaught error:', e.message);
+    setStatus('WASM out of memory — reduce block size', 'err');
+    restartWorker();
+  };
+  frftWorker.postMessage({ type: 'init', jsUrl, wasmBaseUrl, cacheBust: cb });
+}
+
+initWorker();
+</script>
+</body>
+</html>

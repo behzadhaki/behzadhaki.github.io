@@ -15,7 +15,7 @@ bundle install
 Running the website locally:
 
 ```terminal
-python3 assets/cv_latex/render_cv.py && bundle exec jekyll serve --livereload
+python3 scripts/run_all.py && bundle exec jekyll serve --livereload
 ```
 
 Note the cv is auto-generated using the latex source file located at `assets/cv_latex/cv.tex`.
