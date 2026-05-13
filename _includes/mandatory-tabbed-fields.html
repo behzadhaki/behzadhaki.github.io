@@ -3,11 +3,11 @@
 {% assign file_name = tab | append: ".md" %}
 {% if tab == "cite" %}{% assign label = "Publication" %}{% else %}{% assign label = tab | capitalize %}{% endif %}
 {% assign section_id = label | slugify %}
-<details class="project-section" id="{{ section_id }}">
-  <summary class="project-section__header">
+<section class="project-section" id="{{ section_id }}">
+  <h2 class="project-section__header">
     {{ label }}
     <a class="section-anchor" href="#{{ section_id }}" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
-  </summary>
+  </h2>
   <div class="project-section__body markdown-body">
     {% if tab == "cite" and page.cite_keys %}
       <div class="project-pubs">
@@ -19,5 +19,5 @@
       {% include safe-include.md file=file_name %}
     {% endif %}
   </div>
-</details>
+</section>
 {% endfor %}

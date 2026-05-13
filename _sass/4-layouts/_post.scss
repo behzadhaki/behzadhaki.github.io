@@ -488,40 +488,123 @@
 
 }
 
-/* Expandable Project Sections (Mandatory + Optional) */
-.project-section {
-  margin-top: 1rem;
-  border: 1px solid rgba(255,255,255,0.1);
+/* Project Sections — always-visible with 3-row horizontal navbar */
+.post-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: $background-color;
+  padding: 0.6rem 0 1.4rem;
+  margin-top: 3rem;
+  margin-bottom: 4.5rem;
+}
+
+.post-navbar__rows {
+  background: #2a2736;
   border-radius: 10px;
-  overflow: hidden;
+  padding: 0.25rem 0.75rem;
+}
+
+.navbar-row {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 0.15rem;
+  padding: 0.3rem 0;
+  min-height: 2.1rem;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+
+  & + & {
+    border-top: 1px solid rgba($white, 0.05);
+  }
+}
+
+.post-nav-link {
+  flex-shrink: 0;
+  display: inline-block;
+  padding: 0.22rem 0.65rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  color: $gray;
+  border-bottom: none !important;
+  transition: color 0.15s, background 0.15s;
+
+  &:hover {
+    color: $light-gray;
+    background: rgba($white, 0.07);
+  }
+
+  &.is-active {
+    color: $light-gray;
+    background: rgba($white, 0.12);
+  }
+}
+
+.post-nav-link--l1 {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.post-nav-link--l2 {
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.post-nav-link--l3 {
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: rgba($gray, 0.8);
+}
+
+.project-section,
+.project-section__body h2,
+.project-section__body h3,
+.project-section__body h4,
+.project-section__body h5,
+.project-section__body h6 {
+  scroll-margin-top: 150px;
+}
+
+.project-section {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba($white, 0.08);
+
+  &:first-of-type {
+    border-top: none;
+    margin-top: 0;
+  }
+
+  &.is-collapsed .project-section__body {
+    display: none;
+  }
+
+  &.is-collapsed .project-section__header::before {
+    transform: rotate(-90deg);
+  }
 
   .project-section__header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.2rem;
+    padding: 0 0 0.75rem;
+    margin: 0 0 1rem;
     font-size: 0.85rem;
     font-weight: 700;
-    cursor: pointer;
-    background: $blue-dark;
     text-transform: capitalize;
-    user-select: none;
-    list-style: none;
     color: $light-gray;
-
-    &::-webkit-details-marker { display: none; }
+    border-bottom: 1px solid rgba($white, 0.1);
+    cursor: pointer;
 
     &::before {
-      content: "▶";
-      font-size: 0.6rem;
+      content: "▾";
+      font-size: 0.65rem;
+      flex-shrink: 0;
       transition: transform 0.2s;
       display: inline-block;
-      color: $gray;
-      flex-shrink: 0;
-    }
-
-    &:hover {
-      background: rgba(255,255,255,0.04);
     }
 
     .section-anchor {
@@ -538,13 +621,8 @@
     &:hover .section-anchor { opacity: 1; }
   }
 
-  &[open] .project-section__header::before {
-    transform: rotate(90deg);
-  }
-
   .project-section__body {
-    padding: 1.2rem 1.4rem;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 0 0 0.5rem;
     font-size: 0.85rem;
     line-height: 1.7;
     color: rgba($light-gray, 0.8);
@@ -621,60 +699,6 @@
       }
     }
 
-    /* Collapsible sub-sections within a tab body (split by top-level headings) */
-    .content-section {
-      border-top: 1px solid rgba(255,255,255,0.06);
-
-      &:first-child { border-top: none; }
-
-      .content-section__header {
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        cursor: pointer;
-        list-style: none;
-        user-select: none;
-        padding: 0.35rem 0;
-
-        &::-webkit-details-marker { display: none; }
-
-        &::before {
-          content: "▶";
-          font-size: 0.5rem;
-          transition: transform 0.2s;
-          display: inline-block;
-          color: $gray;
-          flex-shrink: 0;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-          margin: 0;
-          flex: 1;
-          // inherit font-size from parent rules; just strip margins
-        }
-
-        .content-anchor {
-          flex-shrink: 0;
-          opacity: 0;
-          font-size: 0.6rem;
-          color: rgba($light-gray, 0.4);
-          border-bottom: none !important;
-          line-height: 1;
-          transition: opacity 0.15s;
-          padding: 0.2rem 0.1rem;
-          &:hover { color: $brand-color; border-bottom: none !important; }
-        }
-        &:hover .content-anchor { opacity: 1; }
-      }
-
-      &[open] > .content-section__header::before { transform: rotate(90deg); }
-
-      .content-section__body {
-        padding: 0 0 0.5rem 1.2rem;
-        border-left: 2px solid rgba(255,255,255,0.05);
-        margin-left: 0.25rem;
-      }
-    }
   }
 }
 

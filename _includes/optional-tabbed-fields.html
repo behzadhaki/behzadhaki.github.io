@@ -3,14 +3,14 @@
 {% assign file = page.tabs_content[forloop.index0] %}
 {% assign section_label = tab | replace: "-", " " | capitalize %}
 {% assign section_id = section_label | slugify %}
-<details class="project-section" id="{{ section_id }}">
-  <summary class="project-section__header">
+<section class="project-section" id="{{ section_id }}">
+  <h2 class="project-section__header">
     {{ section_label }}
     <a class="section-anchor" href="#{{ section_id }}" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
-  </summary>
+  </h2>
   <div class="project-section__body markdown-body">
     {% include safe-include.md file=file %}
   </div>
-</details>
+</section>
 {% endfor %}
 {% endif %}

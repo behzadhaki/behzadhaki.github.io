@@ -59,12 +59,11 @@ layout: default
 
 <!-- begin post -->
 <div class="container">
+  <nav class="post-navbar" id="post-navbar" aria-label="Page sections"></nav>
   <article class="post animate">
-
     <div class="post__content">
       {{ content }}
     </div>
-
   </article>
 </div>
 <!-- end post -->
@@ -75,94 +74,8 @@ layout: default
 <script>
   document.addEventListener("DOMContentLoaded", function () {
 
-    // STEP 1: Split section bodies into collapsible sub-sections by top-level headings
-    document.querySelectorAll(".project-section__body").forEach(function (body) {
-      var allHeadings = Array.from(body.querySelectorAll("h1,h2,h3,h4,h5,h6"))
-        .filter(function (h) { return !h.classList.contains("no_toc"); });
-      if (allHeadings.length <= 1) return;
-
-      var minLevel = Math.min.apply(null, allHeadings.map(function (h) { return parseInt(h.tagName[1]); }));
-      var topTag = "H" + minLevel;
-
-      // Only restructure if there are multiple direct-child top-level headings
-      var directTopHeadings = allHeadings.filter(function (h) {
-        return h.tagName === topTag && h.parentElement === body;
-      });
-      if (directTopHeadings.length <= 1) return;
-
-      // Group child nodes into blocks separated by top-level headings
-      var children = Array.from(body.childNodes);
-      var blocks = [];
-      var current = { heading: null, nodes: [] };
-      for (var i = 0; i < children.length; i++) {
-        var node = children[i];
-        if (node.nodeType === 1 && node.tagName === topTag && !node.classList.contains("no_toc")) {
-          if (current.heading || current.nodes.length) blocks.push(current);
-          current = { heading: node, nodes: [] };
-        } else {
-          current.nodes.push(node);
-        }
-      }
-      if (current.heading || current.nodes.length) blocks.push(current);
-      if (blocks.filter(function (b) { return b.heading; }).length <= 1) return;
-
-      // Rebuild body with <details> wrappers
-      while (body.firstChild) body.removeChild(body.firstChild);
-
-      blocks.forEach(function (block) {
-        if (!block.heading) {
-          // Pre-heading intro content — keep as-is
-          block.nodes.forEach(function (n) { body.appendChild(n); });
-          return;
-        }
-
-        var text = block.heading.textContent.trim();
-        var id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-        block.heading.id = id;
-
-        var details = document.createElement("details");
-        details.className = "content-section";
-
-        var summary = document.createElement("summary");
-        summary.className = "content-section__header";
-        summary.appendChild(block.heading);
-
-        // Link icon (right side of summary)
-        var linkAnchor = document.createElement("a");
-        linkAnchor.className = "content-anchor";
-        linkAnchor.href = "#" + id;
-        linkAnchor.title = "Copy link to this section";
-        linkAnchor.setAttribute("aria-label", "Copy link to this section");
-        linkAnchor.innerHTML = '<i class="fa-solid fa-link"></i>';
-        (function (anchorId) {
-          linkAnchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var url = window.location.origin + window.location.pathname + "#" + anchorId;
-            history.replaceState(null, "", "#" + anchorId);
-            var outer = this.closest("details.project-section");
-            if (outer) outer.open = true;
-            if (navigator.clipboard) navigator.clipboard.writeText(url).catch(function () {});
-          });
-        })(id);
-        summary.appendChild(linkAnchor);
-
-        details.appendChild(summary);
-
-        if (block.nodes.length) {
-          var contentDiv = document.createElement("div");
-          contentDiv.className = "content-section__body";
-          block.nodes.forEach(function (n) { contentDiv.appendChild(n); });
-          details.appendChild(contentDiv);
-        }
-
-        body.appendChild(details);
-      });
-    });
-
-    // STEP 2: Inject anchor icons into sub-headings (skip headings already inside <summary>)
+    // STEP 1: Inject anchor icons into headings within section bodies
     document.querySelectorAll(".project-section__body h1,.project-section__body h2,.project-section__body h3,.project-section__body h4,.project-section__body h5,.project-section__body h6").forEach(function (heading) {
-      if (heading.closest("summary")) return;
       var text = heading.textContent.trim();
       var id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
       if (!id) return;
@@ -178,40 +91,237 @@ layout: default
           e.preventDefault();
           var url = window.location.origin + window.location.pathname + "#" + headingId;
           history.replaceState(null, "", "#" + headingId);
-          var el = heading.parentElement;
-          while (el) { if (el.tagName === "DETAILS") el.open = true; el = el.parentElement; }
           if (navigator.clipboard) navigator.clipboard.writeText(url).catch(function () {});
         });
       })(id);
       heading.prepend(anchor);
     });
 
-    // STEP 3: Hash navigation — open all ancestor <details> and scroll to target
+    // STEP 2: Hash navigation — expand containing section then scroll
     function openFromHash() {
       var hash = window.location.hash.slice(1);
       if (!hash) return;
       var target = document.getElementById(hash);
       if (!target) return;
-      var el = target.tagName === "DETAILS" ? target : target.parentElement;
-      while (el) { if (el.tagName === "DETAILS") el.open = true; el = el.parentElement; }
-      setTimeout(function () { target.scrollIntoView({ behavior: "smooth", block: "start" }); }, 100);
+      var parentSection = target.closest("section.project-section");
+      if (parentSection) {
+        parentSection.classList.remove("is-collapsed");
+      }
+      var navEl = document.getElementById("post-navbar");
+      var offset = navEl ? navEl.offsetHeight + 24 : 24;
+      setTimeout(function () {
+        var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top: top, behavior: "smooth" });
+      }, 50);
     }
-    openFromHash();
 
-    // STEP 4: Section-level anchor clicks (the link icon on the outer <details> headers)
+    // STEP 3: Section-level anchor clicks
     document.querySelectorAll(".section-anchor").forEach(function (anchor) {
       anchor.addEventListener("click", function (e) {
         e.preventDefault();
         e.stopPropagation();
-        var details = this.closest("details.project-section");
-        if (details && details.id) {
-          var url = window.location.origin + window.location.pathname + "#" + details.id;
-          history.replaceState(null, "", "#" + details.id);
-          details.open = true;
+        var section = this.closest("section.project-section");
+        if (section && section.id) {
+          var url = window.location.origin + window.location.pathname + "#" + section.id;
+          history.replaceState(null, "", "#" + section.id);
           if (navigator.clipboard) navigator.clipboard.writeText(url).catch(function () {});
         }
       });
     });
+
+    // STEP 4: Build 3-row horizontal navbar (Section | H2 | H3)
+    var navbar = document.getElementById("post-navbar");
+    if (!navbar) return;
+    var sections = Array.from(document.querySelectorAll("section.project-section[id]"));
+    if (sections.length === 0) return;
+
+    // Build data tree — auto-detect min heading level per section
+    var tree = sections.map(function (section) {
+      var header = section.querySelector(".project-section__header");
+      var label = header ? header.childNodes[0].textContent.trim() : section.id.replace(/-/g, " ");
+      var body = section.querySelector(".project-section__body");
+      var h2s = [];
+      if (body) {
+        var allSub = Array.from(body.querySelectorAll("h2,h3,h4,h5,h6"));
+        if (allSub.length > 0) {
+          var minLevel = Math.min.apply(null, allSub.map(function (h) { return parseInt(h.tagName[1]); }));
+          var l2Tag = "H" + minLevel;
+          var l3Tag = "H" + (minLevel + 1);
+          var currentH2 = null;
+          allSub.forEach(function (h) {
+            var hId = h.id || h.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+            if (!h.id) h.id = hId;
+            var hLabel = h.textContent.trim();
+            if (h.tagName === l2Tag) {
+              currentH2 = { id: hId, label: hLabel, el: h, h3s: [] };
+              h2s.push(currentH2);
+            } else if (h.tagName === l3Tag && currentH2) {
+              currentH2.h3s.push({ id: hId, label: hLabel, el: h });
+            }
+          });
+        }
+      }
+      return { id: section.id, label: label, el: section, h2s: h2s };
+    });
+
+    // Create inner wrapper and 3 row elements
+    var navInner = document.createElement("div");
+    navInner.className = "post-navbar__rows";
+    navbar.appendChild(navInner);
+
+    var row1 = document.createElement("div");
+    row1.className = "navbar-row navbar-row--1";
+    var row2 = document.createElement("div");
+    row2.className = "navbar-row navbar-row--2";
+    var row3 = document.createElement("div");
+    row3.className = "navbar-row navbar-row--3";
+    navInner.appendChild(row1);
+    navInner.appendChild(row2);
+    navInner.appendChild(row3);
+
+    var activeSection = null;
+    var activeH2 = null;
+    var activeH3 = null;
+
+    function navbarOffset() {
+      return navbar.offsetHeight + 24;
+    }
+
+    function scrollToEl(el) {
+      var top = el.getBoundingClientRect().top + window.pageYOffset - navbarOffset();
+      window.scrollTo({ top: top, behavior: "smooth" });
+    }
+
+    function makeLink(label, id, cls, onClick) {
+      var a = document.createElement("a");
+      a.href = "#" + id;
+      a.className = "post-nav-link " + cls;
+      a.textContent = label;
+      a.title = label;
+      a.dataset.id = id;
+      a.addEventListener("click", function (e) { e.preventDefault(); onClick(); });
+      return a;
+    }
+
+    function highlightRow(row, id) {
+      Array.from(row.querySelectorAll(".post-nav-link")).forEach(function (l) {
+        var active = l.dataset.id === id;
+        l.classList.toggle("is-active", active);
+        if (active) l.scrollIntoView({ block: "nearest", inline: "center" });
+      });
+    }
+
+    function renderRow2(sectionNode) {
+      row2.innerHTML = "";
+      row3.innerHTML = "";
+      activeH2 = null;
+      activeH3 = null;
+      if (!sectionNode || sectionNode.h2s.length === 0) return;
+      sectionNode.h2s.forEach(function (h2) {
+        row2.appendChild(makeLink(h2.label, h2.id, "post-nav-link--l2", function () {
+          history.pushState(null, "", "#" + h2.id);
+          scrollToEl(h2.el);
+          activeH2 = h2.id;
+          activeH3 = null;
+          highlightRow(row2, h2.id);
+          renderRow3(h2);
+        }));
+      });
+    }
+
+    function renderRow3(h2Node) {
+      row3.innerHTML = "";
+      activeH3 = null;
+      if (!h2Node || h2Node.h3s.length === 0) return;
+      h2Node.h3s.forEach(function (h3) {
+        row3.appendChild(makeLink(h3.label, h3.id, "post-nav-link--l3", function () {
+          history.pushState(null, "", "#" + h3.id);
+          scrollToEl(h3.el);
+          activeH3 = h3.id;
+          highlightRow(row3, h3.id);
+        }));
+      });
+    }
+
+    // Render row1
+    tree.forEach(function (sectionNode) {
+      row1.appendChild(makeLink(sectionNode.label, sectionNode.id, "post-nav-link--l1", function () {
+        history.pushState(null, "", "#" + sectionNode.id);
+        sectionNode.el.classList.remove("is-collapsed");
+        activeSection = sectionNode.id;
+        highlightRow(row1, sectionNode.id);
+        renderRow2(sectionNode);
+        scrollToEl(sectionNode.el);
+      }));
+    });
+
+    // Section headers toggle their own section only
+    tree.forEach(function (sectionNode) {
+      var header = sectionNode.el.querySelector(".project-section__header");
+      if (!header) return;
+      header.addEventListener("click", function (e) {
+        if (e.target.closest(".section-anchor")) return;
+        sectionNode.el.classList.toggle("is-collapsed");
+      });
+    });
+
+    // Initialise with first section active, all expanded
+    if (tree.length) {
+      activeSection = tree[0].id;
+      highlightRow(row1, activeSection);
+      renderRow2(tree[0]);
+    }
+
+    // Scroll-spy: observe sections, H2s, H3s
+    var observables = [];
+    tree.forEach(function (s) {
+      observables.push({ el: s.el, sectionId: s.id, h2Id: null, h3Id: null, sectionNode: s, h2Node: null });
+      s.h2s.forEach(function (h2) {
+        observables.push({ el: h2.el, sectionId: s.id, h2Id: h2.id, h3Id: null, sectionNode: s, h2Node: h2 });
+        h2.h3s.forEach(function (h3) {
+          observables.push({ el: h3.el, sectionId: s.id, h2Id: h2.id, h3Id: h3.id, sectionNode: s, h2Node: h2 });
+        });
+      });
+    });
+
+    // Call openFromHash now that navbar is built and offset is known
+    openFromHash();
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var obs = observables.find(function (o) { return o.el === entry.target; });
+        if (!obs) return;
+
+        if (obs.sectionId !== activeSection) {
+          activeSection = obs.sectionId;
+          highlightRow(row1, activeSection);
+          renderRow2(obs.sectionNode);
+          if (obs.h2Node) {
+            activeH2 = obs.h2Id;
+            highlightRow(row2, activeH2);
+            renderRow3(obs.h2Node);
+          }
+          if (obs.h3Id) {
+            activeH3 = obs.h3Id;
+            highlightRow(row3, activeH3);
+          }
+        } else if (obs.h2Id !== activeH2) {
+          activeH2 = obs.h2Id;
+          highlightRow(row2, activeH2);
+          if (obs.h2Node) renderRow3(obs.h2Node);
+          if (obs.h3Id) {
+            activeH3 = obs.h3Id;
+            highlightRow(row3, activeH3);
+          }
+        } else if (obs.h3Id && obs.h3Id !== activeH3) {
+          activeH3 = obs.h3Id;
+          highlightRow(row3, activeH3);
+        }
+      });
+    }, { rootMargin: "-" + navbarOffset() + "px 0px -50% 0px", threshold: 0 });
+
+    observables.forEach(function (o) { observer.observe(o.el); });
 
     window.addEventListener("hashchange", openFromHash);
   });
