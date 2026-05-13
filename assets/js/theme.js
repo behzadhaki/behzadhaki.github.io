@@ -1,64 +1,52 @@
-// Has to be in the head tag, otherwise a flicker effect will occur.
+// Must run in <head> to prevent flash of wrong theme.
+// Dark mode is the compiled-CSS default (no data-theme attribute).
+// Light mode is activated by setting data-theme="light".
 
 let toggleTheme = (theme) => {
-  if (theme == "dark") {
-    setTheme("light");
-  } else {
-    setTheme("dark");
-  }
-}
+  setTheme(theme === "light" ? "dark" : "light");
+};
 
-
-let setTheme = (theme) =>  {
+let setTheme = (theme) => {
   transTheme();
   setHighlight(theme);
-
-  if (theme) {
-    document.documentElement.setAttribute("data-theme", theme);
-  }
-  else {
+  if (theme === "light") {
+    document.documentElement.setAttribute("data-theme", "light");
+  } else {
     document.documentElement.removeAttribute("data-theme");
   }
-  localStorage.setItem("theme", theme);
-  
-  // Updates the background of medium-zoom overlay.
-  if (typeof medium_zoom !== 'undefined') {
-    medium_zoom.update({
-      background: getComputedStyle(document.documentElement)
-          .getPropertyValue('--global-bg-color') + 'ee',  // + 'ee' for trasparency.
-    })
-  }
+  localStorage.setItem("theme", theme === "light" ? "light" : "dark");
 };
 
 let setHighlight = (theme) => {
-  if (theme == "dark") {
-    document.getElementById("highlight_theme_light").media = "none";
-    document.getElementById("highlight_theme_dark").media = "";
+  var light = document.getElementById("highlight_theme_light");
+  var dark  = document.getElementById("highlight_theme_dark");
+  if (!light || !dark) return;
+  if (theme === "light") {
+    light.media = "";
+    dark.media  = "none";
   } else {
-    document.getElementById("highlight_theme_dark").media = "none";
-    document.getElementById("highlight_theme_light").media = "";
+    dark.media  = "";
+    light.media = "none";
   }
-}
-
+};
 
 let transTheme = () => {
   document.documentElement.classList.add("transition");
   window.setTimeout(() => {
     document.documentElement.classList.remove("transition");
-  }, 500)
-}
+  }, 400);
+};
 
-
-let initTheme = (theme) => {
-  if (theme == null || theme == 'null') {
-    const userPref = window.matchMedia;
-    if (userPref && userPref('(prefers-color-scheme: dark)').matches) {
-        theme = 'dark';
-    }
+let initTheme = (stored) => {
+  if (stored === "light") {
+    setTheme("light");
+  } else if (!stored || stored === "null") {
+    // No stored preference — respect system setting, default to dark otherwise
+    var preferLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+    setTheme(preferLight ? "light" : "dark");
+  } else {
+    setTheme("dark");
   }
-  
-  setTheme(theme);
-}
-
+};
 
 initTheme(localStorage.getItem("theme"));

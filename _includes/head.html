@@ -33,4 +33,7 @@
   {% endcapture %}
   {{ include_to_scssify | scssify }}
   </style>
+
+  <!-- Theme init — must run before first paint to prevent flash -->
+  <script>{% include theme-init.js %}</script>
 </head>
