@@ -1,35 +1,35 @@
 ---
 ---
-@import '0-settings/variables';
-@import '0-settings/mixins';
-@import '0-settings/helpers';
+@use '0-settings/variables' as *;
+@use '0-settings/mixins' as *;
+@use '0-settings/helpers' as *;
 
 /* Font Awesome (v6.5.1) */
-@import '0-settings/brands';
-@import '0-settings/solid';
-@import '0-settings/regular';
-@import '0-settings/fontawesome';
+@use '0-settings/brands' as *;
+@use '0-settings/solid' as *;
+@use '0-settings/regular' as *;
+@use '0-settings/fontawesome' as *;
 
-@import '1-tools/normalize';
-@import '1-tools/reset';
-@import '1-tools/shared';
-@import '1-tools/syntax-highlighting';
-@import '1-tools/grid';
-@import '1-tools/zoom';
-@import '1-tools/animate';
+@use '1-tools/normalize' as *;
+@use '1-tools/reset' as *;
+@use '1-tools/shared' as *;
+@use '1-tools/syntax-highlighting' as *;
+@use '1-tools/grid' as *;
+@use '1-tools/zoom' as *;
+@use '1-tools/animate' as *;
 
-@import '2-base/base';
+@use '2-base/base' as *;
 
-@import '3-modules/hero';
-@import '3-modules/scroll-button-top';
-@import '3-modules/header';
-@import '3-modules/search';
-@import '3-modules/pagination';
-@import '3-modules/footer';
-@import '3-modules/social-links';
-@import '3-modules/buttons';
+@use '3-modules/hero' as *;
+@use '3-modules/scroll-button-top' as *;
+@use '3-modules/header' as *;
+@use '3-modules/search' as *;
+@use '3-modules/pagination' as *;
+@use '3-modules/footer' as *;
+@use '3-modules/social-links' as *;
+@use '3-modules/buttons' as *;
 
-@import '4-layouts/home-page';
-@import '4-layouts/post';
-@import '4-layouts/tags-page';
-@import '4-layouts/contact-page';
+@use '4-layouts/home-page' as *;
+@use '4-layouts/post' as *;
+@use '4-layouts/tags-page' as *;
+@use '4-layouts/contact-page' as *;
