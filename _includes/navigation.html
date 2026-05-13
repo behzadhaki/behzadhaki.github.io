@@ -23,9 +23,12 @@
             {% if coll.project_type %}
               {% assign pt = coll.project_type %}
               {% assign sub_posts = site.posts | where_exp: "doc", "doc.project_types contains pt" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
+              {% assign sub_count = sub_posts | size %}
             {% else %}
               {% assign sub_posts = nil %}
+              {% assign sub_count = 1 %}
             {% endif %}
+            {% if sub_count > 0 %}
             <li class="dropdown__item {% if sub_posts and sub_posts.size > 0 %}has-sub-dropdown{% endif %}">
               <a href="{{ coll.url | relative_url }}" class="dropdown__link">
                 {{ coll.title }}
@@ -42,6 +45,7 @@
                 </ul>
               {% endif %}
             </li>
+            {% endif %}
           {% endfor %}
         </ul>
       {% endif %}

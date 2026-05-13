@@ -6,7 +6,7 @@ hide_title: true
 description: Step-by-step guides for developing audio applications with JUCE, Freesound, and related tools.
 ---
 
-{% assign tutorial_posts = site.posts | where_exp: "doc", "doc.project_types contains 'tutorials'" | sort: "date" | reverse %}
+{% assign tutorial_posts = site.posts | where_exp: "doc", "doc.project_types contains 'tutorials'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
 
 <div class="row">
 {% for doc in tutorial_posts %}{% if doc.hidden %}{% continue %}{% endif %}

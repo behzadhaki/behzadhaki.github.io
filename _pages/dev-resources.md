@@ -6,8 +6,8 @@ description: Frameworks, templates, and interactive widgets for developers.
 hide_title: true
 ---
 
-{% assign framework_posts = site.posts | where_exp: "doc", "doc.project_types contains 'frameworks-templates'" | sort: "date" | reverse %}
-{% assign widget_posts = site.posts | where_exp: "doc", "doc.project_types contains 'web-widgets'" | sort: "date" | reverse %}
+{% assign framework_posts = site.posts | where_exp: "doc", "doc.project_types contains 'frameworks-templates'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
+{% assign widget_posts = site.posts | where_exp: "doc", "doc.project_types contains 'web-widgets'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
 
 {% if framework_posts.size > 0 %}
 <details class="project-section" id="frameworks-templates">

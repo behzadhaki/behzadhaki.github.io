@@ -6,13 +6,13 @@ description: Software, hardware, and datasets I have developed.
 hide_title: true
 ---
 
-{% assign max_posts = site.posts | where_exp: "doc", "doc.project_types contains 'max'" | sort: "date" | reverse %}
-{% assign pd_posts = site.posts | where_exp: "doc", "doc.project_types contains 'pd'" | sort: "date" | reverse %}
-{% assign plugin_posts = site.posts | where_exp: "doc", "doc.project_types contains 'plugins'" | sort: "date" | reverse %}
-{% assign web_posts = site.posts | where_exp: "doc", "doc.project_types contains 'web'" | sort: "date" | reverse %}
-{% assign hardware_posts = site.posts | where_exp: "doc", "doc.project_types contains 'hardware'" | sort: "date" | reverse %}
-{% assign installation_posts = site.posts | where_exp: "doc", "doc.project_types contains 'installations-performances'" | sort: "date" | reverse %}
-{% assign dataset_posts = site.posts | where_exp: "doc", "doc.project_types contains 'datasets'" | sort: "date" | reverse %}
+{% assign max_posts = site.posts | where_exp: "doc", "doc.project_types contains 'max'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
+{% assign pd_posts = site.posts | where_exp: "doc", "doc.project_types contains 'pd'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
+{% assign plugin_posts = site.posts | where_exp: "doc", "doc.project_types contains 'plugins'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
+{% assign web_posts = site.posts | where_exp: "doc", "doc.project_types contains 'web'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
+{% assign hardware_posts = site.posts | where_exp: "doc", "doc.project_types contains 'hardware'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
+{% assign installation_posts = site.posts | where_exp: "doc", "doc.project_types contains 'installations-performances'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
+{% assign dataset_posts = site.posts | where_exp: "doc", "doc.project_types contains 'datasets'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
 
 {% if max_posts.size > 0 %}
 <details class="project-section" id="max">
