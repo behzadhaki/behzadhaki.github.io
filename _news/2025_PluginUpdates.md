@@ -10,5 +10,5 @@ I've worked extensively on packaging all these tools and preparing documentation
 
 To access these refer to the Projects page, where you can find links to all the tools I have developed.
 
-{% include display_section_card.html title="Projects" %}
+{% include display_section_card.html title="Works" %}
 

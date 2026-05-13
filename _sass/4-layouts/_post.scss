@@ -570,16 +570,18 @@
 
 .project-section {
   margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba($white, 0.08);
 
   &:first-of-type {
-    border-top: none;
     margin-top: 0;
   }
 
   &.is-collapsed .project-section__body {
     display: none;
+  }
+
+  // Native <details>: square bottom when open
+  &[open] > .project-section__header {
+    border-radius: 8px 8px 0 0;
   }
 
   &.is-collapsed .project-section__header::before {
@@ -597,12 +599,12 @@
     text-transform: capitalize;
     color: $white;
     background: #2a2736;
-    border-radius: 8px 8px 0 0;
+    border-radius: 8px;
     cursor: pointer;
 
     &::before {
       content: "▾";
-      font-size: 0.65rem;
+      font-size: 1rem;
       flex-shrink: 0;
       transition: transform 0.2s;
       display: inline-block;
@@ -726,6 +728,19 @@
     }
 
   }
+}
+
+// JS-toggled <section> variant: square bottom when expanded (no .is-collapsed)
+section.project-section:not(.is-collapsed) > .project-section__header {
+  border-radius: 8px 8px 0 0;
+}
+
+// Native <details> arrow rotation: closed = rotated, open = pointing down
+details.project-section > .project-section__header::before {
+  transform: rotate(-90deg);
+}
+details.project-section[open] > .project-section__header::before {
+  transform: rotate(0deg);
 }
 
 /* Publication cards inside project sections (single-column stack) */
