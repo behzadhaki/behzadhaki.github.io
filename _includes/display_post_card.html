@@ -1,53 +1,36 @@
 {% if include.doc %}{% assign doc = include.doc %}{% endif %}
-<div class="recent-posts"
-     style="position: relative; width: 100%; margin-bottom: 1.5rem; display: flex; flex-direction: row; gap: 2rem; background-color: rgba(43, 43, 43, 0.55); padding: 1.5rem; border-radius: 16px;">
+<div class="work-card">
+  <a class="work-card__link" href="{{ doc.url | relative_url }}">
 
-  {% if doc.image %}
-  <a class="recent-posts__image" href="{{ doc.url | relative_url }}"
-     style="flex: 0 0 174px; flex-shrink: 0;">
-    <img class="lazy"
-         data-src="{{ site.baseurl }}{{ doc.image }}"
-         alt="{{ doc.title }}"
-         style="width: 100%; height: 100%; border-radius: 16px; object-fit: cover;">
-  </a>
-  {% endif %}
+    <!-- Image header — purely decorative -->
+    <div class="work-card__header">
+      {% if doc.image %}
+      <img class="work-card__image lazy"
+           data-src="{{ site.baseurl }}{{ doc.image }}"
+           alt="{{ doc.title }}">
+      {% endif %}
+    </div>
 
-  <div class="recent-posts__content" style="flex: 1; min-width: 0;">
-
-    <!-- Meta Row: Read Time + Date -->
-    <div class="article__meta"
-         style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-      {% assign words = doc.content | default: "" | number_of_words %}
-      <span class="article__minutes">
-        {% if words < 360 %}
-          1 min read
-        {% else %}
-          {{ words | divided_by:180 }} min read
+    <!-- Body: growing content area + pinned date at bottom -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">{{ doc.title }}</h3>
+        {% if doc.description %}
+        <p class="work-card__description">{{ doc.description }}</p>
         {% endif %}
-      </span>
-      {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
-      <time class="article__date" datetime="{{ doc.date | date_to_xmlschema }}">
-        {{ doc.date | date: date_format }}
-      </time>
+        {% if doc.tags and doc.tags.size > 0 %}
+        <div class="work-card__tags">
+          {% for tag in doc.tags limit:4 %}
+          <span class="work-card__tag">{{ tag }}</span>
+          {% endfor %}
+          {% if doc.tags.size > 4 %}
+          <span class="work-card__tag work-card__tag--more">+{{ doc.tags.size | minus: 4 }}</span>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+      <span class="work-card__date">{{ doc.date | date: "%b %Y" }}</span>
     </div>
 
-    <h4 class="recent-posts__title" style="margin: 0 0 0.5rem 0;">
-      <a href="{{ doc.url | relative_url }}">{{ doc.title }}</a>
-    </h4>
-
-    {% if doc.description %}
-    <p class="article__excerpt">{{ doc.description }}</p>
-    {% endif %}
-
-    {% if doc.tags and doc.tags.size > 0 %}
-    <div class="article__bottom-meta" style="margin-top: 0.5rem;">
-      <span class="article-tags">
-        {% for tag in doc.tags %}
-        <span class="article__tag">{{ tag }}</span>
-        {% endfor %}
-      </span>
-    </div>
-    {% endif %}
-
-  </div>
+  </a>
 </div>

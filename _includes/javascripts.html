@@ -1,4 +1,31 @@
 <script src="{{ '/js/scripts.js' | relative_url }}"></script>
+<script>
+// Equalize work-card heights within each visual row
+function equalizeWorkCards() {
+  var cards = Array.from(document.querySelectorAll('.work-card'));
+  if (!cards.length) return;
+  // Reset first
+  cards.forEach(function(c) { c.style.minHeight = ''; });
+  // Group by top offset (same visual row)
+  var groups = {};
+  cards.forEach(function(c) {
+    var top = Math.round(c.getBoundingClientRect().top + window.scrollY);
+    if (!groups[top]) groups[top] = [];
+    groups[top].push(c);
+  });
+  // Set min-height to tallest in each group
+  Object.values(groups).forEach(function(group) {
+    var max = Math.max.apply(null, group.map(function(c) { return c.offsetHeight; }));
+    group.forEach(function(c) { c.style.minHeight = max + 'px'; });
+  });
+}
+window.addEventListener('load', equalizeWorkCards);
+window.addEventListener('resize', function() {
+  // Reset then re-equalize on resize
+  document.querySelectorAll('.work-card').forEach(function(c) { c.style.minHeight = ''; });
+  equalizeWorkCards();
+});
+</script>
 <script src="{{ '/js/common.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/dark_mode.js' | relative_url }}"></script>
 <script>
