@@ -1,8 +1,24 @@
 {% if include.doc %}{% assign doc = include.doc %}{% endif %}
-<div class="work-card">
+
+{% assign type_slug = doc.project_types | first %}
+{% case type_slug %}
+  {% when "max" %}{% assign type_label = "MAX/M4L" %}
+  {% when "pd" %}{% assign type_label = "Pure Data" %}
+  {% when "plugins" %}{% assign type_label = "Plugin" %}
+  {% when "web" %}{% assign type_label = "Web" %}
+  {% when "hardware" %}{% assign type_label = "Hardware" %}
+  {% when "installations-performances" %}{% assign type_label = "Installation" %}
+  {% when "datasets" %}{% assign type_label = "Dataset" %}
+  {% when "frameworks-templates" %}{% assign type_label = "Framework" %}
+  {% when "web-widgets" %}{% assign type_label = "Widget" %}
+  {% when "tutorials" %}{% assign type_label = "Tutorial" %}
+  {% else %}{% assign type_label = type_slug %}
+{% endcase %}
+
+<div class="work-card" data-types="{{ doc.project_types | join: ' ' }}">
   <a class="work-card__link" href="{{ doc.url | relative_url }}">
 
-    <!-- Image header — purely decorative -->
+    <!-- Image header -->
     <div class="work-card__header">
       {% if doc.image %}
       <img class="work-card__image lazy"
@@ -11,7 +27,7 @@
       {% endif %}
     </div>
 
-    <!-- Body: growing content area + pinned date at bottom -->
+    <!-- Body -->
     <div class="work-card__body">
       <div class="work-card__content">
         <h3 class="work-card__title">{{ doc.title }}</h3>
@@ -29,7 +45,10 @@
         </div>
         {% endif %}
       </div>
-      <span class="work-card__date">{{ doc.date | date: "%b %Y" }}</span>
+      <div class="work-card__footer">
+        {% if type_label %}<span class="work-card__type-badge">{{ type_label }}</span>{% endif %}
+        <span class="work-card__date">{{ doc.date | date: "%b %Y" }}</span>
+      </div>
     </div>
 
   </a>

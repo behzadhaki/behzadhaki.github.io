@@ -515,6 +515,16 @@
   grid-template-columns: repeat(auto-fill, minmax(180px, 220px));
   gap: 1.25rem;
   padding: 0.5rem 0 1rem;
+
+  // Portrait mobile: single full-width column
+  @media (max-width: $mobile) and (orientation: portrait) {
+    grid-template-columns: 1fr;
+  }
+
+  // Landscape mobile: two columns
+  @media (max-width: $mobile) and (orientation: landscape) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .work-card {
@@ -610,8 +620,56 @@
   }
 }
 
+.work-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .work-card__date {
   font-size: 0.62rem;
   color: rgba(#eee, 0.3);
-  // Pinned at bottom — .work-card__content flex:1 pushes it down
+}
+
+.work-card__type-badge {
+  font-size: 0.58rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: rgba(#eee, 0.45);
+}
+
+// ── Works / Dev-resources filter bar ────────────────────────────────────────
+.works-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.works-filter__btn {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: 1px solid rgba(#eee, 0.15);
+  background: transparent;
+  color: $gray;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: $light-gray;
+    background: rgba(#eee, 0.07);
+  }
+
+  &.is-active {
+    color: $light-gray;
+    background: rgba(#eee, 0.12);
+    border-color: rgba(#eee, 0.3);
+  }
+}
+
+.work-card--hidden {
+  display: none;
 }

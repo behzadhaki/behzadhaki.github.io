@@ -1,5 +1,3 @@
-## Overview
-
 `NeuralMidiFx` is a wrapper template that simplifies the deployment of neural networks as VST3 plugins.
 The wrapper is built on the [JUCE](https://juce.com/) framework and uses the [PyTorch C++ API](https://pytorch.org/cppdocs/).
 

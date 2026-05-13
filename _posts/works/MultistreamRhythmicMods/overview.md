@@ -7,8 +7,6 @@
 </video>
 
 
-## Overview
-
 This patch generates multiple parallel modulation curves that are rhythmically interlocked. 
 
 The idea behind this patch started from the [GrooveTransformer]({{site.baseurl}}/ready-to-use-apps/groove-transformer-vst/). GrooveTransformer generates drum patterns in MIDI format. These patterns can be used to `trigger` MIDI instruments.
@@ -17,7 +15,7 @@ In this patch, however, the generated MIDI events are used to create continuous 
 
 The generated curves can then be used to modulate any parameter in Ableton Live, hence allowing for rhythmic modulations of any parameter in real-time.
 
-# How does it work?
+## How does it work?
 
 The patch receives generated drum events from the GrooveTransformer vst (via a built-in OSC connection). 
 

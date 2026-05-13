@@ -6,122 +6,49 @@ description: Software, hardware, and datasets I have developed.
 hide_title: true
 ---
 
-{% assign max_posts = site.posts | where_exp: "doc", "doc.project_types contains 'max'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
-{% assign pd_posts = site.posts | where_exp: "doc", "doc.project_types contains 'pd'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
-{% assign plugin_posts = site.posts | where_exp: "doc", "doc.project_types contains 'plugins'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
-{% assign web_posts = site.posts | where_exp: "doc", "doc.project_types contains 'web'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
-{% assign hardware_posts = site.posts | where_exp: "doc", "doc.project_types contains 'hardware'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
-{% assign installation_posts = site.posts | where_exp: "doc", "doc.project_types contains 'installations-performances'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
-{% assign dataset_posts = site.posts | where_exp: "doc", "doc.project_types contains 'datasets'" | where_exp: "doc", "doc.hidden != true" | sort: "date" | reverse %}
+{% assign max_posts          = site.posts | where_exp: "doc", "doc.project_types contains 'max'"                        | where_exp: "doc", "doc.hidden != true" %}
+{% assign pd_posts           = site.posts | where_exp: "doc", "doc.project_types contains 'pd'"                         | where_exp: "doc", "doc.hidden != true" %}
+{% assign plugin_posts       = site.posts | where_exp: "doc", "doc.project_types contains 'plugins'"                    | where_exp: "doc", "doc.hidden != true" %}
+{% assign web_posts          = site.posts | where_exp: "doc", "doc.project_types contains 'web'"                        | where_exp: "doc", "doc.hidden != true" %}
+{% assign hardware_posts     = site.posts | where_exp: "doc", "doc.project_types contains 'hardware'"                   | where_exp: "doc", "doc.hidden != true" %}
+{% assign installation_posts = site.posts | where_exp: "doc", "doc.project_types contains 'installations-performances'" | where_exp: "doc", "doc.hidden != true" %}
+{% assign dataset_posts      = site.posts | where_exp: "doc", "doc.project_types contains 'datasets'"                   | where_exp: "doc", "doc.hidden != true" %}
 
-{% if max_posts.size > 0 %}
-<details class="project-section" id="max">
-  <summary class="project-section__header">
-    MAX / M4L
-    <a class="section-anchor" href="#max" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
-  </summary>
-  <div class="project-section__body">
-    <div class="works-card-grid">
-      {% for doc in max_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      {% include display_post_card.html doc=doc %}
-      {% endfor %}
-    </div>
-  </div>
-</details>
-{% endif %}
+{% assign all_works = "" | split: "" | concat: max_posts | concat: pd_posts | concat: plugin_posts | concat: web_posts | concat: hardware_posts | concat: installation_posts | concat: dataset_posts | uniq | sort: "date" | reverse %}
 
-{% if pd_posts.size > 0 %}
-<details class="project-section" id="pd">
-  <summary class="project-section__header">
-    Pure Data
-    <a class="section-anchor" href="#pd" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
-  </summary>
-  <div class="project-section__body">
-    <div class="works-card-grid">
-      {% for doc in pd_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      {% include display_post_card.html doc=doc %}
-      {% endfor %}
-    </div>
-  </div>
-</details>
-{% endif %}
+<div class="works-filter" id="works-filter">
+  <button class="works-filter__btn is-active" data-filter="all">All</button>
+  {% if max_posts.size > 0 %}<button class="works-filter__btn" data-filter="max">MAX / M4L</button>{% endif %}
+  {% if pd_posts.size > 0 %}<button class="works-filter__btn" data-filter="pd">Pure Data</button>{% endif %}
+  {% if plugin_posts.size > 0 %}<button class="works-filter__btn" data-filter="plugins">Plugins</button>{% endif %}
+  {% if web_posts.size > 0 %}<button class="works-filter__btn" data-filter="web">Web</button>{% endif %}
+  {% if hardware_posts.size > 0 %}<button class="works-filter__btn" data-filter="hardware">Hardware</button>{% endif %}
+  {% if installation_posts.size > 0 %}<button class="works-filter__btn" data-filter="installations-performances">Installations</button>{% endif %}
+  {% if dataset_posts.size > 0 %}<button class="works-filter__btn" data-filter="datasets">Datasets</button>{% endif %}
+</div>
 
-{% if plugin_posts.size > 0 %}
-<details class="project-section" id="plugins">
-  <summary class="project-section__header">
-    Plugins
-    <a class="section-anchor" href="#plugins" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
-  </summary>
-  <div class="project-section__body">
-    <div class="works-card-grid">
-      {% for doc in plugin_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      {% include display_post_card.html doc=doc %}
-      {% endfor %}
-    </div>
-  </div>
-</details>
-{% endif %}
+<div class="works-card-grid" id="works-grid">
+  {% for doc in all_works %}
+  {% include display_post_card.html doc=doc %}
+  {% endfor %}
+</div>
 
-{% if web_posts.size > 0 %}
-<details class="project-section" id="web">
-  <summary class="project-section__header">
-    Web
-    <a class="section-anchor" href="#web" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
-  </summary>
-  <div class="project-section__body">
-    <div class="works-card-grid">
-      {% for doc in web_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      {% include display_post_card.html doc=doc %}
-      {% endfor %}
-    </div>
-  </div>
-</details>
-{% endif %}
+<script>
+(function () {
+  var btns  = Array.from(document.querySelectorAll("#works-filter .works-filter__btn"));
+  var cards = Array.from(document.querySelectorAll("#works-grid .work-card"));
+  var active = "all";
 
-{% if hardware_posts.size > 0 %}
-<details class="project-section" id="hardware">
-  <summary class="project-section__header">
-    Hardware
-    <a class="section-anchor" href="#hardware" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
-  </summary>
-  <div class="project-section__body">
-    <div class="works-card-grid">
-      {% for doc in hardware_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      {% include display_post_card.html doc=doc %}
-      {% endfor %}
-    </div>
-  </div>
-</details>
-{% endif %}
-
-{% if installation_posts.size > 0 %}
-<details class="project-section" id="installations-performances">
-  <summary class="project-section__header">
-    Installations & Performances
-    <a class="section-anchor" href="#installations-performances" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
-  </summary>
-  <div class="project-section__body">
-    <div class="works-card-grid">
-      {% for doc in installation_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      {% include display_post_card.html doc=doc %}
-      {% endfor %}
-    </div>
-  </div>
-</details>
-{% endif %}
-
-{% if dataset_posts.size > 0 %}
-<details class="project-section" id="datasets">
-  <summary class="project-section__header">
-    Datasets
-    <a class="section-anchor" href="#datasets" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
-  </summary>
-  <div class="project-section__body">
-    <div class="works-card-grid">
-      {% for doc in dataset_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      {% include display_post_card.html doc=doc %}
-      {% endfor %}
-    </div>
-  </div>
-</details>
-{% endif %}
+  btns.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      active = this.dataset.filter;
+      btns.forEach(function (b) { b.classList.toggle("is-active", b.dataset.filter === active); });
+      cards.forEach(function (card) {
+        var types = (card.dataset.types || "").split(" ");
+        var show  = active === "all" || types.indexOf(active) !== -1;
+        card.classList.toggle("work-card--hidden", !show);
+      });
+    });
+  });
+})();
+</script>
