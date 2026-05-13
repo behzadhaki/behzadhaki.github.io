@@ -142,7 +142,7 @@ layout: default
       var body = section.querySelector(".project-section__body");
       var h2s = [];
       if (body) {
-        var allSub = Array.from(body.querySelectorAll("h2,h3,h4,h5,h6"));
+        var allSub = Array.from(body.querySelectorAll("h1,h2,h3,h4,h5,h6"));
         if (allSub.length > 0) {
           var minLevel = Math.min.apply(null, allSub.map(function (h) { return parseInt(h.tagName[1]); }));
           var l2Tag = "H" + minLevel;
@@ -284,44 +284,78 @@ layout: default
       });
     });
 
+    // Ensure the last section can scroll up to just below the navbar.
+    // Adds bottom padding so that maxScrollY >= lastSection.offsetTop - navbarHeight.
+    (function () {
+      if (!tree.length) return;
+      var post = document.querySelector(".post__content");
+      if (!post) return;
+      var lastSection = tree[tree.length - 1].el;
+      var navH = navbarOffset();
+      var lastTop = lastSection.getBoundingClientRect().top + window.pageYOffset;
+      var spaceAfter = document.body.scrollHeight - lastTop;
+      var needed = window.innerHeight - navH;
+      var extra = Math.max(0, needed - spaceAfter);
+      if (extra > 0) post.style.paddingBottom = extra + "px";
+    })();
+
     // Call openFromHash now that navbar is built and offset is known
     openFromHash();
 
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        var obs = observables.find(function (o) { return o.el === entry.target; });
-        if (!obs) return;
+    // Scroll-spy: find the last observable whose top is at or above the navbar.
+    // Falls back to the first observable when all sections are still below the cutoff.
+    function findActiveObs() {
+      var cutoff = navbarOffset() + 4;
+      var result = -1;
+      for (var i = 0; i < observables.length; i++) {
+        if (observables[i].el.getBoundingClientRect().top <= cutoff) {
+          result = i;
+        } else {
+          break;
+        }
+      }
+      return observables[result >= 0 ? result : 0] || null;
+    }
 
-        if (obs.sectionId !== activeSection) {
-          activeSection = obs.sectionId;
-          highlightRow(row1, activeSection);
-          renderRow2(obs.sectionNode);
-          if (obs.h2Node) {
-            activeH2 = obs.h2Id;
-            highlightRow(row2, activeH2);
-            renderRow3(obs.h2Node);
-          }
-          if (obs.h3Id) {
-            activeH3 = obs.h3Id;
-            highlightRow(row3, activeH3);
-          }
-        } else if (obs.h2Id !== activeH2) {
+    function applyActiveObs(obs) {
+      if (!obs) return;
+      if (obs.sectionId !== activeSection) {
+        activeSection = obs.sectionId;
+        highlightRow(row1, activeSection);
+        renderRow2(obs.sectionNode);
+        if (obs.h2Node) {
           activeH2 = obs.h2Id;
           highlightRow(row2, activeH2);
-          if (obs.h2Node) renderRow3(obs.h2Node);
-          if (obs.h3Id) {
-            activeH3 = obs.h3Id;
-            highlightRow(row3, activeH3);
-          }
-        } else if (obs.h3Id && obs.h3Id !== activeH3) {
+          renderRow3(obs.h2Node);
+        }
+        if (obs.h3Id) {
           activeH3 = obs.h3Id;
           highlightRow(row3, activeH3);
         }
-      });
-    }, { rootMargin: "-" + navbarOffset() + "px 0px -50% 0px", threshold: 0 });
+      } else if (obs.h2Id !== activeH2) {
+        activeH2 = obs.h2Id;
+        highlightRow(row2, activeH2);
+        if (obs.h2Node) renderRow3(obs.h2Node);
+        if (obs.h3Id) {
+          activeH3 = obs.h3Id;
+          highlightRow(row3, activeH3);
+        }
+      } else if (obs.h3Id && obs.h3Id !== activeH3) {
+        activeH3 = obs.h3Id;
+        highlightRow(row3, activeH3);
+      }
+    }
 
-    observables.forEach(function (o) { observer.observe(o.el); });
+    var scrollTicking = false;
+    window.addEventListener("scroll", function () {
+      if (!scrollTicking) {
+        window.requestAnimationFrame(function () {
+          applyActiveObs(findActiveObs());
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
+    }, { passive: true });
 
     window.addEventListener("hashchange", openFromHash);
   });
