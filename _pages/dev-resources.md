@@ -16,9 +16,9 @@ hide_title: true
     <a class="section-anchor" href="#frameworks-templates" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
   </summary>
   <div class="project-section__body">
-    <div class="row">
+    <div class="works-card-grid">
       {% for doc in framework_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      <div class="col col-6 col-t-12">{% include display_post_card.html doc=doc %}</div>
+      {% include display_post_card.html doc=doc %}
       {% endfor %}
     </div>
   </div>
@@ -32,9 +32,9 @@ hide_title: true
     <a class="section-anchor" href="#web-widgets" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
   </summary>
   <div class="project-section__body">
-    <div class="row">
+    <div class="works-card-grid">
       {% for doc in widget_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      <div class="col col-6 col-t-12">{% include display_post_card.html doc=doc %}</div>
+      {% include display_post_card.html doc=doc %}
       {% endfor %}
     </div>
   </div>

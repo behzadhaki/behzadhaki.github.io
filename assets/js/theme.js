@@ -42,8 +42,7 @@ let initTheme = (stored) => {
     setTheme("light");
   } else if (!stored || stored === "null") {
     // No stored preference — respect system setting, default to dark otherwise
-    var preferLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
-    setTheme(preferLight ? "light" : "dark");
+    setTheme("light");
   } else {
     setTheme("dark");
   }

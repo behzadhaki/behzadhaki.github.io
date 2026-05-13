@@ -21,9 +21,9 @@ hide_title: true
     <a class="section-anchor" href="#max" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
   </summary>
   <div class="project-section__body">
-    <div class="row">
+    <div class="works-card-grid">
       {% for doc in max_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      <div class="col col-6 col-t-12">{% include display_post_card.html doc=doc %}</div>
+      {% include display_post_card.html doc=doc %}
       {% endfor %}
     </div>
   </div>
@@ -37,9 +37,9 @@ hide_title: true
     <a class="section-anchor" href="#pd" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
   </summary>
   <div class="project-section__body">
-    <div class="row">
+    <div class="works-card-grid">
       {% for doc in pd_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      <div class="col col-6 col-t-12">{% include display_post_card.html doc=doc %}</div>
+      {% include display_post_card.html doc=doc %}
       {% endfor %}
     </div>
   </div>
@@ -53,9 +53,9 @@ hide_title: true
     <a class="section-anchor" href="#plugins" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
   </summary>
   <div class="project-section__body">
-    <div class="row">
+    <div class="works-card-grid">
       {% for doc in plugin_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      <div class="col col-6 col-t-12">{% include display_post_card.html doc=doc %}</div>
+      {% include display_post_card.html doc=doc %}
       {% endfor %}
     </div>
   </div>
@@ -69,9 +69,9 @@ hide_title: true
     <a class="section-anchor" href="#web" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
   </summary>
   <div class="project-section__body">
-    <div class="row">
+    <div class="works-card-grid">
       {% for doc in web_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      <div class="col col-6 col-t-12">{% include display_post_card.html doc=doc %}</div>
+      {% include display_post_card.html doc=doc %}
       {% endfor %}
     </div>
   </div>
@@ -85,9 +85,9 @@ hide_title: true
     <a class="section-anchor" href="#hardware" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
   </summary>
   <div class="project-section__body">
-    <div class="row">
+    <div class="works-card-grid">
       {% for doc in hardware_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      <div class="col col-6 col-t-12">{% include display_post_card.html doc=doc %}</div>
+      {% include display_post_card.html doc=doc %}
       {% endfor %}
     </div>
   </div>
@@ -101,9 +101,9 @@ hide_title: true
     <a class="section-anchor" href="#installations-performances" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
   </summary>
   <div class="project-section__body">
-    <div class="row">
+    <div class="works-card-grid">
       {% for doc in installation_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      <div class="col col-6 col-t-12">{% include display_post_card.html doc=doc %}</div>
+      {% include display_post_card.html doc=doc %}
       {% endfor %}
     </div>
   </div>
@@ -117,9 +117,9 @@ hide_title: true
     <a class="section-anchor" href="#datasets" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
   </summary>
   <div class="project-section__body">
-    <div class="row">
+    <div class="works-card-grid">
       {% for doc in dataset_posts %}{% if doc.hidden %}{% continue %}{% endif %}
-      <div class="col col-6 col-t-12">{% include display_post_card.html doc=doc %}</div>
+      {% include display_post_card.html doc=doc %}
       {% endfor %}
     </div>
   </div>
