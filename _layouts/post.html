@@ -448,13 +448,26 @@ document.addEventListener('keydown', function(e) {
     // Call openFromHash now that navbar is built and offset is known
     openFromHash();
 
-    // Scroll-spy: find the last observable whose top is at or above the navbar.
-    // Falls back to the first observable when all sections are still below the cutoff.
+    // Scroll-spy: find the last observable whose top is at or above its effective cutoff.
+    // For headings inside a section body the cutoff also includes the sticky section header,
+    // matching the offset used in scrollToEl so spy and scroller stay in sync.
+    function stickyOffset(el) {
+      var offset = navbarOffset() + 4;
+      if (el.closest && el.closest('.project-section__body')) {
+        var sec = el.closest('.project-section');
+        if (sec) {
+          var hdr = sec.querySelector('.project-section__header');
+          if (hdr) offset += hdr.offsetHeight;
+        }
+      }
+      return offset;
+    }
+
     function findActiveObs() {
-      var cutoff = navbarOffset() + 4;
       var result = -1;
       for (var i = 0; i < observables.length; i++) {
-        if (observables[i].el.getBoundingClientRect().top <= cutoff) {
+        var el = observables[i].el;
+        if (el.getBoundingClientRect().top <= stickyOffset(el)) {
           result = i;
         } else {
           break;
