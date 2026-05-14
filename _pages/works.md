@@ -11,9 +11,12 @@ hide_title: true
 {% assign plugin_posts       = site.posts | where_exp: "doc", "doc.project_types contains 'plugins'"                    | where_exp: "doc", "doc.hidden != true" %}
 {% assign web_posts          = site.posts | where_exp: "doc", "doc.project_types contains 'web'"                        | where_exp: "doc", "doc.hidden != true" %}
 {% assign hardware_posts     = site.posts | where_exp: "doc", "doc.project_types contains 'hardware'"                   | where_exp: "doc", "doc.hidden != true" %}
-{% assign dataset_posts      = site.posts | where_exp: "doc", "doc.project_types contains 'datasets'"                   | where_exp: "doc", "doc.hidden != true" %}
+{% assign dataset_posts      = site.posts | where_exp: "doc", "doc.project_types contains 'datasets'"             | where_exp: "doc", "doc.hidden != true" %}
+{% assign framework_posts    = site.posts | where_exp: "doc", "doc.project_types contains 'frameworks'" | where_exp: "doc", "doc.hidden != true" %}
+{% assign template_posts     = site.posts | where_exp: "doc", "doc.project_types contains 'templates'"  | where_exp: "doc", "doc.hidden != true" %}
+{% assign webwidget_posts    = site.posts | where_exp: "doc", "doc.project_types contains 'web-widgets'" | where_exp: "doc", "doc.hidden != true" %}
 
-{% assign all_works = "" | split: "" | concat: max_posts | concat: pd_posts | concat: plugin_posts | concat: web_posts | concat: hardware_posts | concat: dataset_posts | uniq | sort: "date" | reverse %}
+{% assign all_works = "" | split: "" | concat: max_posts | concat: pd_posts | concat: plugin_posts | concat: web_posts | concat: hardware_posts | concat: dataset_posts | concat: framework_posts | concat: template_posts | concat: webwidget_posts | uniq | sort: "date" | reverse %}
 
 <div class="works-filter" id="works-filter">
   <button class="works-filter__btn is-active" data-filter="all">All</button>
@@ -23,6 +26,9 @@ hide_title: true
   {% if web_posts.size > 0 %}<button class="works-filter__btn" data-filter="web">Web</button>{% endif %}
   {% if hardware_posts.size > 0 %}<button class="works-filter__btn" data-filter="hardware">Hardware</button>{% endif %}
   {% if dataset_posts.size > 0 %}<button class="works-filter__btn" data-filter="datasets">Datasets</button>{% endif %}
+  {% if framework_posts.size > 0 %}<button class="works-filter__btn" data-filter="frameworks">Frameworks</button>{% endif %}
+  {% if template_posts.size > 0 %}<button class="works-filter__btn" data-filter="templates">Templates</button>{% endif %}
+  {% if webwidget_posts.size > 0 %}<button class="works-filter__btn" data-filter="web-widgets">Web Widgets</button>{% endif %}
 </div>
 
 <div class="works-card-grid" id="works-grid">

@@ -10,7 +10,9 @@
   {% when "installations-performances" %}{% assign type_label = "Installation" %}
   {% when "datasets" %}{% assign type_label = "Dataset" %}
   {% when "frameworks-templates" %}{% assign type_label = "Framework" %}
-  {% when "web-widgets" %}{% assign type_label = "Widget" %}
+  {% when "frameworks" %}{% assign type_label = "Framework" %}
+  {% when "templates" %}{% assign type_label = "Template" %}
+  {% when "web-widgets" %}{% assign type_label = "Web Widget" %}
   {% when "tutorials" %}{% assign type_label = "Tutorial" %}
   {% else %}{% assign type_label = type_slug %}
 {% endcase %}

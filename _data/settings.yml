@@ -43,19 +43,19 @@ menu-settings:
         - title: Datasets
           url: /works/datasets/
           project_type: datasets
-    - title: Installations & Performances
-      url: /installations-performances/
-    - title: Dev Resources
-      url: /dev-resources/
-      sub_menus:
-        - title: Frameworks & Templates
-          url: /dev-resources/frameworks-templates/
-          project_type: frameworks-templates
+        - title: Frameworks
+          url: /works/frameworks/
+          project_type: frameworks
+        - title: Templates
+          url: /works/templates/
+          project_type: templates
         - title: Web Widgets
-          url: /dev-resources/web-widgets/
+          url: /works/web-widgets/
           project_type: web-widgets
     - title: Tutorials
       url: /tutorials/
+    - title: Installations & Performances
+      url: /installations-performances/
     - title: CV
       url: /cv/
 
