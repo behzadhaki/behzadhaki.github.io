@@ -1,10 +1,6 @@
 
-# Freesound Simple Sampler – JUCE Plugin Tutorial
-
 {: .note }  
 This tutorial requires some basic knowledge of JUCE and C++.
-
----
 
 ## 1. Overview
 
@@ -19,8 +15,6 @@ The goal is to learn how to:
 
 {:.note }
 You can use the installers available [here]({{site.baseurl}}/ready-to-use-apps/freesound-simple-sampler/) to try out the plugin before diving into the code.
-
----
 
 ## 2. CMake Setup
 
@@ -48,14 +42,11 @@ To specify the name of your plugin, as well as the formats you want to build, mo
 The resulting plugin will be named **Freesound Simple Sampler** and will be built in the following formats: **AudioUnit (AU)**, **VST3**, and **Standalone Application**. 
 In your host (in my case, Ableton Live), it will appear under the company name **MusicTechnologyGroup**.
 
-
 <img src="/assets/works/FreesoundSimpleSampler/FreesoundSimpleSamplerLocator.png" alt="Thumbnail" width="30%">
-
 
 ### Customizing JUCE Version
 
 If you need to use a specific version of JUCE, modify the following section in `./CMake/Findjuce.cmake`. 
-
 
 ```cmake 
     if (MSVC)
@@ -70,9 +61,6 @@ If you need to use a specific version of JUCE, modify the following section in `
 {:.note }
 The cmake setup is based on **[Eyal Amir's Template Available Here](https://github.com/eyalamirmusic/JUCECmakeRepoPrototype/tree/master/Modules)** repository. I highly recommend checking it out for more details on setting up JUCE projects with CMake.
 Also, a video tutorial by Eyal is available  **[here](https://www.youtube.com/watch?v=8kF0Ea2VuXA)**.
-
-
----
 
 ## 3. Querying the Freesound API
 
@@ -149,7 +137,6 @@ To search for sounds, we first create an instance of the `FreesoundClient` class
 Do not hardcode your API key in production code. After completing the CMake setup, there will be a header file generated in `./Plugins/FreesoundSimpleSampler/Source/FreesoundKeys.h`.
 Make sure to add this file to your `.gitignore` to avoid exposing your API key in public repositories.
 
-
 ### Performing the Search
 
 Next, we call the `textSearch()` method of the `FreesoundClient` instance to perform the search. This method takes several parameters:
@@ -207,8 +194,6 @@ Finally, we update the `ResultsTableComponent` with the names, usernames, and li
 
 {:.note }
 We are not downloading any sounds here. We have so far only selected the sounds we want to download and play later. The method returns the resulting sounds and we notify the processor to download them asynchronously and prepare the playback samplers.
-
---- 
 
 ## 4. Asynchronous Downloading of Selected Sounds from Freesound
 
@@ -309,7 +294,6 @@ The threading in JUCE is such that when you call `startThread()`, the `run()` me
                     output->flush();
                 }
               
-    
             listeners.call([allSuccessful](Listener& l) { l.downloadCompleted(allSuccessful); });   <--- notify listener (processor) that download is complete
 ```
 
@@ -318,8 +302,6 @@ As mentioned above, we can only download previews without user authentication. F
 
 {:.note} 
 In the implementation, we also handle progress updates and error handling, but for brevity, I have omitted those parts here. You can refer to the full implementation in `AudioDownloadManager.h` and `AudioDownloadManager.cpp`.
-
----
 
 ## 5. Playback of Downloaded Sounds
 
@@ -376,8 +358,6 @@ The `setSources()` method is responsible for loading the downloaded sounds into 
     }
 ```
 
---- 
-
 ## 6. Auditioning and MIDI Playback
 
 The plugin allows users to audition sounds by clicking on the pads in the GUI or by playing MIDI notes.
@@ -392,11 +372,8 @@ The plugin allows users to audition sounds by clicking on the pads in the GUI or
     }
 ```
 
----
-
 ## What's Next?
 
 {:.note }
 In the next tutorial, we will learn how to allow users to login to their Freesound accounts from within the plugin, and how to access their accounts. 
-
 

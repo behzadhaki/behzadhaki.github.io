@@ -1,5 +1,5 @@
 
-# What is the GrooveTransformer?
+## What is the GrooveTransformer?
 
 At it's core, `GrooveTransformer` is
  
@@ -11,7 +11,7 @@ In other words,
     the plugin is a sequencer that generates and playbacks drum loops in real-time,
     using a combination of "programmed" drum patterns and also an incoming rhythmic pattern!
 
-# Story Behind the GrooveTransformer
+## Story Behind the GrooveTransformer
 
 The GrooveTransformer is very much inspired by the idea of rhythm spaces, that is, the idea of a space in which each point corresponds to a unique rhythm.
 
@@ -33,7 +33,7 @@ These considerations would allow us to develop a system that would operate in a 
 
 We speculated that such a system would afford the user the liberty of deciding where and how the system should be used!
 
-# How does it work?
+## How does it work?
 
 At the core of the plugin is a small generative neural network that is trained to convert a given rhythmic loop into a drum loop.
 Here by rhythmic loop we mean a pitch-agnostic sequence of note-on events, with exact timing and velocity.
@@ -53,7 +53,7 @@ The plugin then generates drum loops that are dynamically varying within this sp
 
 Let's take closer look at the concept behind the plugin!
 
-## Generative Model
+### Generative Model
 
 For the GrooveTransformer, we trained a generative neural network that would be able to expand a rhythmic pattern into a 9-voice drum loop.
 
@@ -73,9 +73,9 @@ The specific architecture of the neural network is not important for this discus
 With these capabilities in mind, we can now consider how the plugin operates.
 
 
-## Exploiting Model Capabilities
+### Exploiting Model Capabilities
 
-### Sequencing between Two Patterns
+#### Sequencing between Two Patterns
 
 For the sake of simplicity, let's consider we have two drum loops, `A` and `B`, and we want to generate a new pattern that is a mix of the two. In this case, we can use a slider to specify the degree to which the new pattern should resemble `A` or `B`.
 
@@ -89,7 +89,7 @@ In other words, in this case, the system would work as a sequencer! A sequencer 
 <img src="/assets/works/GrooveTransformer/AB_Interp.png" alt="Thumbnail" width="50%">
 
 
-### Reacting to a Live Rhythmic Source
+#### Reacting to a Live Rhythmic Source
 
 While operating in this mode is interesting, we can take this idea further by introducing a third pattern, `G`, which is obtained from an incoming rhythmic pattern in real-time. 
 This means that not only can we interpolate between `A` and `B` which are most-likely pre-programmed, but also we can use a rhythmic pattern that dynamically changes during the performance.
@@ -124,7 +124,7 @@ That is, to decide whether the system should be a sequencer, an accompaniment ge
 
 
 
-### Where does the Live Rhythmic Source come from?
+#### Where does the Live Rhythmic Source come from?
 
 The model was trained on rhythmic patterns that were extracted from drum patterns. This means that the model is first and foremost trained on rhythmic patterns that are "drum-like".
 
@@ -137,7 +137,7 @@ Keep in mind that the rhythm extraction from audio sources is not perfect, and i
 <img src="/assets/works/GrooveTransformer/overview_4.png" alt="Thumbnail" width="50%">
 
 
-### Manual or Automatic Navigation
+#### Manual or Automatic Navigation
 
 During the performance, the user can manually navigate the space, and the system immediately reacts to the movement. 
 
@@ -148,7 +148,7 @@ In this case, the system will automatically interpolate between the three patter
 <img src="/assets/works/GrooveTransformer/overview_5.png" alt="Thumbnail" width="50%">
 
 
-### Manipulating the Generations
+#### Manipulating the Generations
 
 One of the most interesting aspects of the plugin is that the user can manipulate the generations in real-time.
 

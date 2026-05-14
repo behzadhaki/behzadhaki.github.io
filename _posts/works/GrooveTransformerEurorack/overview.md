@@ -1,34 +1,22 @@
 
-
----
 ## Source Code
----
 
-### `Daisy Seed Source (C++)`
-<a href="https://groovetransformer.github.io/assets/zip/DaisySeedCode.zip" download>Download File</a>
+<div class="proj-btn-row">
+<a class="proj-btn proj-btn--download" href="https://groovetransformer.github.io/assets/zip/DaisySeedCode.zip" target="_blank" rel="noopener"><span class="proj-btn__badge"><i class="fa-solid fa-download"></i></span> Daisy Seed Source (C++)</a>
+<a class="proj-btn proj-btn--download" href="https://groovetransformer.github.io/assets/zip/LibreBoardCode.zip" target="_blank" rel="noopener"><span class="proj-btn__badge"><i class="fa-solid fa-download"></i></span> Libre / RPi Code (Python)</a>
+<a class="proj-btn proj-btn--download" href="/assets/works/GrooveTransformerEurorack/AdditionalNotes.pdf" target="_blank" rel="noopener"><span class="proj-btn__badge"><i class="fa-solid fa-download"></i></span> Additional Notes (.pdf)</a>
+</div>
 
-### `Libre (or RPi) Code (Python)`
-<a href="https://groovetransformer.github.io/assets/zip/LibreBoardCode.zip" download>Download File</a>
-
-### `Additional Info`
-<a href="/assets/works/GrooveTransformerEurorack/AdditionalNotes.pdf" download>Download File</a>
-
-
----
 ## PCB
----
 
-### `Schematics`
+### `Production Resources`
 
-<a href="/assets/works/GrooveTransformerEurorack/Schematic_FrontPCB.pdf" download>Download File: Front PCB</a>
-
-<a href="/assets/works/GrooveTransformerEurorack/Schematic_BottomPCB.pdf" download>Download File: Bottom PCB</a>
-
-### `Gerber Files`
-<a href="https://groovetransformer.github.io/assets/zip/PCB_Gerber_Files.zip" download>Download File</a>
-
-### `JLCPCB Production Files`
-<a href="https://groovetransformer.github.io/assets/zip/JLCPCB_Production_Files.zip" download>Download File</a>
+<div class="proj-btn-row">
+<a class="proj-btn proj-btn--download" href="/assets/works/GrooveTransformerEurorack/Schematic_FrontPCB.pdf" target="_blank" rel="noopener"><span class="proj-btn__badge"><i class="fa-solid fa-download"></i></span> Front PCB Schematic (.pdf)</a>
+<a class="proj-btn proj-btn--download" href="/assets/works/GrooveTransformerEurorack/Schematic_BottomPCB.pdf" target="_blank" rel="noopener"><span class="proj-btn__badge"><i class="fa-solid fa-download"></i></span> Bottom PCB Schematic (.pdf)</a>
+<a class="proj-btn proj-btn--download" href="https://groovetransformer.github.io/assets/zip/PCB_Gerber_Files.zip" target="_blank" rel="noopener"><span class="proj-btn__badge"><i class="fa-solid fa-download"></i></span> PCB Gerber Files (.zip)</a>
+<a class="proj-btn proj-btn--download" href="https://groovetransformer.github.io/assets/zip/JLCPCB_Production_Files.zip" target="_blank" rel="noopener"><span class="proj-btn__badge"><i class="fa-solid fa-download"></i></span> JLCPCB Production Files (.zip)</a>
+</div>
 
 ### `Images`
 
@@ -38,9 +26,7 @@
 <img src="/assets/works/GrooveTransformerEurorack/pcb/FrontPCB.png" alt="FrontPCP 1" style="width: 25%;">
 <img src="/assets/works/GrooveTransformerEurorack/pcb/FrontPCB2.png" alt="FrontPCP 2" style="width: 25%;">
 
----
 ## Faceplate
----
 
 ### `Design`
 
@@ -64,10 +50,7 @@
 
 <img src="/assets/works/GrooveTransformerEurorack/faceplate/print_.jpg" alt="Sticker" style="width: 25%;">
 
-
----
 ## Interface Controls and Parameters
----
 
 |                                    | Figure Index | Name                         | Description                                                                                                                               |
 |------------------------------------|--------------|------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|

@@ -1,6 +1,5 @@
 
-
-# Setup in DAW
+## Setup in DAW
 
 As of [VST3](https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/About+MIDI/Index.html), 
 there is no MIDI-only plugin type, there are all only instrument or audio effect plugins.
@@ -15,25 +14,19 @@ In Ableton Live, the best way to set up GrooveTransformer is as follows:
 
 <img src="/assets/works/GrooveTransformer/AbletonSetup.png" alt="Thumbnail" width="30%">
 
-
 The above setup allows to route both MIDI and audio into GrooveTransformer.
-
 
 {: .warning }
 The plugin does not pass audio through it, so do not place it on a track where you want to process audio.
 
----
-# Manual (Version 0.0.1)
----
+## Manual (Version 0.0.1)
 
 Below is a detailed description of the GrooveTransformer module. 
 
 {: .note}
 When hovering the mouse on any control parameter of the plugin, a brief description of the control shows up at the bottom of the plugin.
 
-
-
-## Feeding a Live Rhythm to GrooveTransformer
+### Feeding a Live Rhythm to GrooveTransformer
 
 As shown in the setup above, the first track receives MIDI and routes it into GrooveTransformer. Moreover, the GrooveTransformer is always "listening" to the audio coming out of the second channel.
 
@@ -46,10 +39,9 @@ This detection is quite **sensitive to the volume** of the audio stream and the 
 3. The plugin registers the events with respect to a 32-step 16th note grid (i.e. 4/4 time signature with 16 steps per bar). 
 As a result, initially to understand the behaviour better, maybe it's best to synchronize with the internal clock of the DAW using a click track.
 
-## Manipulating the Detected Rhythmic Events
+### Manipulating the Detected Rhythmic Events
 
 <img src="/assets/works/GrooveTransformer/InputManager.gif" alt="Thumbnail" width="30%">
-
 
 The input rhythmic events are extracted and placed in a 32-step 16th note grid, visible in the top section of the plugin.
 
@@ -73,8 +65,7 @@ If a preset is changed during a performance, the input buffer is kept as is (alt
 {: .note }
 The input buffer is cleared when the plugin is turned off. This has been a deliberate design choice to ensure that the top corner is always associated with a live incoming rhythm. 
 
-
-## Selecting A/B Patterns
+### Selecting A/B Patterns
 
 There are a number of ways to select the A/B patterns:
 
@@ -90,7 +81,7 @@ _**<u>Programming via a Groove</u>**_: As mentioned before, the top point corres
 
 <img src="/assets/works/GrooveTransformer/GrooveSnap.gif" alt="Thumbnail" width="30%">
 
-## Navigation of the Triangular Rhythm Space
+### Navigation of the Triangular Rhythm Space
 
 _**<u>Manual Navigation</u>**_: The most straightforward way to navigate the triangular rhythm space is by manually moving the playback position within the triangular area. 
 This is done by either clicking anywhere within the triangular area or by dragging the playback position.
@@ -116,7 +107,7 @@ The combination of Adaptive Follow, Adaptive Memory, and AB Oscillation can lead
 {: .note }
 While Adaptive Follow and AB Oscillation are engaged, the user can still manually navigate the triangular rhythm space. The manual navigation will override the automatic navigation and automatically disengage the Adaptive Follow and AB Oscillation Rate. 
 
-## Manipulation of Generations Using Controls
+### Manipulation of Generations Using Controls
 
 _**<u>Style Templates</u>**_: The plugin comes with 9 style controls that can be used to manipulate the generated rhythm. We intentionally did not name these controls to promote experimentation, rather than imposing the notion of what style the performance should stick to! 
 The style templates manipulate the generated patterns in terms of velocity, timing, voice density, and voice distribution. Hence, they can quite drastically change the feel of the generated rhythm.
@@ -158,12 +149,9 @@ This was a deliberate design choice to ensure that the controls impact the immed
 _**<u>Generation Quantization</u>**_: The micro-timings of the generations can be quantized using the <u>Generation Quantization</u> slider placed in the bottom right corner of the plugin. 
 At the very left, there is no quantization while at the very right all events are snapped to the 16th note grid (hence, no micro-timing). 
 
-
 <img src="/assets/works/GrooveTransformer/GenQuantization.gif" alt="Thumbnail" width="30%">
 
-
-
-## Trying Model Variants
+### Trying Model Variants
 
 There are three model variants that can be used. These models have the same architecture, with different training schemes. 
 It's not necessary to go through the technical differences, but what is perhaps important is that the models were trained with the following aims:
@@ -173,7 +161,6 @@ It's not necessary to go through the technical differences, but what is perhaps 
 | 0.2Beta  | Trained for better conversion of live incoming rhythm into a drum pattern |
 | 1.0Beta  | Trained for better generation of random drum pattern patterns             |
 | 0.5Beta | Trained to be somewhere in between the above two |
-
 
 {: .warning}
 Once a model is swapped mid-session, the patterns at A/B positions will be changed and will have no correlation with the previous patterns. 

@@ -1,6 +1,5 @@
 
-
-#### Eurorack Jams
+## Eurorack Jams
 
 Setup: 
 
@@ -20,38 +19,35 @@ Lo, Mid, Hi Toms: Akemie’s Taiko
 To retain generated dynamics, the kick, hi-hats, and toms are routed to individual channels on a Mutable Instruments Veils.  The level of each channel is controlled with the velocity sequence associated with the corresponding voice	
 The Intellijel Plonk has a dedicated velocity input that we utilized rather than routing the signal to Veils
 
-##### Video 1
+### Video 1
 
 <video width="600" height="400" controls>
   <source src="/assets/works/GrooveTransformerEurorack/Jam 3 - Pt1 - compressed_compressed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
-##### Video 2
+### Video 2
 
 <video width="320" height="240" controls>
   <source src="/assets/works/GrooveTransformerEurorack/Jam 3 - Pt2 - compressed_compressed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
-##### Video 3
-
+### Video 3
 
 <video width="320" height="240" controls>
   <source src="/assets/works/GrooveTransformerEurorack/Jam 3 - Pt3 - compressed_compressed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
-##### Video 4
+### Video 4
 
 <video width="320" height="240" controls>
   <source src="/assets/works/GrooveTransformerEurorack/Jam2 - pt1 - compressed_compressed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
----
-
-#### Module Videos (Exploring Synthesis)
+## Module Videos (Exploring Synthesis)
 <video width="320" height="240" controls>
   <source src="/assets/works/GrooveTransformerEurorack/GT Demo_compressed.mp4" type="video/mp4">
   Your browser does not support the video tag.
