@@ -62,6 +62,162 @@ body {
   border: 1px solid rgba(91,127,166,0.3);
 }
 
+/* ── Loaded post banner ──────────────────────────────────────────────────── */
+.loaded-banner {
+  display: none;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding: 0.45rem 1rem;
+  background: rgba(91,127,166,0.08);
+  border-bottom: 1px solid rgba(91,127,166,0.2);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.loaded-banner.is-visible { display: flex; }
+.loaded-banner strong { color: var(--accent); }
+.loaded-banner .mode-pill {
+  display: inline-flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-left: auto;
+}
+.loaded-banner .mode-pill button {
+  background: none;
+  border: none;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-right: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.loaded-banner .mode-pill button:last-child { border-right: none; }
+.loaded-banner .mode-pill button.is-active { background: rgba(91,127,166,0.25); color: #ccc; }
+.loaded-banner .mode-pill button:hover:not(.is-active) { background: rgba(255,255,255,0.06); }
+.loaded-banner .clear-btn {
+  background: none;
+  border: 1px solid rgba(200,80,80,0.3);
+  color: rgba(200,80,80,0.7);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+.loaded-banner .clear-btn:hover { border-color: rgba(200,80,80,0.6); color: rgba(220,80,80,1); }
+
+/* ── Resources panel ─────────────────────────────────────────────────────── */
+.resources-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+.resources-hint {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+.resource-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 0.3rem;
+  font-size: 0.72rem;
+  color: #ccc;
+  transition: border-color 0.15s;
+}
+.resource-item.is-avatar {
+  border-color: var(--accent);
+  background: rgba(91,127,166,0.08);
+}
+.resource-item input[type=radio] { accent-color: var(--accent); flex-shrink: 0; cursor: pointer; }
+.resource-item .res-icon { flex-shrink: 0; font-size: 0.9rem; }
+.resource-item .res-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.resource-item .res-badge {
+  font-size: 0.6rem;
+  background: rgba(91,127,166,0.25);
+  color: var(--accent);
+  border-radius: 3px;
+  padding: 0.05rem 0.3rem;
+  flex-shrink: 0;
+}
+.resource-item .res-remove {
+  background: none; border: none; color: rgba(200,80,80,0.5);
+  cursor: pointer; font-size: 0.75rem; padding: 0 0.1rem; flex-shrink: 0;
+  transition: color 0.15s;
+}
+.resource-item .res-remove:hover { color: rgba(220,80,80,0.9); }
+.res-avatar-path {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  word-break: break-all;
+}
+
+/* ── Load-post modal ─────────────────────────────────────────────────────── */
+.tool-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+.tool-modal-overlay.is-open { display: flex; }
+.tool-modal {
+  background: #1c1c1e;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 1.5rem;
+  width: 360px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+}
+.tool-modal h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ccc;
+  margin: 0 0 0.25rem;
+}
+.tool-modal .modal-subtitle {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-bottom: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tool-modal .modal-choices { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+.tool-modal .modal-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.tool-modal .modal-choice:hover { background: rgba(255,255,255,0.04); }
+.tool-modal .modal-choice.is-selected { border-color: var(--accent); background: rgba(91,127,166,0.12); }
+.tool-modal .modal-choice input[type=radio] { margin-top: 2px; accent-color: var(--accent); }
+.tool-modal .modal-choice-label { font-size: 0.78rem; color: #ccc; font-weight: 500; }
+.tool-modal .modal-choice-desc  { font-size: 0.68rem; color: var(--text-muted); margin-top: 0.1rem; }
+.tool-modal .modal-dup-name {
+  margin-top: 0.6rem;
+  display: none;
+}
+.tool-modal .modal-dup-name.is-visible { display: block; }
+.tool-modal .modal-dup-name label { font-size: 0.72rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem; }
+.tool-modal .modal-dup-name input { width: 100%; box-sizing: border-box; }
+.tool-modal .modal-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.2rem; }
+
 /* ── Main layout ─────────────────────────────────────────────────────────── */
 .main {
   display: flex;
@@ -72,8 +228,8 @@ body {
 
 /* ── Form panel ──────────────────────────────────────────────────────────── */
 .form-panel {
-  width: 360px;
-  min-width: 280px;
+  width: 300px;
+  min-width: 240px;
   flex-shrink: 0;
   background: var(--bg2);
   border-right: 1px solid var(--border);
@@ -89,7 +245,76 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  min-width: 0;
+  min-width: 260px;
+}
+
+/* ── Live panel (always-visible right column) ─────────────────────────────── */
+.live-panel {
+  flex: 1;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-left: 1px solid var(--border);
+}
+.live-panel-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.6rem;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  font-size: 0.72rem;
+}
+.live-panel-toolbar .live-url {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--accent);
+  opacity: 0.8;
+}
+.live-panel-toolbar input.live-server-input {
+  width: 8.5rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 0.68rem;
+  font-family: var(--mono);
+  padding: 0.18rem 0.4rem;
+}
+.live-iframe-wrap {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+.live-iframe-wrap iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+}
+.live-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 2rem;
+  background: var(--bg);
+  pointer-events: none;
 }
 
 /* ── Output bar ──────────────────────────────────────────────────────────── */
@@ -542,13 +767,58 @@ textarea {
 .tree-file .file-icon { font-size: 0.7rem; flex-shrink: 0; }
 .files-viewer {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+.file-viewer-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--bg2);
+}
+.file-viewer-path {
+  flex: 1;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.file-viewer-body {
+  flex: 1;
   overflow: auto;
+  min-height: 0;
+}
+.file-viewer-body .code-view {
   padding: 1rem;
   font-family: var(--mono);
   font-size: 0.77rem;
   line-height: 1.65;
   white-space: pre;
   color: #cdd6f4;
+}
+.file-viewer-body textarea.file-edit-area {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: var(--mono);
+  font-size: 0.77rem;
+  line-height: 1.65;
+  padding: 1rem;
+  display: block;
+}
+.file-viewer-body textarea.file-edit-area:focus {
+  background: rgba(91,127,166,0.04);
 }
 
 /* ── Card tab ─────────────────────────────────────────────────────────────── */
@@ -1015,7 +1285,56 @@ input[type=number]:focus { border-color: var(--accent); }
 <div class="topbar">
   <h1>Jekyll Post Builder</h1>
   <span class="badge">behzadhaki.github.io</span>
-  <button class="btn btn-ghost btn-sm" id="bib-status-btn" onclick="autoLoadBibs()" style="margin-left:auto;" title="Click to reload papers">⟳ Loading papers…</button>
+  <label class="btn btn-ghost btn-sm" style="cursor:pointer;margin-left:auto;" title="Load an existing Landing.md to edit it">
+    📂 Load post
+    <input type="file" id="load-post-file" accept=".md" style="display:none;" onchange="loadExistingPost(this)">
+  </label>
+  <button class="btn btn-ghost btn-sm" id="bib-status-btn" onclick="autoLoadBibs()" style="margin-left:0.5rem;" title="Click to reload papers">⟳ Loading papers…</button>
+</div>
+
+<!-- ── Load-post modal ────────────────────────────────────────────────────── -->
+<div class="tool-modal-overlay" id="load-modal-overlay">
+  <div class="tool-modal">
+    <h3>Load post</h3>
+    <div class="modal-subtitle" id="load-modal-subtitle">—</div>
+    <div class="modal-choices">
+      <label class="modal-choice is-selected" id="modal-choice-edit" onclick="selectLoadMode('edit')">
+        <input type="radio" name="load-mode" value="edit" checked>
+        <div>
+          <div class="modal-choice-label">✎ Edit in place</div>
+          <div class="modal-choice-desc">Overwrites the existing files when you Write to Disk</div>
+          <div class="modal-dup-name is-visible" id="modal-edit-folder-wrap" style="margin-top:0.5rem;">
+            <label for="modal-edit-folder">Post folder name <span style="opacity:0.5;font-weight:400">(in _posts/…/)</span></label>
+            <input type="text" id="modal-edit-folder" placeholder="e.g. MyProject" oninput="validateEditFolder()">
+            <div id="modal-edit-folder-warn" style="display:none;font-size:0.65rem;color:#e8a838;margin-top:0.2rem;">⚠ Folder not detected from file — please enter it manually</div>
+          </div>
+        </div>
+      </label>
+      <label class="modal-choice" id="modal-choice-duplicate" onclick="selectLoadMode('duplicate')">
+        <input type="radio" name="load-mode" value="duplicate">
+        <div style="width:100%">
+          <div class="modal-choice-label">⧉ Duplicate</div>
+          <div class="modal-choice-desc">Creates a new post — original is untouched</div>
+          <div class="modal-dup-name" id="modal-dup-name-wrap">
+            <label for="modal-dup-title">New title</label>
+            <input type="text" id="modal-dup-title" placeholder="Copy of …" oninput="updateModalDupTitle()">
+          </div>
+        </div>
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" onclick="closeLoadModal()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="confirmLoadModal()">Load</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Loaded post banner ─────────────────────────────────────────────────── -->
+<div class="loaded-banner" id="loaded-banner">
+  <span id="loaded-banner-mode-icon">✎</span>
+  <span><strong id="loaded-banner-title">—</strong></span>
+  <span style="opacity:0.5;">from: <code id="loaded-banner-folder" style="font-size:0.68rem;">—</code></span>
+  <button class="clear-btn" onclick="clearLoadedPost()" title="Discard and start fresh" style="margin-left:auto;">✕ Clear</button>
 </div>
 
 <!-- ── Main ───────────────────────────────────────────────────────────────── -->
@@ -1066,18 +1385,20 @@ input[type=number]:focus { border-color: var(--accent); }
           <input type="text" id="f-folder" placeholder="MyProject" oninput="onIdentityManual('folder')">
         </div>
         <div class="field">
-          <label class="label" for="f-image">Image</label>
-          <div style="display:flex;gap:0.4rem;align-items:center;">
-            <input type="text" id="f-image" placeholder="/assets/works/MyProject/hero.png" oninput="imagePathManual=true; scheduleUpdate()" style="flex:1;min-width:0;">
-            <label class="btn btn-ghost btn-sm" style="cursor:pointer;white-space:nowrap;flex-shrink:0;" title="Upload image file">
-              📁 Upload
-              <input type="file" id="f-image-file" accept="image/*" style="display:none;" onchange="onImageFilePick(this)">
+          <label class="label">Resources</label>
+          <div class="resources-toolbar">
+            <label class="btn btn-ghost btn-sm" style="cursor:pointer;white-space:nowrap;" title="Add images, PDFs, ZIPs…">
+              📁 Add files…
+              <input type="file" id="f-resources-input" multiple
+                accept="image/*,.pdf,.zip,.gz,.tar,.tar.gz,.mp3,.wav,.aif,.aiff,.mp4,.mov"
+                style="display:none;" onchange="onFilesAdded(this)">
             </label>
+            <span class="resources-hint">images · PDFs · ZIPs · audio · video</span>
           </div>
-          <div id="f-image-preview" style="display:none;margin-top:0.5rem;position:relative;">
-            <img id="f-image-thumb" style="max-height:90px;max-width:100%;border-radius:4px;border:1px solid rgba(255,255,255,0.12);display:block;" alt="hero preview">
-            <button onclick="clearImageFile()" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.6);border:none;color:#ccc;border-radius:3px;cursor:pointer;font-size:11px;padding:1px 5px;" title="Remove image">✕</button>
-          </div>
+          <div id="resources-list"></div>
+          <!-- hidden image path field — auto-filled by avatar selection -->
+          <input type="hidden" id="f-image">
+          <div class="res-avatar-path" id="res-avatar-path" style="display:none;"></div>
         </div>
       </div>
     </div>
@@ -1357,7 +1678,15 @@ input[type=number]:focus { border-color: var(--accent); }
     <div class="preview-content" id="pv-files">
       <div class="files-layout">
         <div class="files-tree" id="files-tree"></div>
-        <div class="files-viewer" id="files-viewer"><span style="color:var(--text-muted)">Select a file</span></div>
+        <div class="files-viewer" id="files-viewer">
+          <div class="file-viewer-toolbar" id="file-viewer-toolbar" style="display:none">
+            <span class="file-viewer-path" id="file-viewer-path"></span>
+            <button class="btn btn-ghost btn-sm" id="file-save-btn" onclick="saveCurrentFile()" style="display:none">💾 Save</button>
+          </div>
+          <div class="file-viewer-body" id="file-viewer-body">
+            <span style="color:var(--text-muted);padding:1rem;display:block">Select a file</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1374,6 +1703,26 @@ input[type=number]:focus { border-color: var(--accent); }
     </div>
 
   </div><!-- /preview-panel -->
+
+  <!-- ── Live panel ──────────────────────────────────────────────────────────── -->
+  <div class="live-panel">
+    <div class="live-panel-toolbar">
+      <input class="live-server-input" id="live-server-url" value="http://localhost:4001"
+        title="Jekyll server base URL" onchange="refreshLivePreview()">
+      <span class="live-url" id="live-url-display">—</span>
+      <a id="live-open-btn" href="#" target="_blank" class="btn btn-ghost btn-sm" style="flex-shrink:0;font-size:0.68rem;">↗</a>
+      <button class="btn btn-ghost btn-sm" style="flex-shrink:0;font-size:0.68rem;" onclick="refreshLivePreview()">⟳</button>
+    </div>
+    <div class="live-iframe-wrap">
+      <iframe id="live-iframe" src="about:blank" title="Jekyll live preview"
+        onload="if(this.src!=='about:blank')document.getElementById('live-placeholder').style.display='none';"></iframe>
+      <div class="live-placeholder" id="live-placeholder">
+        <div style="font-size:1.5rem">🌐</div>
+        <div>Jekyll live preview</div>
+        <div style="font-size:0.68rem;opacity:0.6">Click ⟳ or load a post to preview</div>
+      </div>
+    </div>
+  </div>
 
 </div><!-- /main -->
 
@@ -1486,8 +1835,10 @@ let alsoInWorks = ''; // for installation category: optional cross-listing slug
 let tags = [];
 let tabRows = []; // [{id, name, filename, content}]
 let linkRows = []; // [{id, type, label, url, disabled}]
-let selectedImageFile = null;  // File object if user uploads an image
-let imagePathManual = false;   // true once user hand-edits the image path field
+let uploadedFiles = [];   // [{id, file}] — all uploaded resources
+let avatarFileId  = null; // id of the file used as the hero image
+let loadedPost = null;         // { originalFolder, originalCategory } when a post is loaded
+let editMode = 'duplicate';    // 'duplicate' | 'rename'
 let citeKeys = [];        // array of selected cite keys
 let newBibEntries = [];   // array of {bibFile, bibtexString} objects to append
 let cnpBibFile = 'papers'; // 'papers' | 'refs' — target bib file for new entry
@@ -1497,6 +1848,7 @@ let _linkIdCounter = 0;
 let _updateTimer = null;
 let _activeFileIdx = 0;
 let _postActiveTabIdx = 0;
+let _currentEditFile = null; // { file, tabIdx } — file currently shown in editor
 
 // ── Init ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -1519,6 +1871,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Build dev status segmented control
   const seg = document.getElementById('dev-status-seg');
+  // "–" = no status (value 0)
+  const noneBtn = document.createElement('button');
+  noneBtn.className = 'seg-btn';
+  noneBtn.textContent = '–';
+  noneBtn.dataset.val = '0';
+  noneBtn.title = 'No development status';
+  noneBtn.onclick = () => {
+    document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('is-active'));
+    noneBtn.classList.add('is-active');
+    document.getElementById('dev-status-desc').textContent = '';
+    scheduleUpdate();
+  };
+  seg.appendChild(noneBtn);
   for (let i = 1; i <= 5; i++) {
     const btn = document.createElement('button');
     btn.className = 'seg-btn' + (i === 1 ? ' is-active' : '');
@@ -1562,38 +1927,92 @@ function toTitleCase(str) {
   return str.split(/[\s\-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
 }
 
-// ── Image upload ───────────────────────────────────────────────────────────
-function onImageFilePick(input) {
-  const file = input.files[0];
-  if (!file) return;
-  selectedImageFile = file;
-  imagePathManual = false; // reset so path tracks folder changes
-
-  // Show thumbnail
-  const thumb = document.getElementById('f-image-thumb');
-  const preview = document.getElementById('f-image-preview');
-  thumb.src = URL.createObjectURL(file);
-  preview.style.display = '';
-
+// ── Resources upload ───────────────────────────────────────────────────────
+function onFilesAdded(input) {
+  Array.from(input.files).forEach(file => {
+    if (uploadedFiles.some(u => u.file.name === file.name)) return; // skip dupe names
+    const id = `res-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    uploadedFiles.push({ id, file });
+    if (!avatarFileId && file.type.startsWith('image/')) avatarFileId = id;
+  });
+  input.value = '';
+  renderResourcesList();
   syncImagePath();
   scheduleUpdate();
 }
 
-function syncImagePath() {
-  if (!selectedImageFile || imagePathManual) return;
-  const folder = document.getElementById('f-folder').value.trim() || 'MyProject';
-  document.getElementById('f-image').value = `/assets/works/${folder}/${selectedImageFile.name}`;
+function removeResource(id) {
+  const entry = uploadedFiles.find(u => u.id === id);
+  if (entry?.file._objUrl) URL.revokeObjectURL(entry.file._objUrl);
+  uploadedFiles = uploadedFiles.filter(u => u.id !== id);
+  if (avatarFileId === id) {
+    const nextImg = uploadedFiles.find(u => u.file.type.startsWith('image/'));
+    avatarFileId = nextImg ? nextImg.id : null;
+  }
+  renderResourcesList();
+  syncImagePath();
+  scheduleUpdate();
 }
 
-function clearImageFile() {
-  selectedImageFile = null;
-  imagePathManual = false;
-  document.getElementById('f-image').value = '';
-  document.getElementById('f-image-file').value = '';
-  const thumb = document.getElementById('f-image-thumb');
-  if (thumb.src.startsWith('blob:')) URL.revokeObjectURL(thumb.src);
-  document.getElementById('f-image-preview').style.display = 'none';
+function setAvatar(id) {
+  avatarFileId = id;
+  renderResourcesList();
+  syncImagePath();
   scheduleUpdate();
+}
+
+function resFileIcon(file) {
+  if (file.type.startsWith('image/')) return '🖼';
+  if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) return '📄';
+  if (file.name.match(/\.(zip|gz|tar)$/i)) return '📦';
+  if (file.type.startsWith('audio/')) return '🎵';
+  if (file.type.startsWith('video/')) return '🎬';
+  return '📎';
+}
+
+function renderResourcesList() {
+  const list = document.getElementById('resources-list');
+  if (!list) return;
+  list.innerHTML = '';
+  uploadedFiles.forEach(({ id, file }) => {
+    const isAvatar = id === avatarFileId;
+    const row = document.createElement('div');
+    row.className = `resource-item${isAvatar ? ' is-avatar' : ''}`;
+    let thumbHtml = '';
+    if (file.type.startsWith('image/')) {
+      if (!file._objUrl) file._objUrl = URL.createObjectURL(file);
+      thumbHtml = `<img src="${file._objUrl}" style="height:26px;width:26px;object-fit:cover;border-radius:3px;flex-shrink:0;" alt="">`;
+    } else {
+      thumbHtml = `<span class="res-icon">${resFileIcon(file)}</span>`;
+    }
+    row.innerHTML = `
+      <input type="radio" name="avatar-radio" ${isAvatar ? 'checked' : ''}
+        title="Set as avatar (hero image)" onchange="setAvatar('${id}')">
+      ${thumbHtml}
+      <span class="res-name" title="${escHtml(file.name)}">${escHtml(file.name)}</span>
+      ${isAvatar ? '<span class="res-badge">avatar</span>' : ''}
+      <button class="res-remove" onclick="removeResource('${id}')" title="Remove">✕</button>`;
+    list.appendChild(row);
+  });
+}
+
+function assetBase() {
+  return postCategory === 'tutorial' ? 'assets/tutorials' : 'assets/works';
+}
+
+function syncImagePath() {
+  const folder = document.getElementById('f-folder').value.trim() || 'MyProject';
+  const avatarEntry = uploadedFiles.find(u => u.id === avatarFileId);
+  const pathEl = document.getElementById('f-image');
+  const hintEl = document.getElementById('res-avatar-path');
+  if (avatarEntry) {
+    const p = `/${assetBase()}/${folder}/${avatarEntry.file.name}`;
+    pathEl.value = p;
+    if (hintEl) { hintEl.textContent = p; hintEl.style.display = ''; }
+  } else {
+    pathEl.value = '';
+    if (hintEl) hintEl.style.display = 'none';
+  }
 }
 
 function toFilename(str) {
@@ -1606,7 +2025,8 @@ function getFormData() {
   const date = document.getElementById('f-date').value;
   const defaultPermalink = getPermalinkPrefix() + (toSlug(title) || 'my-post') + '/';
   const permalink = document.getElementById('f-permalink').value.trim() || defaultPermalink;
-  const folder = document.getElementById('f-folder').value.trim() || toTitleCase(title) || 'MyPost';
+  // In edit mode (folderManual=true) the folder field is always populated; never fall back to title.
+  const folder = document.getElementById('f-folder').value.trim() || (folderManual ? 'UnknownFolder' : toTitleCase(title)) || 'MyPost';
   const image = document.getElementById('f-image').value.trim();
   const featured = document.getElementById('f-featured').checked;
   const navigator = document.getElementById('f-navigator').checked;
@@ -1623,7 +2043,8 @@ function getFormData() {
     // works — read from checkbox grid
     projectTypes = Array.from(document.querySelectorAll('#project-types-grid input:checked')).map(i => i.value);
   }
-  const devStatus = parseInt(document.querySelector('.seg-btn.is-active')?.dataset.val || '1');
+  const _dsRaw = document.querySelector('.seg-btn.is-active')?.dataset.val;
+  const devStatus = (!_dsRaw || _dsRaw === '0') ? null : parseInt(_dsRaw);
 
   return { title, description, date, permalink, folder, image, featured, navigator, note, citeKeys: [...citeKeys], projectTypes, devStatus, tags: [...tags], tabs: tabRows, links: linkRows, postCategory };
 }
@@ -1642,6 +2063,7 @@ function onCategoryChange(val) {
     document.getElementById('f-permalink').value = title ? getPermalinkPrefix() + toSlug(title) + '/' : '';
   }
   renderCategorizationSection();
+  syncImagePath();
   scheduleUpdate();
 }
 
@@ -1723,6 +2145,307 @@ function onIdentityManual(field) {
   if (field === 'permalink') permalinkManual = true;
   if (field === 'folder') { folderManual = true; syncImagePath(); }
   scheduleUpdate();
+}
+
+// ── Load existing post ─────────────────────────────────────────────────────
+// ── Phase 1: read file → show modal ───────────────────────────────────────
+let _pendingLoad = null; // holds { fm, folder, detectedCategory } until modal confirmed
+
+async function loadExistingPost(input) {
+  const file = input.files[0];
+  if (!file) return;
+  input.value = ''; // reset so the same file can be picked again
+
+  const text = await file.text();
+  const fm = parseFrontMatter(text);
+  if (!fm) { setStatus('Could not parse front matter from file.', 'error'); return; }
+
+  // Detect category
+  const types = fm.project_types || [];
+  let detectedCategory = 'works';
+  if (types.includes('tutorials') || (fm.permalink || '').startsWith('/tutorials/')) {
+    detectedCategory = 'tutorial';
+  } else if (types.includes('installations-performances') && !types.some(t =>
+    ['max','pd','plugins','web','hardware','datasets','frameworks','templates','web-widgets'].includes(t))) {
+    detectedCategory = 'installation';
+  }
+
+  // Derive folder: prefer image path, fall back to title-case of title
+  const imgMatch = (fm.image || '').match(/\/assets\/(?:works|tutorials)\/([^/]+)\//);
+  const title = fm.title || file.name;
+  const folder = imgMatch ? imgMatch[1] : toTitleCase(title);
+  const folderFromImage = !!imgMatch;
+
+  _pendingLoad = { fm, folder, detectedCategory };
+
+  // Show modal
+  document.getElementById('load-modal-subtitle').textContent = `"${title}"`;
+  document.getElementById('modal-dup-title').value = `Copy of ${title}`;
+  document.getElementById('modal-edit-folder').value = folder;
+  validateEditFolder(folderFromImage);
+  selectLoadMode('edit'); // default
+  document.getElementById('load-modal-overlay').classList.add('is-open');
+}
+
+// ── Modal controls ─────────────────────────────────────────────────────────
+function selectLoadMode(mode) {
+  document.getElementById('modal-choice-edit').classList.toggle('is-selected', mode === 'edit');
+  document.getElementById('modal-choice-duplicate').classList.toggle('is-selected', mode === 'duplicate');
+  document.querySelector('#modal-choice-edit input').checked = mode === 'edit';
+  document.querySelector('#modal-choice-duplicate input').checked = mode === 'duplicate';
+  document.getElementById('modal-dup-name-wrap').classList.toggle('is-visible', mode === 'duplicate');
+}
+
+function validateEditFolder(fromImage) {
+  const val = document.getElementById('modal-edit-folder').value.trim();
+  const warn = document.getElementById('modal-edit-folder-warn');
+  if (!val) {
+    warn.textContent = '⚠ Folder not detected — please enter it manually';
+    warn.style.display = '';
+  } else if (fromImage === false) {
+    // Derived from title, not confirmed from image path — let user know
+    warn.textContent = '⚠ No image field in post — folder inferred from title, please verify';
+    warn.style.color = '#e8a838';
+    warn.style.display = '';
+  } else {
+    warn.style.display = 'none';
+  }
+}
+
+function updateModalDupTitle() { /* live preview could go here */ }
+
+function closeLoadModal() {
+  document.getElementById('load-modal-overlay').classList.remove('is-open');
+  _pendingLoad = null;
+}
+
+function confirmLoadModal() {
+  if (!_pendingLoad) return;
+  const mode = document.querySelector('input[name="load-mode"]:checked')?.value || 'edit';
+  const dupTitle = document.getElementById('modal-dup-title').value.trim();
+  // For edit mode, take the confirmed folder name from the modal field
+  const editFolder = document.getElementById('modal-edit-folder').value.trim();
+  if (mode === 'edit') {
+    if (!editFolder) {
+      // Keep modal open and show warning
+      validateEditFolder();
+      document.getElementById('modal-edit-folder').focus();
+      return;
+    }
+    _pendingLoad.folder = editFolder;
+  }
+  document.getElementById('load-modal-overlay').classList.remove('is-open');
+  applyLoadedPost(_pendingLoad, mode, dupTitle);
+  _pendingLoad = null;
+}
+
+// ── Phase 2: populate form ─────────────────────────────────────────────────
+function applyLoadedPost({ fm, folder, detectedCategory }, mode, dupTitle) {
+  postCategory = detectedCategory;
+
+  const isDuplicate = mode === 'duplicate';
+  const today = new Date().toISOString().split('T')[0];
+
+  // Title: use new name for duplicate, original for edit
+  const title = isDuplicate ? dupTitle : (fm.title || '');
+  const date  = isDuplicate ? today    : (fm.date  || today);
+
+  const setVal = (id, v) => { const el = document.getElementById(id); if (el && v !== undefined && v !== null) el.value = v; };
+  setVal('f-post-category', postCategory);
+  setVal('f-title',         title);
+  setVal('f-desc',          isDuplicate ? '' : (fm.description || ''));
+  setVal('f-date',          date);
+  // Permalink always stays live (updates with title in both modes).
+  // Folder: locked to original in edit mode so writes go back to the same location;
+  //         unlocked in duplicate mode so the new title generates a fresh folder.
+  permalinkManual = false;
+  folderManual    = !isDuplicate; // true = locked in edit, false = live in duplicate
+
+  if (isDuplicate) {
+    // Let title cascade to folder + permalink
+    onTitleChange();
+  } else {
+    // Edit: restore original folder explicitly, then only update permalink
+    document.getElementById('f-folder').value = folder;
+    syncImagePath();
+    // Update only the permalink (folder is locked)
+    const t = document.getElementById('f-title').value.trim();
+    if (t) document.getElementById('f-permalink').value = getPermalinkPrefix() + toSlug(t) + '/';
+    scheduleUpdate();
+  }
+
+  // Tags (keep for both modes)
+  tags = Array.isArray(fm.tags) ? [...fm.tags] : [];
+  renderTagChips();
+  renderTagsGrid();
+
+  // Dev status
+  const ds = fm.development_status != null ? (parseInt(fm.development_status) || 1) : 0;
+  document.querySelectorAll('.seg-btn').forEach(b => b.classList.toggle('is-active', parseInt(b.dataset.val) === ds));
+  document.getElementById('dev-status-desc').textContent = ds === 0 ? '' : (DEV_STATUS[ds] || '');
+
+  // Featured / navigator
+  const featEl = document.getElementById('f-featured');
+  if (featEl) featEl.checked = fm.featured === true || fm.featured === 'true';
+  const navEl = document.getElementById('f-navigator');
+  if (navEl) navEl.checked = fm.needs_navigator === true || fm.needs_navigator === 'true';
+
+  // Categorization
+  renderCategorizationSection();
+  setTimeout(() => {
+    const workTypes = (fm.project_types || []).filter(t =>
+      t !== 'tutorials' && t !== 'installations-performances');
+    workTypes.forEach(t => {
+      const cb = document.querySelector(`#proj-type-grid input[value="${t}"]`);
+      if (cb) cb.checked = true;
+    });
+    if (postCategory === 'installation' && workTypes.length > 0) {
+      alsoInWorks = workTypes[0];
+      const sel = document.getElementById('also-in-works-sel');
+      if (sel) sel.value = alsoInWorks;
+    }
+  }, 50);
+
+  // Tabs & links & citations & note
+  tabRows = (fm.tabs || []).map((name, i) => ({
+    id: Date.now() + i, name,
+    filename: (fm.tabs_content || [])[i] || toSlug(name),
+    content: '',
+  }));
+  renderTabRows();
+
+  linkRows = (fm.links || []).map((l, i) => ({
+    id: Date.now() + 1000 + i,
+    type: l.type || 'web', label: l.label || '', url: l.url || '', disabled: l.disabled || false,
+  }));
+  renderLinkRows();
+
+  citeKeys = Array.isArray(fm.cite_keys) ? [...fm.cite_keys] : [];
+  renderCiteExtraChips();
+  renderCitePaperList();
+
+  const noteEl = document.getElementById('f-note');
+  if (noteEl) noteEl.value = isDuplicate ? '' : (fm.note || '');
+
+  // Banner
+  loadedPost = { originalFolder: folder, originalCategory: postCategory };
+  editMode = isDuplicate ? 'duplicate' : 'rename';
+  showLoadedBanner(title, folder || '(new)');
+  refreshLivePreview();
+
+  scheduleUpdate();
+  setStatus(`${isDuplicate ? 'Duplicated' : 'Loaded'}: ${title}`, 'success');
+
+  // Auto-load tab file contents from disk (if dev server is available)
+  if (folder && tabRows.length > 0) {
+    loadTabContents(folder, postCategory);
+  }
+}
+
+function showLoadedBanner(title, folder) {
+  document.getElementById('loaded-banner-title').textContent = title;
+  document.getElementById('loaded-banner-folder').textContent = folder;
+  document.getElementById('loaded-banner-mode-icon').textContent = editMode === 'duplicate' ? '⧉' : '✎';
+  document.getElementById('loaded-banner').classList.add('is-visible');
+}
+
+function setEditMode(mode) {
+  editMode = mode;
+  document.getElementById('mode-btn-duplicate').classList.toggle('is-active', mode === 'duplicate');
+  document.getElementById('mode-btn-rename').classList.toggle('is-active', mode === 'rename');
+
+  if (mode === 'rename' && loadedPost) {
+    // Reset folder/permalink back to original so output overwrites in place
+    if (!folderManual) {
+      document.getElementById('f-folder').value = loadedPost.originalFolder;
+      syncImagePath();
+    }
+  }
+}
+
+function clearLoadedPost() {
+  loadedPost = null;
+  editMode = 'duplicate';
+  document.getElementById('loaded-banner').classList.remove('is-visible');
+}
+
+// Minimal YAML front matter parser (handles the fields we use)
+function parseFrontMatter(text) {
+  const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if (!match) return null;
+  const yaml = match[1];
+  const result = {};
+
+  // Simple line-by-line parser
+  const lines = yaml.split('\n');
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    const kvMatch = line.match(/^(\w[\w_-]*):\s*(.*)/);
+    if (!kvMatch) { i++; continue; }
+    const key = kvMatch[1];
+    let val = kvMatch[2].trim();
+
+    // Block scalar (|)
+    if (val === '|') {
+      const blockLines = [];
+      i++;
+      while (i < lines.length && (lines[i].startsWith('  ') || lines[i].trim() === '')) {
+        blockLines.push(lines[i].replace(/^  /, ''));
+        i++;
+      }
+      result[key] = blockLines.join('\n').trimEnd();
+      continue;
+    }
+
+    // Inline array [a, b, c]
+    if (val.startsWith('[')) {
+      const inner = val.replace(/^\[|\]$/g, '');
+      result[key] = inner.split(',').map(s => s.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
+      i++; continue;
+    }
+
+    // Multi-line array (- item)
+    if (val === '') {
+      const arr = [];
+      i++;
+      while (i < lines.length && lines[i].match(/^\s+-\s+/)) {
+        const itemMatch = lines[i].match(/^\s+-\s+(.*)/);
+        if (itemMatch) {
+          // Check for inline object {type: x, label: y, url: z}
+          const objStr = itemMatch[1].trim();
+          if (objStr.startsWith('{')) {
+            const obj = {};
+            const pairs = objStr.replace(/^\{|\}$/g, '').split(',');
+            pairs.forEach(p => {
+              const pm = p.trim().match(/^(\w+):\s*["']?([^"',}]*)["']?/);
+              if (pm) obj[pm[1]] = pm[2].trim();
+            });
+            arr.push(obj);
+          } else {
+            arr.push(objStr.replace(/^['"]|['"]$/g, ''));
+          }
+        }
+        i++;
+      }
+      result[key] = arr;
+      continue;
+    }
+
+    // Quoted string
+    if ((val.startsWith("'") && val.endsWith("'")) || (val.startsWith('"') && val.endsWith('"'))) {
+      result[key] = val.slice(1, -1);
+      i++; continue;
+    }
+
+    // Boolean / number / plain string
+    if (val === 'true') result[key] = true;
+    else if (val === 'false') result[key] = false;
+    else if (/^\d+$/.test(val)) result[key] = parseInt(val);
+    else result[key] = val;
+    i++;
+  }
+  return result;
 }
 
 // ── Tags ───────────────────────────────────────────────────────────────────
@@ -2297,7 +3020,7 @@ function generateYaml(d) {
   if (d.image) lines.push(`image: '${d.image}'`);
   if (d.tags.length) lines.push(`tags: [${d.tags.join(', ')}]`);
   if (d.projectTypes.length) lines.push(`project_types: [${d.projectTypes.join(', ')}]`);
-  lines.push(`development_status: ${d.devStatus}`);
+  if (d.devStatus != null) lines.push(`development_status: ${d.devStatus}`);
   if (d.featured) lines.push('featured: true');
 
   // tabs
@@ -2401,18 +3124,19 @@ function generateFiles(d) {
     type: 'license',
   });
 
-  // Image file (if uploaded)
-  if (selectedImageFile && d.image) {
-    const imgPath = d.image.replace(/^\//, '');
-    files.push({
-      path: imgPath,
-      file: selectedImageFile,
-      type: 'image',
+  // All uploaded resource files (images, PDFs, ZIPs, etc.)
+  if (uploadedFiles.length > 0) {
+    uploadedFiles.forEach(({ id, file }) => {
+      files.push({
+        path: `${assetBase()}/${folder}/${file.name}`,
+        file,
+        type: id === avatarFileId ? 'avatar' : 'resource',
+      });
     });
   } else {
-    // Assets gitkeep (only if no image — the image itself creates the folder)
+    // No uploads — create placeholder so the assets folder exists
     files.push({
-      path: `assets/works/${folder}/.gitkeep`,
+      path: `${assetBase()}/${folder}/.gitkeep`,
       content: '',
       type: 'asset',
     });
@@ -2433,6 +3157,7 @@ function doUpdate() {
   updateFiles(d);
   updateCard(d);
   updatePost(d);
+  updateLiveUrl();
 }
 
 function updateYaml(d) {
@@ -2480,16 +3205,114 @@ function updateFiles(d) {
     });
   });
 
-  showFileContent(files[_activeFileIdx]);
+  // Don't blow away the viewer while the user is actively editing a file.
+  // Only re-render if no file is being edited, or the active file path changed.
+  const activeFile = files[_activeFileIdx];
+  if (!_currentEditFile || _currentEditFile.file.path !== (activeFile && activeFile.path)) {
+    showFileContent(activeFile);
+  } else {
+    // Update the in-memory file object (content may have changed from form) but
+    // leave the textarea DOM untouched so focus/cursor stay intact.
+    if (activeFile) _currentEditFile.file = { ..._currentEditFile.file, path: activeFile.path };
+  }
 }
 
 function showFileContent(file) {
-  const viewer = document.getElementById('files-viewer');
-  if (!file) { viewer.textContent = ''; return; }
-  if (file.path.endsWith('.gitkeep') || !file.content) {
-    viewer.innerHTML = `<span style="color:var(--text-muted)">(empty file)</span>`;
-  } else {
-    viewer.innerHTML = highlightYaml(file.content);
+  _currentEditFile = null;
+  const toolbar = document.getElementById('file-viewer-toolbar');
+  const pathEl  = document.getElementById('file-viewer-path');
+  const saveBtn = document.getElementById('file-save-btn');
+  const body    = document.getElementById('file-viewer-body');
+  if (!file) { body.innerHTML = '<span style="color:var(--text-muted);padding:1rem;display:block">Select a file</span>'; toolbar.style.display='none'; return; }
+
+  toolbar.style.display = '';
+  pathEl.textContent = file.path;
+
+  const isBinary  = !!file.file; // File/Blob object = binary upload
+  const isAsset   = file.type === 'asset'; // .gitkeep
+  const isLanding = file.type === 'landing';
+
+  if (isBinary || isAsset) {
+    saveBtn.style.display = 'none';
+    body.innerHTML = `<span style="color:var(--text-muted);padding:1rem;display:block">${isBinary ? '(binary file — included in ZIP/write)' : '(empty placeholder)'}</span>`;
+    return;
+  }
+
+  // Find corresponding tabRow index (for tab content files)
+  const tabIdx = file.type === 'tab'
+    ? tabRows.findIndex(t => t.name === file.tabName)
+    : -1;
+
+  if (isLanding) {
+    // Landing.md is generated from the form — show read-only
+    saveBtn.style.display = 'none';
+    body.innerHTML = `<div class="code-view">${highlightYaml(file.content)}</div>`;
+    return;
+  }
+
+  // Editable (tab content, license, etc.)
+  saveBtn.style.display = '';
+  _currentEditFile = { file, tabIdx };
+
+  const ta = document.createElement('textarea');
+  ta.className = 'file-edit-area';
+  ta.value = file.content || '';
+  ta.spellcheck = false;
+  let _taTimer;
+  ta.addEventListener('input', () => {
+    const val = ta.value;
+    // Always keep state in sync immediately
+    if (_currentEditFile) _currentEditFile.currentContent = val;
+    if (tabIdx >= 0) tabRows[tabIdx].content = val;
+    // Debounce the expensive form re-render — don't do it on every keystroke
+    clearTimeout(_taTimer);
+    _taTimer = setTimeout(() => { if (tabIdx >= 0) scheduleUpdate(); }, 600);
+  });
+  body.innerHTML = '';
+  body.appendChild(ta);
+  // Sizing: make textarea fill the body
+  ta.style.cssText = 'width:100%;height:100%;min-height:200px;';
+}
+
+// Returns the repo-relative path to this post's Landing.md (for touching its mtime)
+function touchLandingPath() {
+  const d = getFormData();
+  if (!d.folder || !d.date) return null;
+  const base = d.postCategory === 'tutorial' ? `_posts/tutorials/${d.folder}` : `_posts/works/${d.folder}`;
+  return `${base}/${d.date}-Landing.md`;
+}
+
+async function saveCurrentFile() {
+  if (!_currentEditFile) return;
+  const devOk = await checkDevServer();
+  if (!devOk) { setStatus('Dev server not running — start dev-server.py', 'error'); return; }
+
+  const content = _currentEditFile.currentContent ?? _currentEditFile.file.content ?? '';
+  const path = _currentEditFile.file.path;
+  try {
+    const r = await fetch('/write-files', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ files: [{ path, content }] }),
+    });
+    const j = await r.json();
+    if (j.ok) {
+      setStatus(`Saved ${path.split('/').pop()} — waiting for Jekyll to rebuild…`);
+      // Touch Landing.md so Jekyll's watcher sees the post as changed
+      // (Jekyll only watches YYYY-MM-DD-*.md; editing included files won't
+      //  trigger a rebuild unless the parent post's mtime changes too)
+      const landingPath = touchLandingPath();
+      if (landingPath) fetch(`/touch-file?path=${encodeURIComponent(landingPath)}`).catch(() => {});
+      // Give Jekyll ~2.5s to detect the change and regenerate the page
+      setTimeout(() => {
+        setStatus(`Saved: ${path.split('/').pop()}`, 'success');
+        _loadIframe(getLiveUrl());
+      }, 2500);
+    } else {
+      setStatus('Save failed: ' + j.error, 'error');
+    }
+  } catch (e) {
+    setStatus('Save failed: ' + e.message, 'error');
   }
 }
 
@@ -2499,9 +3322,9 @@ function updateCard(d) {
   const dateStr = d.date ? formatDate(d.date) : '';
   const devStatus = d.devStatus;
 
-  const dotsHtml = Array.from({length:5}, (_,i) =>
+  const dotsHtml = devStatus != null ? Array.from({length:5}, (_,i) =>
     `<span class="wcp-dot${i < devStatus ? ' filled':''}"></span>`
-  ).join('');
+  ).join('') : '';
 
   const tagsHtml = d.tags.slice(0,4).map(t =>
     `<span class="wcp-tag">${escHtml(t)}</span>`
@@ -2522,7 +3345,7 @@ function updateCard(d) {
       <div class="wcp-footer">
         <span class="wcp-type">${escHtml(typeLabel)}</span>
         <div style="display:flex;align-items:center;gap:0.5rem">
-          <div class="wcp-status">${dotsHtml}</div>
+          ${dotsHtml ? `<div class="wcp-status">${dotsHtml}</div>` : ''}
           <span class="wcp-date">${escHtml(dateStr)}</span>
         </div>
       </div>
@@ -2589,6 +3412,38 @@ function switchPreview(name, btn) {
   document.getElementById(`pv-${name}`).classList.add('is-active');
 }
 
+// ── Live preview ───────────────────────────────────────────────────────────
+function getLiveUrl() {
+  const base = (document.getElementById('live-server-url')?.value || 'http://localhost:4001').replace(/\/$/, '');
+  const permalink = document.getElementById('f-permalink')?.value?.trim() || '/';
+  return base + permalink;
+}
+
+function updateLiveUrl() {
+  const url = getLiveUrl();
+  document.getElementById('live-url-display').textContent = url;
+  const openBtn = document.getElementById('live-open-btn');
+  if (openBtn) openBtn.href = url;
+}
+
+function refreshLivePreview() {
+  const url = getLiveUrl();
+  document.getElementById('live-url-display').textContent = url;
+  const openBtn = document.getElementById('live-open-btn');
+  if (openBtn) openBtn.href = url;
+  _loadIframe(url);
+}
+
+// Force a fresh load regardless of whether the URL has changed.
+// Appends a timestamp so the browser treats it as a new request.
+function _loadIframe(url) {
+  const iframe = document.getElementById('live-iframe');
+  const placeholder = document.getElementById('live-placeholder');
+  if (placeholder) placeholder.style.display = 'none';
+  // Cache-bust: WEBrick ignores query strings on static files
+  iframe.src = url + (url.includes('?') ? '&' : '?') + '_t=' + Date.now();
+}
+
 // ── Copy YAML ─────────────────────────────────────────────────────────────
 function copyYaml() {
   const raw = generateYaml(getFormData());
@@ -2631,9 +3486,36 @@ async function downloadZip() {
 }
 
 // ── Write to Disk ──────────────────────────────────────────────────────────
+// Strategy: try the dev-server POST endpoint first (works in all browsers),
+// then fall back to File System Access API (Chrome/Edge only).
 async function writeToDisk() {
+  const d = getFormData();
+  const files = generateFiles(d);
+
+  // Build bib append entries
+  const bibAppends = [];
+  if (newBibEntries.length > 0) {
+    const papersEntries = newBibEntries.filter(e => e.bibFile === 'papers').map(e => e.bibtexString);
+    const refsEntries   = newBibEntries.filter(e => e.bibFile === 'refs').map(e => e.bibtexString);
+    if (papersEntries.length) bibAppends.push({ path: '_bibliography/papers.bib', entries: papersEntries });
+    if (refsEntries.length)   bibAppends.push({ path: '_bibliography/refs.bib',   entries: refsEntries });
+  }
+
+  // ── Try dev-server first ───────────────────────────────────────────────
+  const devServerAvailable = await checkDevServer();
+  if (devServerAvailable) {
+    try {
+      await writeViaDevServer(files, bibAppends);
+      return;
+    } catch (e) {
+      setStatus('Dev-server error: ' + e.message, 'error');
+      return;
+    }
+  }
+
+  // ── Fall back to File System Access API ───────────────────────────────
   if (!window.showDirectoryPicker) {
-    setStatus('File System Access API not supported in this browser. Use Chrome or Edge.', 'error');
+    setStatus('Start dev-server.py for direct writes, or use Download ZIP.', 'error');
     return;
   }
 
@@ -2651,63 +3533,79 @@ async function writeToDisk() {
     }
   }
 
-  const d = getFormData();
-  const files = generateFiles(d);
-
   try {
     for (const file of files) {
       setStatus(`Writing: ${file.path}`, '');
       if (file.file) {
-        const buf = await file.file.arrayBuffer();
-        await writeFileBinary(rootDir, file.path, buf);
+        await writeFileBinary(rootDir, file.path, await file.file.arrayBuffer());
       } else {
         await writeFile(rootDir, file.path, file.content);
       }
     }
 
-    // Append new bib entries, split by target file
-    if (newBibEntries.length > 0) {
-      const papersEntries = newBibEntries.filter(e => e.bibFile === 'papers').map(e => e.bibtexString);
-      const refsEntries   = newBibEntries.filter(e => e.bibFile === 'refs').map(e => e.bibtexString);
-
-      async function appendToBib(bibPath, entries) {
-        const parts = bibPath.split('/').filter(Boolean);
-        let dir = rootDir;
-        for (let i = 0; i < parts.length - 1; i++) {
-          dir = await dir.getDirectoryHandle(parts[i], {create: true});
-        }
-        const fh = await dir.getFileHandle(parts[parts.length - 1], {create: true});
-        const existing = await (await fh.getFile()).text();
-        const toAppend = '\n\n' + entries.join('\n\n');
-        const writable = await fh.createWritable();
-        await writable.write(existing + toAppend);
-        await writable.close();
-      }
-
-      try {
-        if (papersEntries.length > 0) {
-          setStatus('Appending to _bibliography/papers.bib…', '');
-          await appendToBib('_bibliography/papers.bib', papersEntries);
-        }
-        if (refsEntries.length > 0) {
-          setStatus('Appending to _bibliography/refs.bib…', '');
-          await appendToBib('_bibliography/refs.bib', refsEntries);
-        }
-      } catch (bibErr) {
-        setStatus('Warning: could not append bib entries — ' + bibErr.message, 'error');
-        return;
-      }
-
-      const parts = [];
-      if (papersEntries.length) parts.push(`${papersEntries.length} → papers.bib`);
-      if (refsEntries.length)   parts.push(`${refsEntries.length} → refs.bib`);
-      setStatus(`Done! Wrote ${files.length} files + appended ${parts.join(', ')}.`, 'success');
-    } else {
-      setStatus(`Done! Wrote ${files.length} files.`, 'success');
+    for (const bib of bibAppends) {
+      setStatus(`Appending to ${bib.path}…`, '');
+      const parts = bib.path.split('/').filter(Boolean);
+      let dir = rootDir;
+      for (let i = 0; i < parts.length - 1; i++) dir = await dir.getDirectoryHandle(parts[i], {create: true});
+      const fh = await dir.getFileHandle(parts[parts.length - 1], {create: true});
+      const existing = await (await fh.getFile()).text();
+      const writable = await fh.createWritable();
+      await writable.write(existing + '\n\n' + bib.entries.join('\n\n'));
+      await writable.close();
     }
+
+    setStatus(buildDoneMsg(files.length, bibAppends), 'success');
   } catch (e) {
     setStatus('Error: ' + e.message, 'error');
   }
+}
+
+async function checkDevServer() {
+  try {
+    const r = await fetch('/write-files', { method: 'OPTIONS', signal: AbortSignal.timeout(800) });
+    return r.ok || r.status === 200;
+  } catch (_) { return false; }
+}
+
+async function writeViaDevServer(files, bibAppends) {
+  // Serialize files — binary ones become base64
+  const payload = [];
+  for (const f of files) {
+    if (f.file) {
+      const buf = await f.file.arrayBuffer();
+      const b64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
+      payload.push({ path: f.path, content: b64, binary: true });
+    } else {
+      payload.push({ path: f.path, content: f.content || '', binary: false });
+    }
+  }
+
+  // Read existing bib files and append
+  for (const bib of bibAppends) {
+    setStatus(`Appending to ${bib.path}…`, '');
+    const existing = await fetch('/' + bib.path).then(r => r.ok ? r.text() : '').catch(() => '');
+    payload.push({ path: bib.path, content: existing + '\n\n' + bib.entries.join('\n\n'), binary: false });
+  }
+
+  setStatus(`Writing ${payload.length} files via dev server…`, '');
+  const res = await fetch('/write-files', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ files: payload }),
+  });
+  const json = await res.json();
+  if (!json.ok) throw new Error(json.error || 'Unknown server error');
+  setStatus(buildDoneMsg(files.length, bibAppends), 'success');
+}
+
+function buildDoneMsg(fileCount, bibAppends) {
+  let msg = `Done! Wrote ${fileCount} files.`;
+  if (bibAppends.length) {
+    const parts = bibAppends.map(b => `${b.entries.length} → ${b.path.split('/').pop()}`);
+    msg += ` Appended ${parts.join(', ')}.`;
+  }
+  return msg;
 }
 
 async function writeFile(root, path, content) {
@@ -2786,6 +3684,36 @@ async function autoLoadBibs() {
       btn.style.color = 'var(--warn, #e8a838)';
       btn.style.borderColor = '';
     }
+  }
+}
+
+// ── Read file from dev server ──────────────────────────────────────────────
+async function readFileFromServer(repoRelPath) {
+  try {
+    const r = await fetch(`/read-file?path=${encodeURIComponent(repoRelPath)}`);
+    if (!r.ok) return null;
+    const j = await r.json();
+    return j.ok ? j.content : null;
+  } catch (_) { return null; }
+}
+
+// Load the content of each tab file when editing an existing post
+async function loadTabContents(folder, category) {
+  const base = category === 'tutorial' ? `_posts/tutorials/${folder}` : `_posts/works/${folder}`;
+  let changed = false;
+  for (let i = 0; i < tabRows.length; i++) {
+    const fn = tabRows[i].filename;
+    if (!fn) continue;
+    const filePath = `${base}/${fn.endsWith('.md') ? fn : fn + '.md'}`;
+    const content = await readFileFromServer(filePath);
+    if (content !== null) {
+      tabRows[i].content = content;
+      changed = true;
+    }
+  }
+  if (changed) {
+    renderTabRows();
+    scheduleUpdate();
   }
 }
 

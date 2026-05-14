@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Embed Tester</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: transparent;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 13px;
+    color: #333;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  h1 { font-size: 16px; font-weight: 600; color: #111; }
+  p  { color: #666; font-size: 12px; }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+
+  .controls label { font-size: 12px; color: #555; white-space: nowrap; }
+
+  .controls input[type="number"],
+  .controls input[type="text"] {
+    width: 72px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 4px 7px;
+    font-size: 13px;
+    outline: none;
+  }
+  .controls input:focus { border-color: #4a9eff; }
+
+  .controls select {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 4px 7px;
+    font-size: 13px;
+    outline: none;
+    background: #fff;
+    cursor: pointer;
+  }
+  .controls select:focus { border-color: #4a9eff; }
+  .controls select:disabled,
+  .controls input:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .controls button {
+    padding: 5px 14px;
+    background: #4a9eff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .controls button:hover { background: #2d84f0; }
+
+  .frame-wrap {
+    border: 2px dashed #bbb;
+    border-radius: 6px;
+    background: #fff;
+    display: inline-block;
+    line-height: 0;
+  }
+
+  iframe { display: block; border: none; }
+
+  /* ── Embed code block ─────────────────────────────────────────────────── */
+  .embed-code-wrap {
+    position: relative;
+    background: #1e1e2e;
+    border-radius: 8px;
+    padding: 12px 44px 12px 14px;
+  }
+
+  .embed-code-wrap pre {
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: #cdd6f4;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #313244;
+    border: none;
+    border-radius: 5px;
+    color: #cdd6f4;
+    cursor: pointer;
+    padding: 5px 7px;
+    font-size: 14px;
+    line-height: 1;
+    transition: background 0.15s;
+  }
+  .copy-btn:hover  { background: #45475a; }
+  .copy-btn.copied { background: #a6e3a1; color: #1e1e2e; }
+
+  .url-display {
+    font-size: 11px;
+    color: #888;
+    font-family: monospace;
+    background: #f7f7f7;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 5px 10px;
+    word-break: break-all;
+  }
+
+  hr { border: none; border-top: 1px solid #ccc; }
+
+  /* ── Global hosting bar ────────────────────────────────────────────────── */
+  .hosting-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    background: #eef3ff;
+    border: 1px solid #4a9eff;
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .hosting-bar .bar-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: #2a6acc; white-space: nowrap;
+  }
+  .hosting-bar label { font-size: 12px; color: #444; white-space: nowrap; }
+  .hosting-bar select {
+    border: 1px solid #4a9eff; border-radius: 5px;
+    padding: 4px 7px; font-size: 13px; outline: none;
+    background: #fff; cursor: pointer;
+  }
+  .hosting-bar select:focus { border-color: #2a6acc; }
+  .hosting-bar .selfhost-info {
+    font-size: 12px; color: #2a6acc;
+    display: none;
+  }
+  .hosting-bar .selfhost-info code {
+    background: #d8e8ff; border-radius: 3px; padding: 1px 5px;
+    font-family: monospace; font-size: 11.5px;
+  }
+  .hosting-bar button {
+    padding: 5px 13px;
+    background: #2a6acc; color: #fff;
+    border: none; border-radius: 6px;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+  }
+  .hosting-bar button:hover:not(:disabled) { background: #1a55b0; }
+  .hosting-bar button:disabled { opacity: 0.5; cursor: default; }
+
+  /* ── Self-host instruction note ────────────────────────────────────────── */
+  .selfhost-note {
+    display: none;
+    background: #fff8e1;
+    border: 1px solid #f0c040;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #555;
+  }
+  .selfhost-note strong { color: #333; }
+  .selfhost-note code {
+    background: #fdeea0; border-radius: 3px;
+    padding: 1px 5px; font-family: monospace; font-size: 12px;
+  }
+  .selfhost-note ol { margin: 6px 0 0 18px; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<!-- Global hosting settings (affects all embed code snippets below)        -->
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<div class="hosting-bar">
+  <span class="bar-title">Hosting</span>
+  <label>Mode</label>
+  <select id="hostMode">
+    <option value="direct" selected>Direct — behzadhaki.com</option>
+    <option value="selfhost">Self-host</option>
+  </select>
+  <button id="downloadZipBtn">⬇ Download Files</button>
+</div>
+
+<div class="selfhost-note" id="selfhostNote">
+  <strong>Self-hosting setup</strong>
+  <ol>
+    <li>Click <strong>⬇ Download Files</strong> above to get <code>frft-embeds.zip</code>.</li>
+    <li>Extract the ZIP — you will see a <code>projects/</code> folder. Move it into your site's <code>assets/</code> folder so the path becomes <code>assets/projects/frft/…</code>.</li>
+    <li>Copy the embed code snippet for each widget below and paste it into your page.</li>
+  </ol>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<h1>embed_interactive_frft.html — iframe tester</h1>
+<p>Set default values for controls. All params are optional — omitted ones use the embed's built-in defaults.</p>
+
+<div class="controls">
+  <label>Width</label>
+  <input type="number" id="wInput" value="600" min="200" step="10">
+  <label>Height</label>
+  <input type="number" id="hInput" value="220" min="100" step="10">
+
+  <label>Type</label>
+  <select id="typeInput1">
+    <option value="">(default)</option>
+    <option value="sine">Sine</option>
+    <option value="sweep">Sweep</option>
+  </select>
+
+  <label id="freqLabel1">Freq (Hz)</label>
+  <input type="number" id="freqInput1" value="440" min="20" max="20000" step="1">
+
+  <label>Dur (s)</label>
+  <input type="number" id="durInput1" value="3" min="1" max="600" step="1">
+
+  <label>α</label>
+  <input type="number" id="alphaInput1" value="0.10" min="0" max="4" step="0.00001">
+
+  <label>Block</label>
+  <select id="blocksizeInput1">
+    <option value="">(default)</option>
+    <option value="256">256</option>
+    <option value="512">512</option>
+    <option value="1024">1024</option>
+    <option value="2048">2048</option>
+    <option value="4096">4096</option>
+    <option value="8192">8192</option>
+    <option value="16384">16384</option>
+    <option value="32768">32768</option>
+    <option value="65536">65536</option>
+    <option value="131072">131072</option>
+    <option value="all">All (Windowed)</option>
+    <option value="all-nowin">All (No Window)</option>
+  </select>
+
+  <label>Overlap</label>
+  <select id="overlapInput1">
+    <option value="">(default)</option>
+    <option value="1">×1</option>
+    <option value="2">×2</option>
+    <option value="4">×4</option>
+    <option value="8">×8</option>
+    <option value="16">×16</option>
+  </select>
+
+  <label>Half-spec</label>
+  <select id="halfspecInput1">
+    <option value="">(default)</option>
+    <option value="0">No</option>
+    <option value="1">Yes</option>
+  </select>
+
+  <button id="applyBtn">Apply</button>
+</div>
+
+<div class="url-display" id="urlDisplay"></div>
+
+<div class="embed-code-wrap" id="embedCodeWrap1">
+  <pre id="embedCode1"></pre>
+  <button class="copy-btn" id="copyBtn1" title="Copy embed code">⧉</button>
+</div>
+
+<div class="frame-wrap" id="frameWrap">
+  <iframe id="embedFrame" width="600" height="220"></iframe>
+</div>
+
+<hr>
+
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<h1>embed_non_interactive_frft.html — iframe tester</h1>
+<p>Params are passed via URL. Hit Apply to reload.</p>
+
+<div class="controls">
+  <label>Width</label>
+  <input type="number" id="wInput2" value="600" min="200" step="10">
+  <label>Height</label>
+  <input type="number" id="hInput2" value="220" min="100" step="10">
+
+  <label>Type</label>
+  <select id="typeInput">
+    <option value="sweep" selected>Sweep</option>
+    <option value="sine">Sine</option>
+    <option value="file">File picker</option>
+  </select>
+
+  <label>Dur (s)</label>
+  <input type="number" id="durInput" value="10" min="1" max="600" step="1">
+
+  <label id="freqLabel">Freq (Hz)</label>
+  <input type="number" id="freqInput" value="440" min="20" max="20000" step="1">
+
+  <label>α</label>
+  <input type="number" id="alphaInput" value="0.10" min="0" max="4" step="0.00001">
+
+  <label>Block</label>
+  <select id="blocksizeInput">
+    <option value="16">16</option>
+    <option value="32">32</option>
+    <option value="64">64</option>
+    <option value="128">128</option>
+    <option value="256">256</option>
+    <option value="512">512</option>
+    <option value="1024">1024</option>
+    <option value="2048">2048</option>
+    <option value="4096">4096</option>
+    <option value="8192">8192</option>
+    <option value="16384" selected>16384</option>
+    <option value="32768">32768</option>
+    <option value="65536">65536</option>
+    <option value="131072">131072</option>
+    <option value="all">All (Windowed)</option>
+    <option value="all-nowin">All (No Window)</option>
+  </select>
+
+  <label>Overlap</label>
+  <select id="overlapInput">
+    <option value="1">×1</option>
+    <option value="2">×2</option>
+    <option value="4" selected>×4</option>
+    <option value="8">×8</option>
+    <option value="16">×16</option>
+  </select>
+
+  <label>Half-spec</label>
+  <select id="halfspecInput">
+    <option value="0" selected>No</option>
+    <option value="1">Yes</option>
+  </select>
+
+  <button id="applyBtn2">Apply</button>
+</div>
+
+<div class="url-display" id="urlDisplay2"></div>
+
+<div class="embed-code-wrap" id="embedCodeWrap2">
+  <pre id="embedCode2"></pre>
+  <button class="copy-btn" id="copyBtn2" title="Copy embed code">⧉</button>
+</div>
+
+<div class="frame-wrap" id="frameWrap2">
+  <iframe id="embedFrame2" width="600" height="220"></iframe>
+</div>
+
+<hr>
+
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<h1>embed_alpha_sweep_frft.html — iframe tester</h1>
+<p>Set default values for source settings and initial slider positions.</p>
+
+<div class="controls">
+  <label>Width</label>
+  <input type="number" id="wInput3" value="700" min="300" step="10">
+  <label>Height</label>
+  <input type="number" id="hInput3" value="300" min="200" step="10">
+
+  <label>Window</label>
+  <select id="winInput3">
+    <option value="hann" selected>Hann</option>
+    <option value="rect">Rectangular</option>
+  </select>
+
+  <label>Half-spec</label>
+  <select id="halfspecInput3">
+    <option value="0" selected>No</option>
+    <option value="1">Yes</option>
+  </select>
+
+  <label>Init Freq</label>
+  <select id="freqIdxInput3">
+    <option value="0" selected>100 Hz</option>
+    <option value="1">500 Hz</option>
+    <option value="2">1k Hz</option>
+    <option value="3">2k Hz</option>
+    <option value="4">5k Hz</option>
+    <option value="5">7.5k Hz</option>
+    <option value="6">10k Hz</option>
+  </select>
+
+  <label>Init α</label>
+  <input type="number" id="alphaInput3" value="0" min="0" max="1" step="0.05">
+
+  <button id="applyBtn3">Apply</button>
+</div>
+
+<div class="url-display" id="urlDisplay3"></div>
+
+<div class="embed-code-wrap" id="embedCodeWrap3">
+  <pre id="embedCode3"></pre>
+  <button class="copy-btn" id="copyBtn3" title="Copy embed code">⧉</button>
+</div>
+
+<div class="frame-wrap" id="frameWrap3">
+  <iframe id="embedFrame3" width="700" height="300"></iframe>
+</div>
+
+<hr>
+
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<h1>embed_ola_frft.html — iframe tester</h1>
+<p>Visualises how overlap-add windowing affects FRFT block processing artefacts.</p>
+
+<div class="controls">
+  <label>Width</label>
+  <input type="number" id="wInput4" value="700" min="300" step="10">
+  <label>Height</label>
+  <input type="number" id="hInput4" value="250" min="200" step="10">
+
+  <label>Freq (Hz)</label>
+  <input type="number" id="freqInput4" value="440" min="20" max="20000" step="1">
+
+  <label>α (order)</label>
+  <input type="number" id="alphaInput4" value="0.50" min="0" max="4" step="0.01">
+
+  <label>Block</label>
+  <select id="blocksizeInput4">
+    <option value="1024">1024</option>
+    <option value="2048">2048</option>
+    <option value="4096">4096</option>
+    <option value="8192">8192</option>
+    <option value="16384">16384</option>
+    <option value="32768">32768</option>
+    <option value="65536">65536</option>
+    <option value="131072" selected>131072</option>
+  </select>
+
+  <label>Overlap</label>
+  <select id="overlapInput4">
+    <option value="1">×1 (no OLA)</option>
+    <option value="2">×2</option>
+    <option value="4" selected>×4</option>
+    <option value="8">×8</option>
+  </select>
+
+  <label>Half-spec</label>
+  <select id="halfspecInput4">
+    <option value="0" selected>No</option>
+    <option value="1">Yes</option>
+  </select>
+
+  <button id="applyBtn4">Apply</button>
+</div>
+
+<div class="url-display" id="urlDisplay4"></div>
+
+<div class="embed-code-wrap" id="embedCodeWrap4">
+  <pre id="embedCode4"></pre>
+  <button class="copy-btn" id="copyBtn4" title="Copy embed code">⧉</button>
+</div>
+
+<div class="frame-wrap" id="frameWrap4">
+  <iframe id="embedFrame4" width="700" height="250"></iframe>
+</div>
+
+<script>
+  // ── Hosting mode ────────────────────────────────────────────────────────────
+  const DIRECT_BASE   = 'https://behzadhaki.com/assets/projects/FrFT/demos/';
+  const SELFHOST_BASE = '/assets/projects/frft/demos/';
+
+  const hostMode       = document.getElementById('hostMode');
+  const selfhostNote   = document.getElementById('selfhostNote');
+  const downloadZipBtn = document.getElementById('downloadZipBtn');
+
+  function getEmbedBase() {
+    return hostMode.value === 'selfhost' ? SELFHOST_BASE : DIRECT_BASE;
+  }
+
+  function syncHostUI() {
+    const isSelf = hostMode.value === 'selfhost';
+    selfhostNote.style.display   = isSelf ? 'block' : 'none';
+    downloadZipBtn.style.display = isSelf ? 'inline-block' : 'none';
+  }
+
+  hostMode.addEventListener('change', () => { syncHostUI(); applyAll(); });
+  syncHostUI(); // set correct initial state
+
+  function applyAll() { apply(); apply2(); apply3(); apply4(); }
+
+  // ── Self-host ZIP ────────────────────────────────────────────────────────────
+  // Files to bundle, keyed by fetch path (relative to test-embed.html)
+  // → destination path inside the ZIP (relative to site root)
+  const ZIP_FILES = [
+    { src: 'embed_interactive_frft.html',     dst: 'projects/frft/demos/embed_interactive_frft.html'     },
+    { src: 'embed_non_interactive_frft.html', dst: 'projects/frft/demos/embed_non_interactive_frft.html' },
+    { src: 'embed_alpha_sweep_frft.html',     dst: 'projects/frft/demos/embed_alpha_sweep_frft.html'     },
+    { src: 'embed_ola_frft.html',             dst: 'projects/frft/demos/embed_ola_frft.html'             },
+    { src: '../audio/frft-worker.js',         dst: 'projects/frft/audio/frft-worker.js'                  },
+    { src: '../wasm/dist/frft.js',            dst: 'projects/frft/wasm/dist/frft.js'                     },
+    { src: '../wasm/dist/frft.wasm',          dst: 'projects/frft/wasm/dist/frft.wasm'                   },
+  ];
+
+  downloadZipBtn.addEventListener('click', async () => {
+    downloadZipBtn.disabled    = true;
+    downloadZipBtn.textContent = 'Fetching…';
+    try {
+      const entries = await Promise.all(ZIP_FILES.map(async ({ src, dst }) => {
+        const res = await fetch(src);
+        if (!res.ok) throw new Error(`${src} → HTTP ${res.status}`);
+        return { name: dst, data: new Uint8Array(await res.arrayBuffer()) };
+      }));
+      const zip = buildZip(entries);
+      const url = URL.createObjectURL(new Blob([zip], { type: 'application/zip' }));
+      Object.assign(document.createElement('a'), { href: url, download: 'frft-embeds.zip' }).click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('Download failed: ' + err.message);
+    } finally {
+      downloadZipBtn.disabled    = false;
+      downloadZipBtn.textContent = '⬇ Download Files';
+    }
+  });
+
+  // ── ZIP builder (minimal store-only, no compression) ─────────────────────────
+  function crc32(data) {
+    if (!crc32._t) {
+      crc32._t = new Uint32Array(256);
+      for (let i = 0; i < 256; i++) {
+        let c = i;
+        for (let j = 0; j < 8; j++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+        crc32._t[i] = c;
+      }
+    }
+    let c = 0xFFFFFFFF;
+    for (let i = 0; i < data.length; i++) c = crc32._t[(c ^ data[i]) & 0xFF] ^ (c >>> 8);
+    return (c ^ 0xFFFFFFFF) >>> 0;
+  }
+
+  function buildZip(files) {
+    const enc = s => new TextEncoder().encode(s);
+    const u32 = (v, a, o) => { a[o]=v&0xff; a[o+1]=(v>>8)&0xff; a[o+2]=(v>>16)&0xff; a[o+3]=(v>>24)&0xff; };
+    const u16 = (v, a, o) => { a[o]=v&0xff; a[o+1]=(v>>8)&0xff; };
+    const entries = [], cdir = [];
+    let offset = 0;
+    for (const { name, data } of files) {
+      const nm = enc(name), crc = crc32(data), hdr = new Uint8Array(30 + nm.length);
+      hdr.set([0x50,0x4b,0x03,0x04, 0x14,0, 0,0, 0,0, 0,0,0,0]);
+      u32(crc, hdr, 14); u32(data.length, hdr, 18); u32(data.length, hdr, 22);
+      u16(nm.length, hdr, 26); hdr.set(nm, 30);
+      const cd = new Uint8Array(46 + nm.length);
+      cd.set([0x50,0x4b,0x01,0x02, 0x14,0, 0x14,0, 0,0, 0,0, 0,0,0,0]);
+      u32(crc, cd, 16); u32(data.length, cd, 20); u32(data.length, cd, 24);
+      u16(nm.length, cd, 28); cd.set(nm, 46); u32(offset, cd, 42);
+      entries.push(hdr, data); cdir.push(cd);
+      offset += hdr.length + data.length;
+    }
+    const cdData = new Uint8Array(cdir.reduce((a, c) => a + c.length, 0));
+    let cdOff = 0; for (const c of cdir) { cdData.set(c, cdOff); cdOff += c.length; }
+    const eocd = new Uint8Array(22);
+    eocd.set([0x50,0x4b,0x05,0x06, 0,0, 0,0]);
+    u16(files.length, eocd, 8); u16(files.length, eocd, 10);
+    u32(cdData.length, eocd, 12); u32(offset, eocd, 16);
+    const all = [...entries, cdData, eocd];
+    const out = new Uint8Array(all.reduce((a, c) => a + c.length, 0));
+    let p = 0; for (const a of all) { out.set(a, p); p += a.length; }
+    return out;
+  }
+
+  // ── Shared helpers ──────────────────────────────────────────────────────────
+  function buildEmbedCode(file, queryString, w, h) {
+    const src = `${getEmbedBase()}${file}?${queryString}`;
+    return `<div style="width:100%; max-width:${w}px;">\n` +
+           `  <iframe src="${src}"\n` +
+           `          style="width:100%; height:${h}px; border:none; display:block"\n` +
+           `          allow="autoplay">\n` +
+           `  </iframe>\n` +
+           `</div>`;
+  }
+
+  function attachCopy(btnId, codeId) {
+    const btn = document.getElementById(btnId);
+    btn.addEventListener('click', () => {
+      const text = document.getElementById(codeId).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '⧉'; btn.classList.remove('copied'); }, 1800);
+      });
+    });
+  }
+
+  // ── Interactive embed ───────────────────────────────────────────────────────
+  const wInput         = document.getElementById('wInput');
+  const hInput         = document.getElementById('hInput');
+  const typeInput1     = document.getElementById('typeInput1');
+  const freqInput1     = document.getElementById('freqInput1');
+  const freqLabel1     = document.getElementById('freqLabel1');
+  const durInput1      = document.getElementById('durInput1');
+  const alphaInput1    = document.getElementById('alphaInput1');
+  const blocksizeInput1= document.getElementById('blocksizeInput1');
+  const overlapInput1  = document.getElementById('overlapInput1');
+  const halfspecInput1 = document.getElementById('halfspecInput1');
+  const applyBtn       = document.getElementById('applyBtn');
+  const frame          = document.getElementById('embedFrame');
+  const urlDisplay     = document.getElementById('urlDisplay');
+  const embedCode1     = document.getElementById('embedCode1');
+
+  function updateFreqLabel1() {
+    const isSine = typeInput1.value === 'sine';
+    freqInput1.disabled = !isSine;
+    freqLabel1.style.opacity = isSine ? '1' : '0.4';
+  }
+  typeInput1.addEventListener('change', updateFreqLabel1);
+  updateFreqLabel1();
+
+  function apply() {
+    const w = Math.max(200, parseInt(wInput.value) || 600);
+    const h = Math.max(100, parseInt(hInput.value) || 220);
+    wInput.value = w; hInput.value = h;
+
+    // Build optional default params
+    const cleanParams = new URLSearchParams({ w, h });
+    if (typeInput1.value)      cleanParams.set('type',      typeInput1.value);
+    if (typeInput1.value === 'sine') cleanParams.set('freq', freqInput1.value);
+    cleanParams.set('dur',     durInput1.value);
+    cleanParams.set('alpha',   alphaInput1.value);
+    if (blocksizeInput1.value) cleanParams.set('blocksize', blocksizeInput1.value);
+    if (overlapInput1.value)   cleanParams.set('overlap',   overlapInput1.value);
+    if (halfspecInput1.value)  cleanParams.set('halfspec',  halfspecInput1.value);
+
+    const liveParams = new URLSearchParams(cleanParams);
+    liveParams.set('v', Date.now());
+
+    const url = `embed_interactive_frft.html?${liveParams}`;
+    frame.width = w; frame.height = h; frame.src = url;
+    urlDisplay.textContent = location.origin + location.pathname.replace('test-embed.html', '') + url;
+    embedCode1.textContent = buildEmbedCode('embed_interactive_frft.html', cleanParams.toString(), w, h);
+  }
+
+  applyBtn.addEventListener('click', apply);
+  [wInput, hInput, durInput1, freqInput1, alphaInput1].forEach(el =>
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') apply(); })
+  );
+  attachCopy('copyBtn1', 'embedCode1');
+  apply();
+
+  // ── Non-interactive embed ───────────────────────────────────────────────────
+  const wInput2        = document.getElementById('wInput2');
+  const hInput2        = document.getElementById('hInput2');
+  const typeInput      = document.getElementById('typeInput');
+  const durInput       = document.getElementById('durInput');
+  const freqInput      = document.getElementById('freqInput');
+  const freqLabel      = document.getElementById('freqLabel');
+  const alphaInput     = document.getElementById('alphaInput');
+  const blocksizeInput = document.getElementById('blocksizeInput');
+  const overlapInput   = document.getElementById('overlapInput');
+  const halfspecInput  = document.getElementById('halfspecInput');
+  const applyBtn2      = document.getElementById('applyBtn2');
+  const frame2         = document.getElementById('embedFrame2');
+  const urlDisplay2    = document.getElementById('urlDisplay2');
+  const embedCode2     = document.getElementById('embedCode2');
+
+  function updateDependentControls() {
+    const isAll = blocksizeInput.value === 'all' || blocksizeInput.value === 'all-nowin';
+    overlapInput.disabled = isAll;
+    const isSine = typeInput.value === 'sine';
+    freqInput.disabled = !isSine;
+    freqLabel.style.opacity = isSine ? '1' : '0.4';
+  }
+
+  function apply2() {
+    const w = Math.max(200, parseInt(wInput2.value) || 600);
+    const h = Math.max(100, parseInt(hInput2.value) || 220);
+    wInput2.value = w; hInput2.value = h;
+
+    const isAll = blocksizeInput.value === 'all' || blocksizeInput.value === 'all-nowin';
+
+    // Build clean params (no cache-bust) for the embed code
+    const cleanParams = new URLSearchParams({ w, h,
+      type:      typeInput.value,
+      dur:       durInput.value,
+      alpha:     alphaInput.value,
+      blocksize: blocksizeInput.value,
+      overlap:   isAll ? '1' : overlapInput.value,
+      halfspec:  halfspecInput.value,
+    });
+    if (typeInput.value === 'sine') cleanParams.set('freq', freqInput.value);
+
+    // Live reload URL adds cache-bust
+    const liveParams = new URLSearchParams(cleanParams);
+    liveParams.set('v', Date.now());
+
+    const url = `embed_non_interactive_frft.html?${liveParams}`;
+    frame2.width = w; frame2.height = h; frame2.src = url;
+    urlDisplay2.textContent = location.origin + location.pathname.replace('test-embed.html', '') + url;
+    embedCode2.textContent = buildEmbedCode('embed_non_interactive_frft.html', cleanParams.toString(), w, h);
+  }
+
+  typeInput.addEventListener('change', () => { updateDependentControls(); apply2(); });
+  blocksizeInput.addEventListener('change', () => { updateDependentControls(); apply2(); });
+  applyBtn2.addEventListener('click', apply2);
+  [wInput2, hInput2, durInput, freqInput, alphaInput].forEach(el =>
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') apply2(); })
+  );
+  [overlapInput, halfspecInput].forEach(el =>
+    el.addEventListener('change', apply2)
+  );
+  attachCopy('copyBtn2', 'embedCode2');
+  updateDependentControls();
+  apply2();
+
+  // ── Alpha sweep embed ───────────────────────────────────────────────────────
+  const wInput3        = document.getElementById('wInput3');
+  const hInput3        = document.getElementById('hInput3');
+  const winInput3      = document.getElementById('winInput3');
+  const halfspecInput3 = document.getElementById('halfspecInput3');
+  const freqIdxInput3  = document.getElementById('freqIdxInput3');
+  const alphaInput3    = document.getElementById('alphaInput3');
+  const applyBtn3      = document.getElementById('applyBtn3');
+  const frame3         = document.getElementById('embedFrame3');
+  const urlDisplay3    = document.getElementById('urlDisplay3');
+  const embedCode3     = document.getElementById('embedCode3');
+
+  function apply3() {
+    const w = Math.max(300, parseInt(wInput3.value) || 700);
+    const h = Math.max(200, parseInt(hInput3.value) || 300);
+    wInput3.value = w; hInput3.value = h;
+
+    const cleanParams = new URLSearchParams({
+      w, h,
+      win:      winInput3.value,
+      halfspec: halfspecInput3.value,
+      freqidx:  freqIdxInput3.value,
+      alpha:    alphaInput3.value,
+    });
+
+    const liveParams = new URLSearchParams(cleanParams);
+    liveParams.set('v', Date.now());
+
+    const url = `embed_alpha_sweep_frft.html?${liveParams}`;
+    frame3.width = w; frame3.height = h; frame3.src = url;
+    urlDisplay3.textContent = location.origin + location.pathname.replace('test-embed.html', '') + url;
+    embedCode3.textContent = buildEmbedCode('embed_alpha_sweep_frft.html', cleanParams.toString(), w, h);
+  }
+
+  applyBtn3.addEventListener('click', apply3);
+  [wInput3, hInput3, alphaInput3].forEach(el =>
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') apply3(); })
+  );
+  attachCopy('copyBtn3', 'embedCode3');
+  apply3();
+
+  // ── OLA embed ───────────────────────────────────────────────────────────────
+  const wInput4         = document.getElementById('wInput4');
+  const hInput4         = document.getElementById('hInput4');
+  const freqInput4      = document.getElementById('freqInput4');
+  const alphaInput4     = document.getElementById('alphaInput4');
+  const blocksizeInput4 = document.getElementById('blocksizeInput4');
+  const overlapInput4   = document.getElementById('overlapInput4');
+  const halfspecInput4  = document.getElementById('halfspecInput4');
+  const applyBtn4      = document.getElementById('applyBtn4');
+  const frame4         = document.getElementById('embedFrame4');
+  const urlDisplay4    = document.getElementById('urlDisplay4');
+  const embedCode4     = document.getElementById('embedCode4');
+
+  function apply4() {
+    const w = Math.max(300, parseInt(wInput4.value) || 700);
+    const h = Math.max(200, parseInt(hInput4.value) || 360);
+    wInput4.value = w; hInput4.value = h;
+
+    const cleanParams = new URLSearchParams({
+      w, h,
+      freq:      freqInput4.value,
+      alpha:     alphaInput4.value,
+      blocksize: blocksizeInput4.value,
+      overlap:   overlapInput4.value,
+      halfspec:  halfspecInput4.value,
+    });
+
+    const liveParams = new URLSearchParams(cleanParams);
+    liveParams.set('v', Date.now());
+
+    const url = `embed_ola_frft.html?${liveParams}`;
+    frame4.width = w; frame4.height = h; frame4.src = url;
+    urlDisplay4.textContent = location.origin + location.pathname.replace('test-embed.html', '') + url;
+    embedCode4.textContent = buildEmbedCode('embed_ola_frft.html', cleanParams.toString(), w, h);
+  }
+
+  applyBtn4.addEventListener('click', apply4);
+  [wInput4, hInput4, freqInput4, alphaInput4].forEach(el =>
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') apply4(); })
+  );
+  [blocksizeInput4, overlapInput4, halfspecInput4].forEach(el =>
+    el.addEventListener('change', apply4)
+  );
+  attachCopy('copyBtn4', 'embedCode4');
+  apply4();
+</script>
+</body>
+</html>

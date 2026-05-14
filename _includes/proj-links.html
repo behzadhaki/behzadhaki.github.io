@@ -49,6 +49,7 @@
     <div class="project-pubs">
       {% for key in page.cite_keys %}
         {% bibliography -f papers -q @*[key={{ key }}] %}
+        {% bibliography -f refs   -q @*[key={{ key }}] %}
       {% endfor %}
     </div>
   </div>
