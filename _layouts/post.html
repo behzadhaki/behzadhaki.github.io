@@ -193,6 +193,13 @@ document.addEventListener('keydown', function(e) {
     navInner.appendChild(row2);
     navInner.appendChild(row3);
 
+    // Set CSS variables AFTER navbar has content so offsetHeight is correct.
+    function updateNavbarHeightVar() {
+      document.documentElement.style.setProperty('--navbar-height', navbar.offsetHeight + 'px');
+    }
+    updateNavbarHeightVar();
+    window.addEventListener('resize', updateNavbarHeightVar);
+
     var activeSection = null;
     var activeH2 = null;
     var activeH3 = null;
