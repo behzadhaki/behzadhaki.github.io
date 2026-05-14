@@ -111,6 +111,28 @@ document.addEventListener('keydown', function(e) {
       heading.prepend(anchor);
     });
 
+    // STEP 1b: Wrap heading content into outline blocks for indented tree display
+    document.querySelectorAll(".project-section__body").forEach(function(body) {
+      function wrapLevel(container, tag) {
+        var nodes = Array.from(container.childNodes);
+        var wrapper = null;
+        nodes.forEach(function(node) {
+          if (node.nodeName === tag) {
+            wrapper = document.createElement('div');
+            wrapper.className = 'outline-block outline-block--' + tag.toLowerCase();
+            container.insertBefore(wrapper, node);
+            wrapper.appendChild(node);
+          } else if (wrapper) {
+            wrapper.appendChild(node);
+          }
+        });
+      }
+      wrapLevel(body, 'H2');
+      body.querySelectorAll('.outline-block--h2').forEach(function(b) { wrapLevel(b, 'H3'); });
+      body.querySelectorAll('.outline-block--h3').forEach(function(b) { wrapLevel(b, 'H4'); });
+      body.querySelectorAll('.outline-block--h4').forEach(function(b) { wrapLevel(b, 'H5'); });
+    });
+
     // STEP 2: Hash navigation — expand containing section then scroll
     function openFromHash() {
       var hash = window.location.hash.slice(1);

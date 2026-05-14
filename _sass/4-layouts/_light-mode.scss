@@ -149,10 +149,31 @@ html[data-theme='light'] {
 
     h1, h2, h3, h4, h5, h6 { color: #1a1827; }
     h1 { background: rgba(42,39,54,0.1); }
-    h2 { background: rgba(42,39,54,0.06); }
+    h2 { background: rgba(42,39,54,0.05); color: #1a1827; }
     h3 { color: #2d2b3d; }
-    h4 { color: rgba(#2d2b3d, 0.7); }
-    h5, h6 { color: #666; }
+    h4 { color: rgba(#2d2b3d, 0.65); }
+    h5, h6 { color: #777; }
+
+    .outline-block--h2 {
+      border-color: rgba(42,39,54,0.28);
+      > h2 {
+        border-bottom-color: rgba(42,39,54,0.28);
+        background: rgba(42,39,54,0.04);
+      }
+    }
+    .outline-block--h3 {
+      border-color: rgba(42,39,54,0.22);
+      > h3 { border-bottom-color: rgba(42,39,54,0.22); background: rgba(42,39,54,0.04); }
+    }
+    .outline-block--h4 {
+      border-color: rgba(42,39,54,0.14);
+      > h4 { border-bottom-color: rgba(42,39,54,0.14); background: rgba(42,39,54,0.03); }
+    }
+    .outline-block--h5,
+    .outline-block--h6 {
+      border-color: rgba(42,39,54,0.08);
+      > h5, > h6 { border-bottom-color: rgba(42,39,54,0.08); background: rgba(42,39,54,0.02); }
+    }
 
     a {
       color: #2d2b3d;
