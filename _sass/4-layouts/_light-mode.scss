@@ -362,6 +362,38 @@ html[data-theme='light'] {
 
   // ── Footer ───────────────────────────────────────────────────
   .footer { border-top: none; }
+
+  // ── Modal (stays dark in light mode — restore dark-mode colors) ─
+  .proj-modal__box {
+    h1, h2, h3 { color: #eee !important; }
+    color: rgba(#eee, 0.85);
+    a { color: #eee; }
+
+    // Pub-cards inside the modal keep their dark appearance
+    .pub-card {
+      background: #2e2e2e !important;
+      &:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+    }
+    .pub-card__title { color: #eee !important; }
+    .pub-card__authors {
+      color: #aaa !important;
+      strong em { color: #eee !important; }
+      a { color: #aaa !important; &:hover { color: #eee !important; } }
+    }
+    .pub-card__venue { color: #aaa !important; em { color: rgba(#eee, 0.6) !important; } }
+    .pub-card__year { color: #aaa !important; }
+    .pub-link {
+      border-color: rgba(255,255,255,0.15) !important;
+      color: #aaa !important;
+      &:hover { color: #eee !important; }
+    }
+    .pub-card__details {
+      border-top-color: rgba(255,255,255,0.08) !important;
+      summary { color: #aaa !important; &:hover { color: #eee !important; } }
+      p { color: rgba(#eee, 0.7) !important; }
+    }
+    .pub-card__bibtex { background: rgba(0,0,0,0.3) !important; color: #ccc !important; }
+  }
 }
 
 // ── Toggle button style (theme-agnostic) ─────────────────────
