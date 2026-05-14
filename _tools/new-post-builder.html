@@ -1,0 +1,2833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jekyll Post Builder</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
+<style>
+/* ── Reset & Base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #1a1a1a;
+  --bg2: #242424;
+  --bg3: #2e2e2e;
+  --bg4: #363636;
+  --border: rgba(255,255,255,0.1);
+  --border2: rgba(255,255,255,0.06);
+  --text: #ddd;
+  --text-muted: #888;
+  --text-dim: rgba(255,255,255,0.3);
+  --accent: #5b7fa6;
+  --accent-soft: rgba(91,127,166,0.2);
+  --danger: #a65b5b;
+  --success: #5ba67a;
+  --radius: 8px;
+  --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Top bar ────────────────────────────────────────────────────────────────── */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  background: #111;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  z-index: 10;
+}
+.topbar h1 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ccc;
+  letter-spacing: 0.04em;
+}
+.topbar .badge {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.5rem;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 20px;
+  border: 1px solid rgba(91,127,166,0.3);
+}
+
+/* ── Main layout ─────────────────────────────────────────────────────────── */
+.main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── Form panel ──────────────────────────────────────────────────────────── */
+.form-panel {
+  width: 360px;
+  min-width: 280px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Preview panel ───────────────────────────────────────────────────────── */
+.preview-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ── Output bar ──────────────────────────────────────────────────────────── */
+.output-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: #111;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.output-bar .status-msg {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-left: auto;
+  max-width: 300px;
+  text-align: right;
+}
+.output-bar .status-msg.success { color: var(--success); }
+.output-bar .status-msg.error { color: var(--danger); }
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: filter 0.15s, opacity 0.15s;
+  background: var(--bg3);
+  color: var(--text);
+  border-color: var(--border);
+  font-family: inherit;
+}
+.btn:hover { filter: brightness(1.2); }
+.btn-primary {
+  background: rgba(91,127,166,0.25);
+  color: #89b4d9;
+  border-color: rgba(91,127,166,0.4);
+}
+.btn-success {
+  background: rgba(91,166,122,0.25);
+  color: #89d4aa;
+  border-color: rgba(91,166,122,0.4);
+}
+.btn-danger {
+  background: rgba(166,91,91,0.2);
+  color: #d4a0a0;
+  border-color: rgba(166,91,91,0.3);
+  padding: 0.2rem 0.45rem;
+  font-size: 0.7rem;
+}
+.btn-sm {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.68rem;
+}
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+.btn-ghost:hover { color: var(--text); background: var(--bg3); }
+
+/* ── Section (collapsible) ───────────────────────────────────────────────── */
+.section {
+  border-bottom: 1px solid var(--border2);
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  user-select: none;
+  background: transparent;
+  transition: background 0.12s;
+}
+.section-header:hover { background: rgba(255,255,255,0.03); }
+.section-toggle {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  transition: transform 0.15s;
+  min-width: 10px;
+}
+.section.is-open .section-toggle { transform: rotate(90deg); }
+.section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.section-body {
+  padding: 0.6rem 1rem 0.85rem;
+  display: none;
+}
+.section.is-open .section-body { display: block; }
+
+/* ── Form fields ─────────────────────────────────────────────────────────── */
+.field { margin-bottom: 0.75rem; }
+.field:last-child { margin-bottom: 0; }
+.label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+input[type=text],
+input[type=date],
+input[type=url],
+textarea,
+select {
+  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+}
+input[type=text]:focus,
+input[type=date]:focus,
+input[type=url]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent);
+}
+textarea {
+  resize: vertical;
+  min-height: 70px;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+/* ── Toggle ──────────────────────────────────────────────────────────────── */
+.toggle-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.toggle {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--bg4);
+  border-radius: 18px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: 1px solid var(--border);
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  left: 2px;
+  top: 2px;
+  background: #888;
+  border-radius: 50%;
+  transition: transform 0.2s, background 0.2s;
+}
+.toggle input:checked + .toggle-slider { background: var(--accent-soft); border-color: rgba(91,127,166,0.5); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(14px); background: var(--accent); }
+.toggle-label { font-size: 0.78rem; color: var(--text); }
+
+/* ── Checkboxes grid ──────────────────────────────────────────────────────── */
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem 0.5rem;
+}
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+.checkbox-item input[type=checkbox] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ── Segmented control ───────────────────────────────────────────────────── */
+.seg-control {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+.seg-btn {
+  flex: 1;
+  min-width: 36px;
+  padding: 0.35rem 0.5rem;
+  text-align: center;
+  border-radius: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-family: inherit;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.seg-btn.is-active {
+  background: var(--accent-soft);
+  border-color: rgba(91,127,166,0.5);
+  color: #89b4d9;
+}
+
+/* ── Tag chips ───────────────────────────────────────────────────────────── */
+.tag-input-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0.4rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: text;
+  min-height: 38px;
+  align-items: center;
+  transition: border-color 0.15s;
+}
+.tag-input-wrap:focus-within { border-color: var(--accent); }
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.1rem 0.5rem;
+  background: rgba(91,127,166,0.15);
+  border: 1px solid rgba(91,127,166,0.3);
+  border-radius: 20px;
+  font-size: 0.72rem;
+  color: #89b4d9;
+  cursor: default;
+}
+.tag-chip .remove {
+  cursor: pointer;
+  color: rgba(255,255,255,0.4);
+  font-size: 0.8rem;
+  line-height: 1;
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+.tag-chip .remove:hover { color: var(--danger); }
+.tag-text-input {
+  border: none !important;
+  background: transparent !important;
+  padding: 0.1rem !important;
+  outline: none !important;
+  min-width: 80px;
+  flex: 1;
+  font-size: 0.78rem;
+  color: var(--text);
+  width: auto;
+}
+
+/* ── Dynamic list rows ───────────────────────────────────────────────────── */
+.dyn-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.dyn-row {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.55rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  position: relative;
+}
+.dyn-row-top {
+  display: flex;
+  gap: 0.4rem;
+  align-items: flex-start;
+}
+.dyn-row-top .inputs { flex: 1; display: flex; flex-direction: column; gap: 0.35rem; }
+.dyn-row-top .row-actions { display: flex; flex-direction: column; gap: 0.25rem; align-items: flex-end; }
+.dyn-row-inline { display: flex; gap: 0.35rem; align-items: center; }
+.dyn-row-inline > * { flex: 1; }
+.dyn-row-inline .narrow { flex: 0 0 auto; }
+.expand-btn {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-family: inherit;
+  transition: color 0.15s;
+}
+.expand-btn:hover { color: var(--text); }
+.tab-content-area { display: none; margin-top: 0.4rem; }
+.tab-content-area.is-open { display: block; }
+.tab-content-area textarea { min-height: 100px; }
+.preset-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+.add-row-wrap {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  align-items: center;
+}
+
+/* ── Preview tabs ─────────────────────────────────────────────────────────── */
+.preview-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  flex-shrink: 0;
+  padding: 0 0.75rem;
+}
+.preview-tab {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-family: inherit;
+  margin-bottom: -1px;
+}
+.preview-tab.is-active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.preview-tab:hover:not(.is-active) { color: var(--text); }
+.preview-content {
+  flex: 1;
+  overflow: hidden;
+  display: none;
+  min-height: 0;
+}
+.preview-content.is-active {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+/* ── YAML tab ─────────────────────────────────────────────────────────────── */
+.yaml-wrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.yaml-copy-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 2;
+}
+.yaml-code {
+  flex: 1;
+  padding: 1rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.65;
+  white-space: pre;
+  overflow: auto;
+  color: #cdd6f4;
+  background: transparent;
+}
+/* Syntax highlight colors */
+.yl-key { color: #89b4fa; }
+.yl-str { color: #a6e3a1; }
+.yl-num { color: #fab387; }
+.yl-bool { color: #f38ba8; }
+.yl-comment { color: #585b70; font-style: italic; }
+.yl-dash { color: #cba6f7; }
+.yl-delim { color: #f5c2e7; }
+
+/* ── Files tab ─────────────────────────────────────────────────────────────── */
+.files-layout {
+  display: flex;
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.files-tree {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0;
+  overflow-y: auto;
+  font-size: 0.75rem;
+  font-family: var(--mono);
+}
+.tree-dir {
+  padding: 0.2rem 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.tree-file {
+  padding: 0.25rem 0.75rem 0.25rem 1.25rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 0;
+  transition: background 0.1s, color 0.1s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tree-file:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+.tree-file.is-active { background: var(--accent-soft); color: #89b4d9; }
+.tree-file .file-icon { font-size: 0.7rem; flex-shrink: 0; }
+.files-viewer {
+  flex: 1;
+  overflow: auto;
+  padding: 1rem;
+  font-family: var(--mono);
+  font-size: 0.77rem;
+  line-height: 1.65;
+  white-space: pre;
+  color: #cdd6f4;
+}
+
+/* ── Card tab ─────────────────────────────────────────────────────────────── */
+.card-preview-wrap {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem;
+  overflow: auto;
+  background: #111;
+}
+.work-card-preview {
+  width: 240px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #1a1a1a;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.wcp-img {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  display: block;
+  background: #252525;
+}
+.wcp-img-placeholder {
+  width: 100%;
+  height: 130px;
+  background: linear-gradient(135deg, #252525, #1a1a1a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #444;
+  font-size: 2rem;
+}
+.wcp-body {
+  background: #2e2e2e;
+  padding: 0.9rem 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.wcp-title {
+  color: #eee;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.wcp-desc {
+  font-size: 0.72rem;
+  color: rgba(238,238,238,0.6);
+  line-height: 1.45;
+}
+.wcp-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.wcp-tag {
+  font-size: 0.58rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 20px;
+  border: 1px solid rgba(238,238,238,0.18);
+  color: rgba(238,238,238,0.55);
+}
+.wcp-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.25rem;
+}
+.wcp-type { font-size: 0.58rem; text-transform: uppercase; color: rgba(238,238,238,0.45); font-weight: 400; }
+.wcp-date { font-size: 0.62rem; color: rgba(238,238,238,0.3); }
+.wcp-status { display: flex; gap: 3px; }
+.wcp-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.wcp-dot.filled { background: #5b7fa6; border-color: #5b7fa6; }
+
+/* ── Post tab ─────────────────────────────────────────────────────────────── */
+.post-preview-wrap {
+  flex: 1;
+  overflow-y: auto;
+  background: #1e1e1e;
+}
+.ppost-banner {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+.ppost-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.ppost-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+}
+.ppost-title {
+  color: #f0f0f0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.3;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+}
+.ppost-desc {
+  color: rgba(255,255,255,0.65);
+  font-size: 0.82rem;
+  margin-top: 0.3rem;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+}
+.ppost-tabs-nav {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  overflow-x: auto;
+  flex-shrink: 0;
+  background: #242424;
+}
+.ppost-tab-btn {
+  padding: 0.3rem 0.85rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: transparent;
+  color: rgba(255,255,255,0.45);
+  font-size: 0.75rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.ppost-tab-btn.is-active, .ppost-tab-btn:hover {
+  background: rgba(91,127,166,0.2);
+  border-color: rgba(91,127,166,0.4);
+  color: #89b4d9;
+}
+.ppost-links {
+  padding: 0.6rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  background: #242424;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.ppost-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 0.6rem 0 0;
+  border-radius: 4px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  overflow: hidden;
+}
+.ppost-link-badge {
+  padding: 0.45em 0.55em;
+  margin-right: 0.5em;
+  background: rgba(0,0,0,0.28);
+  font-size: 0.85em;
+}
+.ppost-content {
+  padding: 1.5rem;
+  max-width: 820px;
+  color: #ccc;
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+.ppost-content h1,.ppost-content h2,.ppost-content h3,.ppost-content h4 {
+  color: #e8e8e8;
+  margin: 1.25rem 0 0.5rem;
+  line-height: 1.3;
+}
+.ppost-content h2 { font-size: 1.15rem; }
+.ppost-content h3 { font-size: 1rem; }
+.ppost-content p { margin-bottom: 0.75rem; }
+.ppost-content a { color: var(--accent); }
+.ppost-content code {
+  font-family: var(--mono);
+  background: rgba(255,255,255,0.07);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-size: 0.88em;
+}
+.ppost-content pre {
+  background: rgba(255,255,255,0.05);
+  padding: 0.75rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+.ppost-content pre code { background: none; padding: 0; }
+.ppost-content ul,.ppost-content ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.ppost-content li { margin-bottom: 0.25rem; }
+.ppost-content blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1rem;
+  color: rgba(204,204,204,0.7);
+  margin: 0.75rem 0;
+}
+.ppost-empty {
+  padding: 2rem;
+  color: var(--text-muted);
+  text-align: center;
+  font-style: italic;
+}
+
+/* Proj btn colors for post preview */
+.ppost-link-btn.github { background: rgba(46,78,64,0.6); color: #8ec0ac; }
+.ppost-link-btn.download,.ppost-link-btn.mac-arm,.ppost-link-btn.mac-intel,.ppost-link-btn.win,.ppost-link-btn.linux {
+  background: rgba(58,80,104,0.6); color: #b8d0e4;
+}
+.ppost-link-btn.web,.ppost-link-btn.docs,.ppost-link-btn.paper { background: rgba(56,64,96,0.6); color: #98a8c8; }
+.ppost-link-btn.issues,.ppost-link-btn.email { background: rgba(85,51,36,0.6); color: #c89080; }
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* ── Copy button feedback ─────────────────────────────────────────────────── */
+.copy-feedback {
+  font-size: 0.68rem;
+  padding: 0.2rem 0.5rem;
+  background: var(--success);
+  color: #fff;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  margin-left: 0.4rem;
+}
+.copy-feedback.show { opacity: 1; }
+
+/* ── Dev status inline display ───────────────────────────────────────────── */
+.dev-status-labels {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  flex-wrap: wrap;
+}
+.ds-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+/* ── Tags grid (scrollable) ──────────────────────────────────────────────── */
+#tags-grid {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.5rem;
+}
+#tags-grid .checkbox-item {
+  font-size: 0.73rem;
+}
+
+/* ── Citations section ───────────────────────────────────────────────────── */
+.cite-paper-list {
+  max-height: 180px;
+  overflow-y: auto;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+}
+.cite-paper-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.2rem 0;
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+.cite-paper-item input[type=checkbox] {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.cite-paper-item .cite-key {
+  color: #89b4d9;
+  font-family: var(--mono);
+  flex-shrink: 0;
+}
+.cite-paper-item .cite-title {
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cite-bib-badge {
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  line-height: 1.4;
+}
+.cite-bib-badge--papers {
+  color: #888;
+  border-color: rgba(136,136,136,0.2);
+}
+.cite-bib-badge--refs {
+  color: #89b4d9;
+  border-color: rgba(137,180,217,0.3);
+}
+.cite-extra-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.4rem;
+}
+.cite-new-panel {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 0.6rem;
+}
+.cite-new-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.65rem;
+  background: var(--bg3);
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.12s;
+}
+.cite-new-header:hover { background: var(--bg4); color: var(--text); }
+.cite-new-header .cnp-toggle { transition: transform 0.15s; font-size: 0.6rem; }
+.cite-new-panel.is-open .cnp-toggle { transform: rotate(90deg); }
+.cite-new-body {
+  display: none;
+  padding: 0.65rem;
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+}
+.cite-new-panel.is-open .cite-new-body { display: block; }
+.cite-conditional-fields { margin-top: 0; }
+.cite-extra-panel {
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 0.65rem;
+}
+.cite-extra-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.6rem;
+  background: var(--bg3);
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.12s;
+}
+.cite-extra-header:hover { background: var(--bg4); }
+.cite-extra-header .cep-toggle { transition: transform 0.15s; font-size: 0.6rem; }
+.cite-extra-panel.is-open .cep-toggle { transform: rotate(90deg); }
+.cite-extra-body {
+  display: none;
+  padding: 0.55rem 0.6rem;
+  background: var(--bg);
+}
+.cite-extra-panel.is-open .cite-extra-body { display: block; }
+.cite-generated-bib {
+  margin-top: 0.6rem;
+}
+.cite-generated-bib textarea {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  background: #111;
+  color: #a6e3a1;
+  border-color: rgba(91,166,122,0.3);
+  min-height: 130px;
+}
+input[type=number] {
+  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+}
+input[type=number]:focus { border-color: var(--accent); }
+
+/* ── Bib-file radio toggle ───────────────────────────────────────────────── */
+.bib-file-toggle {
+  display: flex;
+  gap: 0.25rem;
+}
+.bib-file-toggle input[type=radio] { display: none; }
+.bib-file-toggle label {
+  flex: 1;
+  padding: 0.35rem 0.5rem;
+  text-align: center;
+  border-radius: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  transition: all 0.15s;
+  line-height: 1.35;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+}
+.bib-file-toggle label .bib-file-name {
+  font-size: 0.78rem;
+  font-family: var(--mono);
+}
+.bib-file-toggle label .bib-file-desc {
+  font-size: 0.64rem;
+  font-weight: 400;
+  opacity: 0.75;
+}
+.bib-file-toggle input[type=radio]:checked + label {
+  background: var(--accent-soft);
+  border-color: rgba(91,127,166,0.5);
+  color: #89b4d9;
+}
+</style>
+</head>
+<body>
+
+<!-- ── Top bar ────────────────────────────────────────────────────────────── -->
+<div class="topbar">
+  <h1>Jekyll Post Builder</h1>
+  <span class="badge">behzadhaki.github.io</span>
+  <button class="btn btn-ghost btn-sm" id="bib-status-btn" onclick="autoLoadBibs()" style="margin-left:auto;" title="Click to reload papers">⟳ Loading papers…</button>
+</div>
+
+<!-- ── Main ───────────────────────────────────────────────────────────────── -->
+<div class="main">
+
+  <!-- ── Form Panel ─────────────────────────────────────────────────────── -->
+  <div class="form-panel" id="formPanel">
+
+    <!-- 1. Basic -->
+    <div class="section is-open" id="sec-basic">
+      <div class="section-header" onclick="toggleSection('sec-basic')">
+        <span class="section-toggle">▶</span>
+        <span class="section-title">Basic</span>
+      </div>
+      <div class="section-body">
+        <div class="field">
+          <label class="label" for="f-post-category">Post Category</label>
+          <select id="f-post-category" onchange="onCategoryChange(this.value)"></select>
+        </div>
+        <div class="field">
+          <label class="label" for="f-title">Title</label>
+          <input type="text" id="f-title" placeholder="My Amazing Project" oninput="onTitleChange()">
+        </div>
+        <div class="field">
+          <label class="label" for="f-desc">Description</label>
+          <input type="text" id="f-desc" placeholder="Short description of the project" oninput="scheduleUpdate()">
+        </div>
+        <div class="field">
+          <label class="label" for="f-date">Date</label>
+          <input type="date" id="f-date" oninput="scheduleUpdate()">
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Identity -->
+    <div class="section is-open" id="sec-identity">
+      <div class="section-header" onclick="toggleSection('sec-identity')">
+        <span class="section-toggle">▶</span>
+        <span class="section-title">Identity</span>
+      </div>
+      <div class="section-body">
+        <div class="field">
+          <label class="label" for="f-permalink">Permalink</label>
+          <input type="text" id="f-permalink" placeholder="/works/my-project/" oninput="onIdentityManual('permalink')">
+        </div>
+        <div class="field">
+          <label class="label" for="f-folder">Folder Name</label>
+          <input type="text" id="f-folder" placeholder="MyProject" oninput="onIdentityManual('folder')">
+        </div>
+        <div class="field">
+          <label class="label" for="f-image">Image</label>
+          <div style="display:flex;gap:0.4rem;align-items:center;">
+            <input type="text" id="f-image" placeholder="/assets/works/MyProject/hero.png" oninput="imagePathManual=true; scheduleUpdate()" style="flex:1;min-width:0;">
+            <label class="btn btn-ghost btn-sm" style="cursor:pointer;white-space:nowrap;flex-shrink:0;" title="Upload image file">
+              📁 Upload
+              <input type="file" id="f-image-file" accept="image/*" style="display:none;" onchange="onImageFilePick(this)">
+            </label>
+          </div>
+          <div id="f-image-preview" style="display:none;margin-top:0.5rem;position:relative;">
+            <img id="f-image-thumb" style="max-height:90px;max-width:100%;border-radius:4px;border:1px solid rgba(255,255,255,0.12);display:block;" alt="hero preview">
+            <button onclick="clearImageFile()" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.6);border:none;color:#ccc;border-radius:3px;cursor:pointer;font-size:11px;padding:1px 5px;" title="Remove image">✕</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Categorization -->
+    <div class="section is-open" id="sec-cat">
+      <div class="section-header" onclick="toggleSection('sec-cat')">
+        <span class="section-toggle">▶</span>
+        <span class="section-title">Categorization</span>
+      </div>
+      <div class="section-body">
+        <!-- Project-types area: re-rendered by renderCategorizationSection() -->
+        <div id="cat-project-types-area"></div>
+        <div class="field">
+          <label class="label">Development Status</label>
+          <div class="seg-control" id="dev-status-seg"></div>
+          <div class="dev-status-labels">
+            <span class="ds-label" id="dev-status-desc">—</span>
+          </div>
+        </div>
+        <div class="field">
+          <div class="toggle-wrap">
+            <label class="toggle">
+              <input type="checkbox" id="f-featured" onchange="scheduleUpdate()">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-label">Featured</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Tags -->
+    <div class="section" id="sec-tags">
+      <div class="section-header" onclick="toggleSection('sec-tags')">
+        <span class="section-toggle">▶</span>
+        <span class="section-title">Tags</span>
+      </div>
+      <div class="section-body">
+        <!-- Selected chips -->
+        <div class="field">
+          <label class="label">Selected Tags</label>
+          <div class="tag-input-wrap" id="tag-chips" style="min-height:32px;cursor:default;"></div>
+        </div>
+        <!-- Search existing tags -->
+        <div class="field">
+          <label class="label">Filter Tags</label>
+          <input type="text" id="tag-search" placeholder="Search tags…" oninput="onTagSearch(this.value)">
+        </div>
+        <div class="checkbox-grid" id="tags-grid" style="max-height:160px;overflow-y:auto;padding:0.25rem 0;"></div>
+        <!-- Add new tag -->
+        <div class="add-row-wrap" style="margin-top:0.65rem;">
+          <input type="text" id="new-tag-input" placeholder="New tag name…" onkeydown="onNewTagKeydown(event)" style="flex:1;">
+          <button class="btn btn-sm" onclick="addNewTag()">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Tabs -->
+    <div class="section is-open" id="sec-tabs">
+      <div class="section-header" onclick="toggleSection('sec-tabs')">
+        <span class="section-toggle">▶</span>
+        <span class="section-title">Tabs</span>
+      </div>
+      <div class="section-body">
+        <div class="preset-btns" id="tab-preset-btns"></div>
+        <div class="dyn-list" id="tabs-list"></div>
+        <div class="add-row-wrap" style="margin-top:0.5rem;">
+          <input type="text" id="custom-tab-input" placeholder="Custom tab name…" onkeydown="onCustomTabKeydown(event)" style="flex:1;">
+          <button class="btn btn-sm" onclick="addCustomTab()">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Links -->
+    <div class="section" id="sec-links">
+      <div class="section-header" onclick="toggleSection('sec-links')">
+        <span class="section-toggle">▶</span>
+        <span class="section-title">Links</span>
+      </div>
+      <div class="section-body">
+        <div class="dyn-list" id="links-list"></div>
+        <div class="add-row-wrap">
+          <button class="btn btn-sm" onclick="addLink()">+ Add Link</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Citations -->
+    <div class="section" id="sec-cite">
+      <div class="section-header" onclick="toggleSection('sec-cite')">
+        <span class="section-toggle">▶</span>
+        <span class="section-title">Citations</span>
+      </div>
+      <div class="section-body">
+
+        <!-- Part 1: existing papers -->
+        <div class="field">
+          <label class="label">Select Papers</label>
+          <!-- extra-key chips (for keys not in the list) -->
+          <div class="cite-extra-chips" id="cite-extra-chips"></div>
+          <div class="cite-paper-list" id="cite-paper-list"></div>
+        </div>
+
+        <!-- Part 2: new bibtex entry -->
+        <div class="cite-new-panel" id="cite-new-panel">
+          <button class="cite-new-header" onclick="toggleCiteNewPanel()">
+            <span class="cnp-toggle">▶</span>
+            ＋ New BibTeX entry
+          </button>
+          <div class="cite-new-body">
+
+            <div class="field">
+              <label class="label">Entry Type</label>
+              <select id="cnp-type" onchange="onCnpTypeChange(this.value)">
+                <option value="inproceedings">@inproceedings</option>
+                <option value="article">@article</option>
+                <option value="phdthesis">@phdthesis</option>
+                <option value="misc">@misc</option>
+                <option value="book">@book</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label class="label">Add to:</label>
+              <div class="bib-file-toggle">
+                <input type="radio" name="cnp-bib-file" id="cnp-bib-papers" value="papers" checked onchange="cnpBibFile='papers'">
+                <label for="cnp-bib-papers">
+                  <span class="bib-file-name">papers.bib</span>
+                  <span class="bib-file-desc">My publications · Publications page &amp; CV</span>
+                </label>
+                <input type="radio" name="cnp-bib-file" id="cnp-bib-refs" value="refs" onchange="cnpBibFile='refs'">
+                <label for="cnp-bib-refs">
+                  <span class="bib-file-name">refs.bib</span>
+                  <span class="bib-file-desc">External reference · project pages only</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Key</label>
+              <input type="text" id="cnp-key" placeholder="AuthorYearKeyword (e.g. Smith2025Drums)" oninput="onCnpKeyInput()">
+            </div>
+
+            <!-- Core fields -->
+            <div class="field">
+              <label class="label">Author(s) <span style="font-weight:400;text-transform:none;letter-spacing:0">— one per line: Lastname, Firstname</span></label>
+              <textarea id="cnp-authors" placeholder="Haki, Behzad&#10;Smith, John" style="min-height:55px;"></textarea>
+            </div>
+            <div class="field">
+              <label class="label">Title</label>
+              <input type="text" id="cnp-title" placeholder="My Paper Title" oninput="onCnpAutoKey()">
+            </div>
+            <div class="field">
+              <label class="label">Year</label>
+              <input type="number" id="cnp-year" placeholder="2025" min="1900" max="2100" oninput="onCnpAutoKey()">
+            </div>
+            <div class="field">
+              <label class="label">Month <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+              <input type="text" id="cnp-month" placeholder="June">
+            </div>
+            <div class="field">
+              <label class="label">Abstract <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+              <textarea id="cnp-abstract" placeholder="Abstract text here…" style="min-height:55px;"></textarea>
+            </div>
+
+            <!-- Type-conditional fields -->
+            <div class="cite-conditional-fields" id="cnp-conditional"></div>
+
+            <!-- Jekyll-Scholar extra fields -->
+            <div class="cite-extra-panel" id="cite-extra-fields-panel">
+              <button class="cite-extra-header" onclick="toggleCiteExtraPanel()">
+                <span class="cep-toggle">▶</span>
+                Extra fields for site
+              </button>
+              <div class="cite-extra-body">
+                <div class="field">
+                  <label class="label">Preview image <span style="font-weight:400;text-transform:none;letter-spacing:0">(filename in assets/)</span></label>
+                  <input type="text" id="cnp-preview" placeholder="image.png">
+                </div>
+                <div class="field">
+                  <label class="label">PDF URL</label>
+                  <input type="text" id="cnp-pdf" placeholder="https://…">
+                </div>
+                <div class="field">
+                  <label class="label">Website URL</label>
+                  <input type="text" id="cnp-website" placeholder="https://…">
+                </div>
+                <div class="field">
+                  <label class="label">Code URL</label>
+                  <input type="text" id="cnp-code" placeholder="https://…">
+                </div>
+                <div class="field">
+                  <label class="label">Slides URL</label>
+                  <input type="text" id="cnp-slides" placeholder="https://…">
+                </div>
+                <div class="field">
+                  <div class="toggle-wrap">
+                    <label class="toggle">
+                      <input type="checkbox" id="cnp-bibtex-show" checked>
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">bibtex_show</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="toggle-wrap">
+                    <label class="toggle">
+                      <input type="checkbox" id="cnp-selected">
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">selected</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:0.7rem;">
+              <button class="btn btn-primary" style="width:100%" onclick="addBibEntry()">Add Entry</button>
+            </div>
+
+            <!-- Generated bibtex output -->
+            <div class="cite-generated-bib" id="cnp-generated-wrap" style="display:none;">
+              <label class="label" id="cnp-generated-label" style="margin-bottom:0.3rem;">Generated BibTeX — copy to _bibliography/papers.bib</label>
+              <textarea id="cnp-generated-bib" readonly></textarea>
+            </div>
+
+          </div><!-- /cite-new-body -->
+        </div><!-- /cite-new-panel -->
+
+      </div>
+    </div>
+
+    <!-- 9. Options -->
+    <div class="section" id="sec-opts">
+      <div class="section-header" onclick="toggleSection('sec-opts')">
+        <span class="section-toggle">▶</span>
+        <span class="section-title">Options</span>
+      </div>
+      <div class="section-body">
+        <div class="field">
+          <div class="toggle-wrap">
+            <label class="toggle">
+              <input type="checkbox" id="f-navigator" onchange="scheduleUpdate()">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-label">needs_navigator</span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="f-note">Note</label>
+          <textarea id="f-note" placeholder="Optional note shown below project links…" oninput="scheduleUpdate()"></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /form-panel -->
+
+  <!-- ── Preview Panel ────────────────────────────────────────────────────── -->
+  <div class="preview-panel">
+    <div class="preview-tabs">
+      <button class="preview-tab is-active" onclick="switchPreview('yaml',this)">YAML</button>
+      <button class="preview-tab" onclick="switchPreview('files',this)">Files</button>
+      <button class="preview-tab" onclick="switchPreview('card',this)">Card</button>
+      <button class="preview-tab" onclick="switchPreview('post',this)">Post</button>
+    </div>
+
+    <!-- YAML tab -->
+    <div class="preview-content is-active" id="pv-yaml">
+      <div class="yaml-wrap">
+        <button class="btn btn-sm yaml-copy-btn" onclick="copyYaml()">Copy</button>
+        <div class="yaml-code" id="yaml-output"></div>
+      </div>
+    </div>
+
+    <!-- Files tab -->
+    <div class="preview-content" id="pv-files">
+      <div class="files-layout">
+        <div class="files-tree" id="files-tree"></div>
+        <div class="files-viewer" id="files-viewer"><span style="color:var(--text-muted)">Select a file</span></div>
+      </div>
+    </div>
+
+    <!-- Card tab -->
+    <div class="preview-content" id="pv-card">
+      <div class="card-preview-wrap">
+        <div class="work-card-preview" id="card-preview"></div>
+      </div>
+    </div>
+
+    <!-- Post tab -->
+    <div class="preview-content" id="pv-post">
+      <div class="post-preview-wrap" id="post-preview"></div>
+    </div>
+
+  </div><!-- /preview-panel -->
+
+</div><!-- /main -->
+
+<!-- ── Output bar ─────────────────────────────────────────────────────────── -->
+<div class="output-bar">
+  <button class="btn btn-primary" onclick="downloadZip()">⬇ Download ZIP</button>
+  <button class="btn btn-success" onclick="writeToDisk()">💾 Write to Disk</button>
+  <div class="status-msg" id="status-msg"></div>
+</div>
+
+<script>
+// ── Constants ──────────────────────────────────────────────────────────────
+// Works-only project types (used in the checkbox grid for the "works" category)
+const PROJECT_TYPES = [
+  {slug:'max', label:'MAX/M4L'},
+  {slug:'pd', label:'Pure Data'},
+  {slug:'plugins', label:'Plugins'},
+  {slug:'web', label:'Web'},
+  {slug:'hardware', label:'Hardware'},
+  {slug:'datasets', label:'Datasets'},
+  {slug:'frameworks', label:'Frameworks'},
+  {slug:'templates', label:'Templates'},
+  {slug:'web-widgets', label:'Web Widgets'},
+];
+
+// Options for the "Also appears in Works as:" dropdown (installation category)
+const ALSO_IN_WORKS_OPTIONS = [
+  {slug:'', label:'(none)'},
+  {slug:'max', label:'MAX/M4L'},
+  {slug:'pd', label:'Pure Data'},
+  {slug:'plugins', label:'Plugins'},
+  {slug:'web', label:'Web'},
+  {slug:'hardware', label:'Hardware'},
+  {slug:'datasets', label:'Datasets'},
+  {slug:'frameworks', label:'Frameworks'},
+  {slug:'templates', label:'Templates'},
+  {slug:'web-widgets', label:'Web Widgets'},
+];
+
+const POST_CATEGORIES = [
+  {value:'works', label:'Works', folder:'_posts/works/{Folder}/', permalink:'/works/{slug}/'},
+  {value:'tutorial', label:'Tutorial', folder:'_posts/tutorials/{Folder}/', permalink:'/tutorials/{slug}/'},
+  {value:'installation', label:'Installation/Performance', folder:'_posts/works/{Folder}/', permalink:'/installations-performances/{slug}/'},
+];
+
+const ALL_TAGS = [
+  'AuV2','Audio2Midi','AudioIn','Bongo','CV-sequencer','CVOut','Dataset',
+  'Drum-Accompaniment','Drum-Patterns','Eurorack','FRFT','Freesound','Freesound-API',
+  'Generative','ISMIR','Interactive-Installation','JUCE','Looper','MIDI','Markov-based',
+  'Max','Max4Live','Midi2Midi','MidiIn','MidiOut','Modulation-Source','Neural-Network',
+  'Percussion','Performance-oriented','Processor','PyTorch','Real-Time','Sampler',
+  'Standalone','Synthesis','Synthesizer','Template','Transformer','Tutorial','VST','VST3',
+  'pitch-sequencer','rhythm-sequencer'
+];
+
+const LINK_TYPES = [
+  {type:'github', label:'Source Code'},
+  {type:'download', label:'Download'},
+  {type:'web', label:'Website'},
+  {type:'docs', label:'Documentation'},
+  {type:'paper', label:'Paper'},
+  {type:'mac-arm', label:'macOS ARM'},
+  {type:'mac-intel', label:'macOS Intel'},
+  {type:'win', label:'Windows'},
+  {type:'linux', label:'Linux'},
+  {type:'issues', label:'Report an Issue'},
+  {type:'email', label:'Contact'},
+  {type:'__custom__', label:'Custom…'},
+];
+
+const TAB_PRESETS = [
+  {name:'Overview', filename:'overview'},
+  {name:'Demo', filename:'demo'},
+  {name:'Documentation', filename:'documentation'},
+  {name:'Showcases', filename:'showcases'},
+  {name:'Changelog', filename:'changelog'},
+  {name:'Technical Details', filename:'technical-details'},
+  {name:'Tutorial', filename:'tutorial'},
+  {name:'Access', filename:'access'},
+];
+
+const DEV_STATUS = [
+  '',
+  'Early Development',
+  'Ongoing',
+  'Late Stages',
+  'Finished (maintained)',
+  'Finished (no maintenance)',
+];
+
+const TYPE_LABEL_MAP = {
+  max:'MAX/M4L', pd:'Pure Data', plugins:'Plugin', web:'Web', hardware:'Hardware',
+  'installations-performances':'Installation', datasets:'Dataset',
+  frameworks:'Framework', 'frameworks-templates':'Framework',
+  templates:'Template', 'web-widgets':'Web Widget', tutorials:'Tutorial',
+};
+
+const LINK_ICON_MAP = {
+  github:'⑂', 'mac-arm':'', 'mac-intel':'', win:'', linux:'',
+  download:'↓', docs:'📖', paper:'📄', web:'🌐', issues:'!', email:'✉'
+};
+
+// ── State ──────────────────────────────────────────────────────────────────
+let repoDir = null;        // FileSystemDirectoryHandle once user connects
+let loadedPapers = [];     // [{key, title, bibFile}] — populated from .bib files at runtime
+let permalinkManual = false;
+let folderManual = false;
+let postCategory = 'works'; // 'works' | 'tutorial' | 'installation'
+let alsoInWorks = ''; // for installation category: optional cross-listing slug
+let tags = [];
+let tabRows = []; // [{id, name, filename, content}]
+let linkRows = []; // [{id, type, label, url, disabled}]
+let selectedImageFile = null;  // File object if user uploads an image
+let imagePathManual = false;   // true once user hand-edits the image path field
+let citeKeys = [];        // array of selected cite keys
+let newBibEntries = [];   // array of {bibFile, bibtexString} objects to append
+let cnpBibFile = 'papers'; // 'papers' | 'refs' — target bib file for new entry
+let _cnpKeyManual = false; // whether the user manually edited the key field
+let _tabIdCounter = 0;
+let _linkIdCounter = 0;
+let _updateTimer = null;
+let _activeFileIdx = 0;
+let _postActiveTabIdx = 0;
+
+// ── Init ───────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Set today's date
+  const today = new Date();
+  const iso = today.toISOString().split('T')[0];
+  document.getElementById('f-date').value = iso;
+
+  // Build post category selector
+  const catSel = document.getElementById('f-post-category');
+  POST_CATEGORIES.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.value;
+    opt.textContent = c.label;
+    catSel.appendChild(opt);
+  });
+
+  // Build categorization section (project-types area)
+  renderCategorizationSection();
+
+  // Build dev status segmented control
+  const seg = document.getElementById('dev-status-seg');
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'seg-btn' + (i === 1 ? ' is-active' : '');
+    btn.textContent = i;
+    btn.dataset.val = i;
+    btn.onclick = () => {
+      document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      document.getElementById('dev-status-desc').textContent = DEV_STATUS[i];
+      scheduleUpdate();
+    };
+    seg.appendChild(btn);
+  }
+  document.getElementById('dev-status-desc').textContent = DEV_STATUS[1];
+
+  // Build tags grid
+  renderTagsGrid();
+
+  // Build tab presets
+  renderTabPresetButtons();
+
+  // Auto-load bib files from relative paths; also populates cite paper list
+  autoLoadBibs();
+
+  // Build cite conditional fields (default type = inproceedings)
+  renderCnpConditionalFields('inproceedings');
+
+  scheduleUpdate();
+});
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function toSlug(str) {
+  return str.toLowerCase().trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function toTitleCase(str) {
+  return str.split(/[\s\-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
+}
+
+// ── Image upload ───────────────────────────────────────────────────────────
+function onImageFilePick(input) {
+  const file = input.files[0];
+  if (!file) return;
+  selectedImageFile = file;
+  imagePathManual = false; // reset so path tracks folder changes
+
+  // Show thumbnail
+  const thumb = document.getElementById('f-image-thumb');
+  const preview = document.getElementById('f-image-preview');
+  thumb.src = URL.createObjectURL(file);
+  preview.style.display = '';
+
+  syncImagePath();
+  scheduleUpdate();
+}
+
+function syncImagePath() {
+  if (!selectedImageFile || imagePathManual) return;
+  const folder = document.getElementById('f-folder').value.trim() || 'MyProject';
+  document.getElementById('f-image').value = `/assets/works/${folder}/${selectedImageFile.name}`;
+}
+
+function clearImageFile() {
+  selectedImageFile = null;
+  imagePathManual = false;
+  document.getElementById('f-image').value = '';
+  document.getElementById('f-image-file').value = '';
+  const thumb = document.getElementById('f-image-thumb');
+  if (thumb.src.startsWith('blob:')) URL.revokeObjectURL(thumb.src);
+  document.getElementById('f-image-preview').style.display = 'none';
+  scheduleUpdate();
+}
+
+function toFilename(str) {
+  return toSlug(str) || 'untitled';
+}
+
+function getFormData() {
+  const title = document.getElementById('f-title').value.trim();
+  const description = document.getElementById('f-desc').value.trim();
+  const date = document.getElementById('f-date').value;
+  const defaultPermalink = getPermalinkPrefix() + (toSlug(title) || 'my-post') + '/';
+  const permalink = document.getElementById('f-permalink').value.trim() || defaultPermalink;
+  const folder = document.getElementById('f-folder').value.trim() || toTitleCase(title) || 'MyPost';
+  const image = document.getElementById('f-image').value.trim();
+  const featured = document.getElementById('f-featured').checked;
+  const navigator = document.getElementById('f-navigator').checked;
+  const note = document.getElementById('f-note').value.trim();
+
+  let projectTypes;
+  if (postCategory === 'tutorial') {
+    projectTypes = ['tutorials'];
+  } else if (postCategory === 'installation') {
+    projectTypes = alsoInWorks
+      ? ['installations-performances', alsoInWorks]
+      : ['installations-performances'];
+  } else {
+    // works — read from checkbox grid
+    projectTypes = Array.from(document.querySelectorAll('#project-types-grid input:checked')).map(i => i.value);
+  }
+  const devStatus = parseInt(document.querySelector('.seg-btn.is-active')?.dataset.val || '1');
+
+  return { title, description, date, permalink, folder, image, featured, navigator, note, citeKeys: [...citeKeys], projectTypes, devStatus, tags: [...tags], tabs: tabRows, links: linkRows, postCategory };
+}
+
+// ── Section toggle ─────────────────────────────────────────────────────────
+function toggleSection(id) {
+  document.getElementById(id).classList.toggle('is-open');
+}
+
+// ── Post category change ───────────────────────────────────────────────────
+function onCategoryChange(val) {
+  postCategory = val;
+  alsoInWorks = '';
+  if (!permalinkManual) {
+    const title = document.getElementById('f-title').value.trim();
+    document.getElementById('f-permalink').value = title ? getPermalinkPrefix() + toSlug(title) + '/' : '';
+  }
+  renderCategorizationSection();
+  scheduleUpdate();
+}
+
+function getPermalinkPrefix() {
+  if (postCategory === 'tutorial') return '/tutorials/';
+  if (postCategory === 'installation') return '/installations-performances/';
+  return '/works/';
+}
+
+function getPostFolder() {
+  if (postCategory === 'tutorial') return '_posts/tutorials';
+  return '_posts/works';
+}
+
+// ── Categorization section renderer ───────────────────────────────────────
+function renderCategorizationSection() {
+  const area = document.getElementById('cat-project-types-area');
+  if (!area) return;
+
+  if (postCategory === 'works') {
+    // Full checkbox grid
+    area.innerHTML = `
+      <div class="field">
+        <label class="label">Project Types</label>
+        <div class="checkbox-grid" id="project-types-grid"></div>
+      </div>
+    `;
+    const grid = document.getElementById('project-types-grid');
+    PROJECT_TYPES.forEach(pt => {
+      const lbl = document.createElement('label');
+      lbl.className = 'checkbox-item';
+      lbl.innerHTML = `<input type="checkbox" value="${pt.slug}" onchange="scheduleUpdate()"> ${pt.label}`;
+      grid.appendChild(lbl);
+    });
+
+  } else if (postCategory === 'tutorial') {
+    // No user input needed — project_types auto-set to [tutorials]
+    area.innerHTML = `
+      <div class="field">
+        <div style="font-size:0.75rem;color:var(--text-muted);padding:0.15rem 0;">
+          <em>project_types</em> will be set to <strong style="color:#89b4d9">[tutorials]</strong> automatically.
+        </div>
+      </div>
+    `;
+
+  } else if (postCategory === 'installation') {
+    // Single optional dropdown
+    const optsHtml = ALSO_IN_WORKS_OPTIONS.map(o =>
+      `<option value="${escHtml(o.slug)}"${alsoInWorks === o.slug ? ' selected' : ''}>${escHtml(o.label)}</option>`
+    ).join('');
+    area.innerHTML = `
+      <div class="field">
+        <label class="label" for="also-in-works-select">Also appears in Works as</label>
+        <select id="also-in-works-select" onchange="onAlsoInWorksChange(this.value)">${optsHtml}</select>
+      </div>
+    `;
+  }
+}
+
+function onAlsoInWorksChange(val) {
+  alsoInWorks = val;
+  scheduleUpdate();
+}
+
+// ── Title → auto-derive permalink & folder ────────────────────────────────
+function onTitleChange() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!permalinkManual) {
+    document.getElementById('f-permalink').value = title ? getPermalinkPrefix() + toSlug(title) + '/' : '';
+  }
+  if (!folderManual) {
+    document.getElementById('f-folder').value = title ? toTitleCase(title) : '';
+  }
+  syncImagePath();
+  scheduleUpdate();
+}
+
+function onIdentityManual(field) {
+  if (field === 'permalink') permalinkManual = true;
+  if (field === 'folder') { folderManual = true; syncImagePath(); }
+  scheduleUpdate();
+}
+
+// ── Tags ───────────────────────────────────────────────────────────────────
+function renderTagChips() {
+  const wrap = document.getElementById('tag-chips');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  tags.forEach((tag, i) => {
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `${escHtml(tag)}<button class="remove" onclick="removeTagByName('${escHtml(tag).replace(/'/g,"\\'")}')">×</button>`;
+    wrap.appendChild(chip);
+  });
+}
+
+function removeTagByName(name) {
+  tags = tags.filter(t => t !== name);
+  renderTagChips();
+  renderTagsGrid();
+  scheduleUpdate();
+}
+
+function addTagByName(name) {
+  if (name && !tags.includes(name)) {
+    tags.push(name);
+    renderTagChips();
+    renderTagsGrid();
+    scheduleUpdate();
+  }
+}
+
+function renderTagsGrid(filter='') {
+  const grid = document.getElementById('tags-grid');
+  if (!grid) return;
+  const lowerFilter = filter.toLowerCase();
+  grid.innerHTML = '';
+  ALL_TAGS.forEach(tag => {
+    if (filter && !tag.toLowerCase().includes(lowerFilter)) return;
+    const lbl = document.createElement('label');
+    lbl.className = 'checkbox-item';
+    const checked = tags.includes(tag) ? 'checked' : '';
+    lbl.innerHTML = `<input type="checkbox" value="${escHtml(tag)}" ${checked} onchange="onTagGridChange(this, '${escHtml(tag).replace(/'/g,"\\'")}')"> ${escHtml(tag)}`;
+    grid.appendChild(lbl);
+  });
+}
+
+function onTagGridChange(el, name) {
+  if (el.checked) {
+    addTagByName(name);
+  } else {
+    removeTagByName(name);
+  }
+}
+
+function onTagSearch(val) {
+  renderTagsGrid(val);
+}
+
+function onNewTagKeydown(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    addNewTag();
+  }
+}
+
+function addNewTag() {
+  const input = document.getElementById('new-tag-input');
+  if (!input) return;
+  const val = input.value.trim();
+  if (val) {
+    addTagByName(val);
+    input.value = '';
+  }
+}
+
+// ── Tabs ───────────────────────────────────────────────────────────────────
+function renderTabPresetButtons() {
+  const container = document.getElementById('tab-preset-btns');
+  if (!container) return;
+  container.innerHTML = '';
+  TAB_PRESETS.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-sm btn-ghost';
+    btn.textContent = '+ ' + p.name;
+    btn.onclick = () => addTabPreset(p.name, p.filename);
+    container.appendChild(btn);
+  });
+}
+
+function addCustomTab() {
+  const input = document.getElementById('custom-tab-input');
+  if (!input) return;
+  const val = input.value.trim();
+  if (val) {
+    addTabPreset(val, toFilename(val));
+    input.value = '';
+  }
+}
+
+function onCustomTabKeydown(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    addCustomTab();
+  }
+}
+
+function addTab(name='', filename='', content='') {
+  const id = ++_tabIdCounter;
+  tabRows.push({id, name, filename, content});
+  renderTabRows();
+  scheduleUpdate();
+}
+
+function addTabPreset(name, filename) {
+  // Don't duplicate
+  if (tabRows.some(t => t.filename === filename)) return;
+  addTab(name, filename, '');
+}
+
+function renderTabRows() {
+  const list = document.getElementById('tabs-list');
+  list.innerHTML = '';
+  tabRows.forEach((row, idx) => {
+    const div = document.createElement('div');
+    div.className = 'dyn-row';
+    div.id = `tab-row-${row.id}`;
+    div.innerHTML = `
+      <div class="dyn-row-top">
+        <div class="inputs">
+          <div class="dyn-row-inline">
+            <input type="text" placeholder="Tab name" value="${escHtml(row.name)}"
+              oninput="onTabNameChange(${row.id}, this.value)">
+            <input type="text" placeholder="filename.md" value="${escHtml(row.filename)}"
+              oninput="onTabFilenameChange(${row.id}, this.value)" style="flex:0.8">
+          </div>
+        </div>
+        <div class="row-actions">
+          <button class="btn btn-danger" onclick="removeTab(${row.id})">✕</button>
+          <button class="expand-btn" onclick="toggleTabContent(${row.id})" id="exp-${row.id}">▸ content</button>
+        </div>
+      </div>
+      <div class="tab-content-area" id="tc-${row.id}">
+        <textarea placeholder="Tab content (Markdown)…"
+          oninput="onTabContentChange(${row.id}, this.value)">${escHtml(row.content)}</textarea>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function onTabNameChange(id, val) {
+  const row = tabRows.find(r => r.id === id);
+  if (!row) return;
+  row.name = val;
+  if (!row._filenameManual) {
+    row.filename = toFilename(val);
+    // Update the filename input (second input inside .dyn-row-inline)
+    const inputs = document.querySelectorAll(`#tab-row-${id} .dyn-row-inline input`);
+    if (inputs[1]) inputs[1].value = row.filename;
+  }
+  scheduleUpdate();
+}
+
+function onTabFilenameChange(id, val) {
+  const row = tabRows.find(r => r.id === id);
+  if (!row) return;
+  row._filenameManual = true;
+  row.filename = val;
+  scheduleUpdate();
+}
+
+function onTabContentChange(id, val) {
+  const row = tabRows.find(r => r.id === id);
+  if (row) { row.content = val; scheduleUpdate(); }
+}
+
+function removeTab(id) {
+  tabRows = tabRows.filter(r => r.id !== id);
+  renderTabRows();
+  scheduleUpdate();
+}
+
+function toggleTabContent(id) {
+  const area = document.getElementById(`tc-${id}`);
+  const btn = document.getElementById(`exp-${id}`);
+  const open = area.classList.toggle('is-open');
+  btn.textContent = (open ? '▾ ' : '▸ ') + 'content';
+}
+
+// ── Links ──────────────────────────────────────────────────────────────────
+function addLink() {
+  const id = ++_linkIdCounter;
+  linkRows.push({id, type:'github', label:'Source Code', url:'', disabled:false});
+  renderLinkRows();
+  scheduleUpdate();
+}
+
+function renderLinkRows() {
+  const list = document.getElementById('links-list');
+  list.innerHTML = '';
+  linkRows.forEach((row) => {
+    const div = document.createElement('div');
+    div.className = 'dyn-row';
+    div.id = `link-row-${row.id}`;
+
+    const isCustom = !LINK_TYPES.slice(0,-1).some(lt => lt.type === row.type);
+    // For the select value: if custom type, show __custom__
+    const selectVal = isCustom ? '__custom__' : row.type;
+    const typeOpts = LINK_TYPES.map(lt =>
+      `<option value="${lt.type}"${selectVal===lt.type?' selected':''}>${lt.label}</option>`
+    ).join('');
+
+    const typeControl = isCustom
+      ? `<input type="text" placeholder="type slug" value="${escHtml(row.type)}"
+           oninput="onLinkCustomTypeChange(${row.id}, this.value)"
+           style="flex:0.9">`
+      : `<select onchange="onLinkTypeChange(${row.id}, this.value)" style="flex:0.9">
+           ${typeOpts}
+         </select>`;
+
+    div.innerHTML = `
+      <div class="dyn-row-top">
+        <div class="inputs">
+          <div class="dyn-row-inline">
+            ${typeControl}
+            <input type="text" placeholder="Label" value="${escHtml(row.label)}"
+              oninput="onLinkLabelChange(${row.id}, this.value)">
+          </div>
+          <input type="text" placeholder="https://..." value="${escHtml(row.url)}"
+            oninput="onLinkUrlChange(${row.id}, this.value)">
+        </div>
+        <div class="row-actions">
+          <button class="btn btn-danger" onclick="removeLink(${row.id})">✕</button>
+          <label class="toggle" style="margin-top:0.25rem" title="Disabled">
+            <input type="checkbox" ${row.disabled?'checked':''} onchange="onLinkDisabledChange(${row.id}, this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function onLinkTypeChange(id, type) {
+  const row = linkRows.find(r => r.id === id);
+  if (!row) return;
+  if (type === '__custom__') {
+    row.type = '';
+    row._isCustomType = true;
+    renderLinkRows();
+    // Focus the new text input
+    const el = document.querySelector(`#link-row-${id} input[type=text]`);
+    if (el) el.focus();
+    scheduleUpdate();
+    return;
+  }
+  row.type = type;
+  row._isCustomType = false;
+  if (!row._labelManual) {
+    const def = LINK_TYPES.find(l => l.type === type);
+    row.label = def ? def.label : type;
+    // Update label input (second text input)
+    const inputs = document.querySelectorAll(`#link-row-${id} .dyn-row-inline input[type=text]`);
+    if (inputs[1]) inputs[1].value = row.label;
+    else {
+      const all = document.querySelectorAll(`#link-row-${id} input[type=text]`);
+      if (all[0]) all[0].value = row.label;
+    }
+  }
+  scheduleUpdate();
+}
+
+function onLinkCustomTypeChange(id, val) {
+  const row = linkRows.find(r => r.id === id);
+  if (!row) return;
+  row.type = val;
+  scheduleUpdate();
+}
+
+function onLinkLabelChange(id, val) {
+  const row = linkRows.find(r => r.id === id);
+  if (!row) return;
+  row._labelManual = true;
+  row.label = val;
+  scheduleUpdate();
+}
+
+function onLinkUrlChange(id, val) {
+  const row = linkRows.find(r => r.id === id);
+  if (row) { row.url = val; scheduleUpdate(); }
+}
+
+function onLinkDisabledChange(id, val) {
+  const row = linkRows.find(r => r.id === id);
+  if (row) { row.disabled = val; scheduleUpdate(); }
+}
+
+function removeLink(id) {
+  linkRows = linkRows.filter(r => r.id !== id);
+  renderLinkRows();
+  scheduleUpdate();
+}
+
+// ── Citations — paper list ─────────────────────────────────────────────────
+function renderCitePaperList() {
+  const list = document.getElementById('cite-paper-list');
+  if (!list) return;
+  list.innerHTML = '';
+
+  if (loadedPapers.length === 0) {
+    // Show placeholder with inline connect button
+    const ph = document.createElement('div');
+    ph.style.cssText = 'padding:0.5rem 0.25rem;color:var(--text-muted);font-size:0.75rem;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;';
+    ph.innerHTML = `No papers found — serve this tool via HTTP from the repo root<br><code style="font-size:0.72rem;">python3 -m http.server 4099</code> then open <code style="font-size:0.72rem;">localhost:4099/_tools/new-post-builder.html</code>`;
+    list.appendChild(ph);
+    renderCiteExtraChips();
+    return;
+  }
+
+  loadedPapers.forEach(p => {
+    const row = document.createElement('label');
+    row.className = 'cite-paper-item';
+    const checked = citeKeys.includes(p.key) ? 'checked' : '';
+    const truncTitle = p.title.length > 52 ? p.title.slice(0, 49) + '…' : p.title;
+    const bibFile = p.bibFile || 'papers';
+    const badge = bibFile === 'refs'
+      ? `<span class="cite-bib-badge cite-bib-badge--refs">refs</span>`
+      : `<span class="cite-bib-badge cite-bib-badge--papers">papers</span>`;
+    row.innerHTML = `
+      <input type="checkbox" value="${escHtml(p.key)}" ${checked}
+        onchange="onCitePaperCheck(this, '${escHtml(p.key).replace(/'/g,"\\'")}')">
+      <span class="cite-key">${escHtml(p.key)}</span>
+      <span class="cite-title">— ${escHtml(truncTitle)}</span>
+      ${badge}
+    `;
+    list.appendChild(row);
+  });
+  renderCiteExtraChips();
+}
+
+function onCitePaperCheck(el, key) {
+  if (el.checked) {
+    if (!citeKeys.includes(key)) citeKeys.push(key);
+  } else {
+    citeKeys = citeKeys.filter(k => k !== key);
+  }
+  renderCiteExtraChips();
+  scheduleUpdate();
+}
+
+// Chips for keys not in loadedPapers (added via new entry)
+function renderCiteExtraChips() {
+  const wrap = document.getElementById('cite-extra-chips');
+  if (!wrap) return;
+  const knownKeys = loadedPapers.map(p => p.key);
+  const extras = citeKeys.filter(k => !knownKeys.includes(k));
+  wrap.innerHTML = '';
+  extras.forEach(k => {
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `${escHtml(k)}<button class="remove" onclick="removeCiteKey('${escHtml(k).replace(/'/g,"\\'")}')">×</button>`;
+    wrap.appendChild(chip);
+  });
+  wrap.style.display = extras.length ? '' : 'none';
+}
+
+function removeCiteKey(key) {
+  citeKeys = citeKeys.filter(k => k !== key);
+  // uncheck in list if present
+  const list = document.getElementById('cite-paper-list');
+  if (list) {
+    const cb = list.querySelector(`input[value="${CSS.escape(key)}"]`);
+    if (cb) cb.checked = false;
+  }
+  renderCiteExtraChips();
+  scheduleUpdate();
+}
+
+// ── Citations — new entry panel ────────────────────────────────────────────
+function toggleCiteNewPanel() {
+  document.getElementById('cite-new-panel').classList.toggle('is-open');
+}
+
+function toggleCiteExtraPanel() {
+  document.getElementById('cite-extra-fields-panel').classList.toggle('is-open');
+}
+
+function onCnpTypeChange(val) {
+  renderCnpConditionalFields(val);
+}
+
+const CNP_CONDITIONAL = {
+  inproceedings: [
+    {id:'cnp-booktitle', label:'Booktitle (proceedings name)', ph:'Proceedings of NIME 2025'},
+    {id:'cnp-address',   label:'Address', ph:'City, Country'},
+    {id:'cnp-pages',     label:'Pages',   ph:'1--5'},
+    {id:'cnp-doi',       label:'DOI',     ph:'10.xxxx/xxxxx'},
+  ],
+  article: [
+    {id:'cnp-journal', label:'Journal', ph:'Journal of New Music Research'},
+    {id:'cnp-volume',  label:'Volume',  ph:'42'},
+    {id:'cnp-number',  label:'Number',  ph:'3'},
+    {id:'cnp-pages',   label:'Pages',   ph:'1--5'},
+    {id:'cnp-doi',     label:'DOI',     ph:'10.xxxx/xxxxx'},
+  ],
+  phdthesis: [
+    {id:'cnp-school',  label:'School',  ph:'Universitat Pompeu Fabra'},
+    {id:'cnp-address', label:'Address', ph:'Barcelona, Spain'},
+  ],
+  misc: [
+    {id:'cnp-howpublished', label:'How published', ph:'Online'},
+    {id:'cnp-doi',          label:'DOI',            ph:'10.xxxx/xxxxx'},
+    {id:'cnp-url',          label:'URL',            ph:'https://…'},
+  ],
+  book: [
+    {id:'cnp-publisher', label:'Publisher', ph:'MIT Press'},
+    {id:'cnp-address',   label:'Address',   ph:'Cambridge, MA'},
+    {id:'cnp-edition',   label:'Edition',   ph:'2nd'},
+  ],
+};
+
+function renderCnpConditionalFields(type) {
+  const container = document.getElementById('cnp-conditional');
+  if (!container) return;
+  const fields = CNP_CONDITIONAL[type] || [];
+  container.innerHTML = fields.map(f => `
+    <div class="field">
+      <label class="label">${escHtml(f.label)}</label>
+      <input type="text" id="${escHtml(f.id)}" placeholder="${escHtml(f.ph)}">
+    </div>
+  `).join('');
+}
+
+function onCnpKeyInput() {
+  _cnpKeyManual = true;
+}
+
+function onCnpAutoKey() {
+  if (_cnpKeyManual) return;
+  const title = (document.getElementById('cnp-title')?.value || '').trim();
+  const year  = (document.getElementById('cnp-year')?.value || '').trim();
+  // Get first author last name
+  const authorsRaw = (document.getElementById('cnp-authors')?.value || '').trim();
+  let lastName = '';
+  if (authorsRaw) {
+    const firstLine = authorsRaw.split('\n')[0].trim();
+    lastName = firstLine.split(',')[0].trim().replace(/\s+/g, '');
+  }
+  // First word of title (non-stop-word)
+  const stopWords = new Set(['a','an','the','of','in','on','at','for','to','and','or','is','are','with','by','from','using']);
+  const titleWords = title.split(/\s+/).filter(w => w && !stopWords.has(w.toLowerCase()));
+  const keyword = titleWords[0] ? titleWords[0].replace(/[^A-Za-z0-9]/g,'') : '';
+  const suggested = [lastName, year, keyword].filter(Boolean).join('');
+  const keyEl = document.getElementById('cnp-key');
+  if (keyEl) keyEl.value = suggested;
+}
+
+function getVal(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function addBibEntry() {
+  const type    = getVal('cnp-type') || 'inproceedings';
+  const key     = getVal('cnp-key');
+  const authors = getVal('cnp-authors');
+  const title   = getVal('cnp-title');
+  const year    = getVal('cnp-year');
+
+  // Validation
+  const errs = [];
+  if (!key)    errs.push('key');
+  if (!authors) errs.push('author');
+  if (!title)  errs.push('title');
+  if (!year)   errs.push('year');
+  if (errs.length) {
+    setStatus('Required fields missing: ' + errs.join(', '), 'error');
+    return;
+  }
+
+  // Build author string
+  const authorStr = authors.split('\n').map(l => l.trim()).filter(Boolean).join(' and ');
+
+  // Collect fields
+  const month    = getVal('cnp-month');
+  const abstract = getVal('cnp-abstract');
+  const bibtexShow = document.getElementById('cnp-bibtex-show')?.checked ?? true;
+  const selected   = document.getElementById('cnp-selected')?.checked ?? false;
+
+  // Extra site fields
+  const preview = getVal('cnp-preview');
+  const pdf     = getVal('cnp-pdf');
+  const website = getVal('cnp-website');
+  const code    = getVal('cnp-code');
+  const slides  = getVal('cnp-slides');
+
+  // Conditional fields
+  const conditional = CNP_CONDITIONAL[type] || [];
+  const condValues = {};
+  conditional.forEach(f => { condValues[f.id.replace('cnp-','')] = getVal(f.id); });
+
+  // Build bibtex
+  const lines = [];
+  lines.push(`@${type}{${key},`);
+  lines.push(`  bibtex_show={${bibtexShow}},`);
+  lines.push(`  author    = {${authorStr}},`);
+  lines.push(`  title     = {{${title}}},`);
+  if (condValues.booktitle) lines.push(`  booktitle = {${condValues.booktitle}},`);
+  if (condValues.journal)   lines.push(`  journal   = {${condValues.journal}},`);
+  if (condValues.school)    lines.push(`  school    = {${condValues.school}},`);
+  if (condValues.publisher) lines.push(`  publisher = {${condValues.publisher}},`);
+  lines.push(`  year      = {${year}},`);
+  if (month)               lines.push(`  month     = {${month}},`);
+  if (condValues.volume)   lines.push(`  volume    = {${condValues.volume}},`);
+  if (condValues.number)   lines.push(`  number    = {${condValues.number}},`);
+  if (condValues.edition)  lines.push(`  edition   = {${condValues.edition}},`);
+  if (condValues.address)  lines.push(`  address   = {${condValues.address}},`);
+  if (condValues.pages)    lines.push(`  pages     = {${condValues.pages}},`);
+  if (condValues.doi)      lines.push(`  doi       = {${condValues.doi}},`);
+  if (condValues.url)      lines.push(`  url       = {${condValues.url}},`);
+  if (condValues.howpublished) lines.push(`  howpublished = {${condValues.howpublished}},`);
+  if (abstract)            lines.push(`  abstract  = {${abstract}},`);
+  if (preview)             lines.push(`  preview   = {${preview}},`);
+  if (pdf)                 lines.push(`  pdf       = {${pdf}},`);
+  if (website)             lines.push(`  website   = {${website}},`);
+  if (code)                lines.push(`  code      = {${code}},`);
+  if (slides)              lines.push(`  slides    = {${slides}},`);
+  lines.push(`  selected  = {${selected}}`);
+  lines.push(`}`);
+  const bibtex = lines.join('\n');
+
+  // Store (with target bib file)
+  newBibEntries.push({ bibFile: cnpBibFile, bibtexString: bibtex });
+
+  // Show generated bibtex
+  const genWrap = document.getElementById('cnp-generated-wrap');
+  const genArea = document.getElementById('cnp-generated-bib');
+  const genLabel = document.getElementById('cnp-generated-label');
+  if (genWrap && genArea) {
+    genArea.value = bibtex;
+    genWrap.style.display = '';
+  }
+  if (genLabel) {
+    genLabel.textContent = `Generated BibTeX — copy to _bibliography/${cnpBibFile}.bib`;
+  }
+
+  // Add key to cite keys
+  if (!citeKeys.includes(key)) {
+    citeKeys.push(key);
+  }
+  // If key is not in loadedPapers, it appears as chip; re-render list
+  const knownKeys = loadedPapers.map(p => p.key);
+  if (!knownKeys.includes(key)) {
+    renderCiteExtraChips();
+  } else {
+    renderCitePaperList();
+  }
+
+  scheduleUpdate();
+  setStatus(`Entry "${key}" added → ${cnpBibFile}.bib. Copy the BibTeX below.`, 'success');
+}
+
+// ── YAML generation ────────────────────────────────────────────────────────
+function generateYaml(d) {
+  const lines = [];
+  lines.push('---');
+  lines.push('layout: post');
+  lines.push(`title: ${d.title || 'Untitled'}`);
+  if (d.description) lines.push(`description: ${d.description}`);
+  lines.push(`date: ${d.date || new Date().toISOString().split('T')[0]}`);
+  if (d.image) lines.push(`image: '${d.image}'`);
+  if (d.tags.length) lines.push(`tags: [${d.tags.join(', ')}]`);
+  if (d.projectTypes.length) lines.push(`project_types: [${d.projectTypes.join(', ')}]`);
+  lines.push(`development_status: ${d.devStatus}`);
+  if (d.featured) lines.push('featured: true');
+
+  // tabs
+  const validTabs = d.tabs.filter(t => t.name && t.filename);
+  if (validTabs.length) {
+    // tabs[] uses filename slug (without .md), tabs_content[] uses filename with .md
+    const slugs = validTabs.map(t => {
+      const fn = t.filename.endsWith('.md') ? t.filename.slice(0, -3) : t.filename;
+      return fn || toFilename(t.name);
+    });
+    const files = validTabs.map(t => t.filename.endsWith('.md') ? t.filename : t.filename + '.md');
+    lines.push(`tabs: [${slugs.join(', ')}]`);
+    lines.push(`tabs_content: [${files.join(', ')}]`);
+  }
+
+  if (d.citeKeys.length) lines.push(`cite_keys: [${d.citeKeys.join(', ')}]`);
+  if (d.navigator) lines.push('needs_navigator: true');
+
+  lines.push(`permalink: ${d.permalink}`);
+
+  // links
+  const activeLinks = d.links.filter(l => !l.disabled && l.url);
+  if (activeLinks.length) {
+    lines.push('links:');
+    activeLinks.forEach(l => {
+      lines.push(`  - {type: ${l.type}, label: "${l.label}", url: "${l.url}"}`);
+    });
+  }
+
+  if (d.note) {
+    lines.push('note: |');
+    d.note.split('\n').forEach(line => lines.push('  ' + line));
+  }
+
+  lines.push('---');
+  lines.push('');
+  lines.push('{% include optional-tabbed-fields.html %}');
+  return lines.join('\n');
+}
+
+// ── YAML syntax highlight ─────────────────────────────────────────────────
+function highlightYaml(raw) {
+  const lines = raw.split('\n');
+  return lines.map((line, i) => {
+    if (line === '---') return `<span class="yl-delim">${escHtml(line)}</span>`;
+    if (line.startsWith('#')) return `<span class="yl-comment">${escHtml(line)}</span>`;
+    if (line.startsWith('{%')) return `<span class="yl-comment">${escHtml(line)}</span>`;
+    if (line.startsWith('  - ')) {
+      // link item
+      return `  <span class="yl-dash">- </span><span class="yl-str">${escHtml(line.slice(4))}</span>`;
+    }
+    const colonIdx = line.indexOf(':');
+    if (colonIdx > 0) {
+      const key = line.slice(0, colonIdx);
+      const rest = line.slice(colonIdx + 1);
+      let valHtml = '';
+      const val = rest.trim();
+      if (val === 'true' || val === 'false') valHtml = `<span class="yl-bool">${escHtml(val)}</span>`;
+      else if (val === '|' || val === '') valHtml = escHtml(rest);
+      else if (/^\d+$/.test(val)) valHtml = `<span class="yl-num">${escHtml(val)}</span>`;
+      else valHtml = `<span class="yl-str">${escHtml(rest)}</span>`;
+      return `<span class="yl-key">${escHtml(key)}</span>:${valHtml}`;
+    }
+    // Note continuation lines
+    if (line.startsWith('  ') && line.trim() !== '') {
+      return `<span class="yl-str">${escHtml(line)}</span>`;
+    }
+    return escHtml(line);
+  }).join('\n');
+}
+
+// ── Files generation ───────────────────────────────────────────────────────
+function generateFiles(d) {
+  const folder = d.folder || 'MyPost';
+  const date = d.date || new Date().toISOString().split('T')[0];
+  const postsBase = d.postCategory === 'tutorial' ? `_posts/tutorials/${folder}` : `_posts/works/${folder}`;
+  const files = [];
+
+  // Landing file
+  files.push({
+    path: `${postsBase}/${date}-Landing.md`,
+    content: generateYaml(d),
+    type: 'landing',
+  });
+
+  // Tab files
+  d.tabs.filter(t => t.filename).forEach(t => {
+    const fn = t.filename.endsWith('.md') ? t.filename : t.filename + '.md';
+    files.push({
+      path: `${postsBase}/${fn}`,
+      content: t.content || `<!-- ${t.name} content here -->\n`,
+      type: 'tab',
+      tabName: t.name,
+    });
+  });
+
+  // Empty license.md — required by proj-links.html (include_relative crashes if missing)
+  files.push({
+    path: `${postsBase}/license.md`,
+    content: '',
+    type: 'license',
+  });
+
+  // Image file (if uploaded)
+  if (selectedImageFile && d.image) {
+    const imgPath = d.image.replace(/^\//, '');
+    files.push({
+      path: imgPath,
+      file: selectedImageFile,
+      type: 'image',
+    });
+  } else {
+    // Assets gitkeep (only if no image — the image itself creates the folder)
+    files.push({
+      path: `assets/works/${folder}/.gitkeep`,
+      content: '',
+      type: 'asset',
+    });
+  }
+
+  return files;
+}
+
+// ── Update all previews ────────────────────────────────────────────────────
+function scheduleUpdate() {
+  clearTimeout(_updateTimer);
+  _updateTimer = setTimeout(doUpdate, 200);
+}
+
+function doUpdate() {
+  const d = getFormData();
+  updateYaml(d);
+  updateFiles(d);
+  updateCard(d);
+  updatePost(d);
+}
+
+function updateYaml(d) {
+  const raw = generateYaml(d);
+  document.getElementById('yaml-output').innerHTML = highlightYaml(raw);
+}
+
+function updateFiles(d) {
+  const files = generateFiles(d);
+  // Clamp active index
+  if (_activeFileIdx >= files.length) _activeFileIdx = 0;
+
+  const tree = document.getElementById('files-tree');
+  tree.innerHTML = '';
+
+  // Group by directory, preserving flat index
+  const dirs = {};
+  files.forEach((f, i) => {
+    const parts = f.path.split('/');
+    const dir = parts.slice(0, -1).join('/');
+    if (!dirs[dir]) dirs[dir] = [];
+    dirs[dir].push({...f, idx: i});
+  });
+
+  Object.entries(dirs).forEach(([dir, fs]) => {
+    const dirEl = document.createElement('div');
+    dirEl.className = 'tree-dir';
+    dirEl.textContent = dir.split('/').pop() + '/';
+    tree.appendChild(dirEl);
+    fs.forEach(f => {
+      const fileEl = document.createElement('div');
+      fileEl.className = 'tree-file' + (f.idx === _activeFileIdx ? ' is-active' : '');
+      const icon = f.type === 'asset' ? '📁' : '📄';
+      const name = f.path.split('/').pop();
+      fileEl.innerHTML = `<span class="file-icon">${icon}</span>${escHtml(name)}`;
+      fileEl.title = f.path;
+      fileEl.dataset.idx = f.idx;
+      fileEl.onclick = () => {
+        _activeFileIdx = f.idx;
+        tree.querySelectorAll('.tree-file').forEach(el => el.classList.remove('is-active'));
+        fileEl.classList.add('is-active');
+        showFileContent(f);
+      };
+      tree.appendChild(fileEl);
+    });
+  });
+
+  showFileContent(files[_activeFileIdx]);
+}
+
+function showFileContent(file) {
+  const viewer = document.getElementById('files-viewer');
+  if (!file) { viewer.textContent = ''; return; }
+  if (file.path.endsWith('.gitkeep') || !file.content) {
+    viewer.innerHTML = `<span style="color:var(--text-muted)">(empty file)</span>`;
+  } else {
+    viewer.innerHTML = highlightYaml(file.content);
+  }
+}
+
+function updateCard(d) {
+  const card = document.getElementById('card-preview');
+  const typeLabel = d.projectTypes.length ? (TYPE_LABEL_MAP[d.projectTypes[0]] || d.projectTypes[0]) : '';
+  const dateStr = d.date ? formatDate(d.date) : '';
+  const devStatus = d.devStatus;
+
+  const dotsHtml = Array.from({length:5}, (_,i) =>
+    `<span class="wcp-dot${i < devStatus ? ' filled':''}"></span>`
+  ).join('');
+
+  const tagsHtml = d.tags.slice(0,4).map(t =>
+    `<span class="wcp-tag">${escHtml(t)}</span>`
+  ).join('') + (d.tags.length > 4 ? `<span class="wcp-tag">+${d.tags.length-4}</span>` : '');
+
+  const imgHtml = d.image
+    ? `<img class="wcp-img" src="${escHtml(d.image)}" alt="${escHtml(d.title)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    : '';
+  const placeholderStyle = d.image ? 'display:none' : '';
+
+  card.innerHTML = `
+    ${imgHtml}
+    <div class="wcp-img-placeholder" style="${placeholderStyle}">🎵</div>
+    <div class="wcp-body">
+      <div class="wcp-title">${escHtml(d.title || 'Untitled')}</div>
+      ${d.description ? `<div class="wcp-desc">${escHtml(d.description)}</div>` : ''}
+      ${d.tags.length ? `<div class="wcp-tags">${tagsHtml}</div>` : ''}
+      <div class="wcp-footer">
+        <span class="wcp-type">${escHtml(typeLabel)}</span>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <div class="wcp-status">${dotsHtml}</div>
+          <span class="wcp-date">${escHtml(dateStr)}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function updatePost(d) {
+  const wrap = document.getElementById('post-preview');
+  const activeLinks = d.links.filter(l => !l.disabled && l.url);
+  const validTabs = d.tabs.filter(t => t.name);
+  if (_postActiveTabIdx >= validTabs.length) _postActiveTabIdx = 0;
+
+  const bannerHtml = d.image
+    ? `<img src="${escHtml(d.image)}" alt="${escHtml(d.title)}" onerror="this.style.opacity='0'">`
+    : '';
+
+  const tabsNavHtml = validTabs.map((t, i) =>
+    `<button class="ppost-tab-btn${i===_postActiveTabIdx?' is-active':''}" onclick="setPostTab(${i})">${escHtml(t.name)}</button>`
+  ).join('');
+
+  const linksHtml = activeLinks.map(l => {
+    const icon = getLinkIcon(l.type);
+    return `<a class="ppost-link-btn ${escHtml(l.type)}" href="${escHtml(l.url)}" target="_blank">
+      <span class="ppost-link-badge">${icon}</span>${escHtml(l.label)}
+    </a>`;
+  }).join('');
+
+  const activeTab = validTabs[_postActiveTabIdx];
+  let contentHtml = '';
+  if (activeTab && activeTab.content) {
+    contentHtml = marked.parse(activeTab.content);
+  } else if (activeTab) {
+    contentHtml = `<p style="color:var(--text-muted);font-style:italic">No content yet for "${escHtml(activeTab.name)}"</p>`;
+  } else {
+    contentHtml = `<p style="color:var(--text-muted);font-style:italic">Add tabs to see content here.</p>`;
+  }
+
+  wrap.innerHTML = `
+    <div class="ppost-banner">
+      ${bannerHtml}
+      <div class="ppost-banner-overlay">
+        <div class="ppost-title">${escHtml(d.title || 'Untitled Post')}</div>
+        ${d.description ? `<div class="ppost-desc">${escHtml(d.description)}</div>` : ''}
+      </div>
+    </div>
+    ${validTabs.length ? `<div class="ppost-tabs-nav">${tabsNavHtml}</div>` : ''}
+    ${activeLinks.length ? `<div class="ppost-links">${linksHtml}</div>` : ''}
+    <div class="ppost-content">${contentHtml}</div>
+  `;
+}
+
+function setPostTab(idx) {
+  _postActiveTabIdx = idx;
+  const d = getFormData();
+  updatePost(d);
+}
+
+// ── Preview tab switching ──────────────────────────────────────────────────
+function switchPreview(name, btn) {
+  document.querySelectorAll('.preview-tab').forEach(b => b.classList.remove('is-active'));
+  document.querySelectorAll('.preview-content').forEach(c => c.classList.remove('is-active'));
+  btn.classList.add('is-active');
+  document.getElementById(`pv-${name}`).classList.add('is-active');
+}
+
+// ── Copy YAML ─────────────────────────────────────────────────────────────
+function copyYaml() {
+  const raw = generateYaml(getFormData());
+  navigator.clipboard.writeText(raw).then(() => {
+    const btn = document.querySelector('.yaml-copy-btn');
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.style.background = 'rgba(91,166,122,0.25)';
+    btn.style.color = '#89d4aa';
+    btn.style.borderColor = 'rgba(91,166,122,0.4)';
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.style.background = '';
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 1500);
+  });
+}
+
+// ── Download ZIP ──────────────────────────────────────────────────────────
+async function downloadZip() {
+  const d = getFormData();
+  const files = generateFiles(d);
+  const zip = new JSZip();
+
+  files.forEach(f => {
+    if (f.file) {
+      zip.file(f.path, f.file);   // JSZip accepts File / Blob directly
+    } else {
+      zip.file(f.path, f.content);
+    }
+  });
+
+  const blob = await zip.generateAsync({type: 'blob'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${d.folder || 'new-post'}.zip`;
+  a.click();
+  setStatus('ZIP downloaded!', 'success');
+}
+
+// ── Write to Disk ──────────────────────────────────────────────────────────
+async function writeToDisk() {
+  if (!window.showDirectoryPicker) {
+    setStatus('File System Access API not supported in this browser. Use Chrome or Edge.', 'error');
+    return;
+  }
+
+  let rootDir;
+  if (repoDir) {
+    rootDir = repoDir;
+  } else {
+    try {
+      rootDir = await window.showDirectoryPicker({ mode: 'readwrite' });
+      repoDir = rootDir;
+    } catch (e) {
+      if (e.name === 'AbortError') return;
+      setStatus('Could not open directory: ' + e.message, 'error');
+      return;
+    }
+  }
+
+  const d = getFormData();
+  const files = generateFiles(d);
+
+  try {
+    for (const file of files) {
+      setStatus(`Writing: ${file.path}`, '');
+      if (file.file) {
+        const buf = await file.file.arrayBuffer();
+        await writeFileBinary(rootDir, file.path, buf);
+      } else {
+        await writeFile(rootDir, file.path, file.content);
+      }
+    }
+
+    // Append new bib entries, split by target file
+    if (newBibEntries.length > 0) {
+      const papersEntries = newBibEntries.filter(e => e.bibFile === 'papers').map(e => e.bibtexString);
+      const refsEntries   = newBibEntries.filter(e => e.bibFile === 'refs').map(e => e.bibtexString);
+
+      async function appendToBib(bibPath, entries) {
+        const parts = bibPath.split('/').filter(Boolean);
+        let dir = rootDir;
+        for (let i = 0; i < parts.length - 1; i++) {
+          dir = await dir.getDirectoryHandle(parts[i], {create: true});
+        }
+        const fh = await dir.getFileHandle(parts[parts.length - 1], {create: true});
+        const existing = await (await fh.getFile()).text();
+        const toAppend = '\n\n' + entries.join('\n\n');
+        const writable = await fh.createWritable();
+        await writable.write(existing + toAppend);
+        await writable.close();
+      }
+
+      try {
+        if (papersEntries.length > 0) {
+          setStatus('Appending to _bibliography/papers.bib…', '');
+          await appendToBib('_bibliography/papers.bib', papersEntries);
+        }
+        if (refsEntries.length > 0) {
+          setStatus('Appending to _bibliography/refs.bib…', '');
+          await appendToBib('_bibliography/refs.bib', refsEntries);
+        }
+      } catch (bibErr) {
+        setStatus('Warning: could not append bib entries — ' + bibErr.message, 'error');
+        return;
+      }
+
+      const parts = [];
+      if (papersEntries.length) parts.push(`${papersEntries.length} → papers.bib`);
+      if (refsEntries.length)   parts.push(`${refsEntries.length} → refs.bib`);
+      setStatus(`Done! Wrote ${files.length} files + appended ${parts.join(', ')}.`, 'success');
+    } else {
+      setStatus(`Done! Wrote ${files.length} files.`, 'success');
+    }
+  } catch (e) {
+    setStatus('Error: ' + e.message, 'error');
+  }
+}
+
+async function writeFile(root, path, content) {
+  const parts = path.split('/').filter(Boolean);
+  let dir = root;
+  for (let i = 0; i < parts.length - 1; i++) {
+    dir = await dir.getDirectoryHandle(parts[i], {create: true});
+  }
+  const fh = await dir.getFileHandle(parts[parts.length - 1], {create: true});
+  const writable = await fh.createWritable();
+  await writable.write(content);
+  await writable.close();
+}
+
+async function writeFileBinary(root, path, buffer) {
+  const parts = path.split('/').filter(Boolean);
+  let dir = root;
+  for (let i = 0; i < parts.length - 1; i++) {
+    dir = await dir.getDirectoryHandle(parts[i], {create: true});
+  }
+  const fh = await dir.getFileHandle(parts[parts.length - 1], {create: true});
+  const writable = await fh.createWritable();
+  await writable.write(buffer);
+  await writable.close();
+}
+
+// ── BibTeX parser ──────────────────────────────────────────────────────────
+function parseBibFile(text, bibFile) {
+  const results = [];
+  const titleRe = /\btitle\s*=\s*\{+([^}]+)/i;
+  const chunks = text.split(/@\w+\{/);
+  for (const chunk of chunks) {
+    const keyMatch = chunk.match(/^([^,\s]+)/);
+    if (!keyMatch) continue;
+    const key = keyMatch[1].trim();
+    if (!key || !/^[A-Za-z]/.test(key)) continue;
+    const titleMatch = chunk.match(titleRe);
+    const title = titleMatch ? titleMatch[1].replace(/[{}]/g, '').trim() : key;
+    results.push({ key, title, bibFile });
+  }
+  return results;
+}
+
+// ── Auto-load bib files via fetch (relative paths) ─────────────────────────
+async function autoLoadBibs() {
+  const btn = document.getElementById('bib-status-btn');
+  if (btn) { btn.textContent = '⟳ Loading papers…'; btn.style.color = ''; btn.style.borderColor = ''; }
+
+  async function tryFetch(url) {
+    try {
+      const r = await fetch(url);
+      if (!r.ok) return '';
+      return await r.text();
+    } catch (_) { return ''; }
+  }
+
+  const [papersText, refsText] = await Promise.all([
+    tryFetch('../_bibliography/papers.bib'),
+    tryFetch('../_bibliography/refs.bib'),
+  ]);
+
+  loadedPapers = [
+    ...parseBibFile(papersText, 'papers'),
+    ...parseBibFile(refsText, 'refs'),
+  ];
+
+  renderCitePaperList();
+
+  if (btn) {
+    if (loadedPapers.length > 0) {
+      btn.textContent = `📚 ${loadedPapers.length} papers`;
+      btn.style.color = 'var(--success)';
+      btn.style.borderColor = 'rgba(91,166,122,0.4)';
+    } else {
+      btn.textContent = '⚠ Papers not found';
+      btn.style.color = 'var(--warn, #e8a838)';
+      btn.style.borderColor = '';
+    }
+  }
+}
+
+// ── Status ─────────────────────────────────────────────────────────────────
+function setStatus(msg, type) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (type || '');
+  if (type === 'success') {
+    setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 3000);
+  }
+}
+
+// ── Utilities ──────────────────────────────────────────────────────────────
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[m-1]} ${y}`;
+}
+
+function getLinkIcon(type) {
+  const icons = {
+    github: '⑂',
+    download: '↓',
+    web: '⬡',
+    docs: '📖',
+    paper: '📄',
+    'mac-arm': '⌘',
+    'mac-intel': '⌘',
+    win: '⊞',
+    linux: '🐧',
+    issues: '⚠',
+    email: '✉',
+  };
+  return icons[type] || '↗';
+}
+</script>
+</body>
+</html>
