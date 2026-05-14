@@ -60,7 +60,9 @@ layout: default
 
 <!-- begin post -->
 <div class="container">
+  {% unless page.needs_navigator == false %}
   <nav class="post-navbar" id="post-navbar" aria-label="Page sections"></nav>
+  {% endunless %}
   <article class="post animate">
     <div class="post__content">
       {{ content }}
