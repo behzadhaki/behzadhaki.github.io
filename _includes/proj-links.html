@@ -15,16 +15,16 @@
       {% if link.type == "github" %}{% assign _github_url = link.url %}{% endif %}
     {% endunless %}
   {% endfor %}
-  {% if _has_license %}
-  <button class="proj-btn proj-btn--license" onclick="document.getElementById('proj-license-modal').style.display='flex'" type="button">
-    <i class="fa-solid fa-scale-balanced"></i> License
-  </button>
-  {% endif %}
   {% if _github_url %}
     {% assign _issues_url = _github_url | append: "/issues" %}
     {% include proj-btn.html type="issues" label="Report an Issue" url=_issues_url %}
   {% endif %}
   {% include proj-btn.html type="email" label="Report an Issue" %}
+  {% if _has_license %}
+  <button class="proj-btn proj-btn--license" onclick="document.getElementById('proj-license-modal').style.display='flex'" type="button">
+    <span class="proj-btn__badge"><i class="fa-solid fa-scale-balanced"></i></span> License
+  </button>
+  {% endif %}
 </div>
 
 {% if page.note %}

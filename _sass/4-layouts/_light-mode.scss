@@ -332,4 +332,21 @@ html[data-theme='light'] {
     strong { color: #1a1827 !important; }
     a { color: #555; &:hover { color: #1a1827; } }
   }
+
+  // ── Buttons (light mode) ────────────────────────────────────────────────
+  .proj-btn--mac-arm,
+  .proj-btn--mac-intel,
+  .proj-btn--win,
+  .proj-btn--linux,
+  .proj-btn--download,
+  .proj-btn--github,
+  .proj-btn--web,
+  .proj-btn--docs,
+  .proj-btn--paper,
+  .proj-btn--issues,
+  .proj-btn--email,
+  .proj-btn--license {
+    background: #888;
+    color: #fff;
+  }
 }

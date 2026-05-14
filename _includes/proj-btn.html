@@ -8,25 +8,21 @@
   {% assign _btn_url = include.url %}
 {% endif %}
 
-{% if include.disabled or _btn_url == nil or _btn_url == "" %}
-<span class="proj-btn proj-btn--unavailable">
-{% else %}
+{% unless include.disabled or _btn_url == nil or _btn_url == "" %}
 <a class="proj-btn proj-btn--{{ _btn_type }}" href="{{ _btn_url }}"{% unless _btn_type == "email" %} target="_blank" rel="noopener"{% endunless %}>
-{% endif %}
-  {% if _btn_type == "mac-arm" or _btn_type == "mac-intel" %}<i class="fa-brands fa-apple"></i>
-  {% elsif _btn_type == "win" %}<i class="fa-brands fa-windows"></i>
-  {% elsif _btn_type == "linux" %}<i class="fa-brands fa-linux"></i>
-  {% elsif _btn_type == "github" %}<i class="fa-brands fa-github"></i>
-  {% elsif _btn_type == "issues" %}<i class="fa-brands fa-github"></i>
-  {% elsif _btn_type == "email" %}<i class="fa-solid fa-envelope"></i>
-  {% elsif _btn_type == "docs" %}<i class="fa-solid fa-book"></i>
-  {% elsif _btn_type == "paper" %}<i class="fa-solid fa-file-lines"></i>
-  {% elsif _btn_type == "web" %}<i class="fa-solid fa-globe"></i>
-  {% else %}<i class="fa-solid fa-download"></i>
-  {% endif %}
+  <span class="proj-btn__badge">
+    {% if _btn_type == "mac-arm" or _btn_type == "mac-intel" %}<i class="fa-brands fa-apple"></i>
+    {% elsif _btn_type == "win" %}<i class="fa-brands fa-windows"></i>
+    {% elsif _btn_type == "linux" %}<i class="fa-brands fa-linux"></i>
+    {% elsif _btn_type == "github" %}<i class="fa-brands fa-github"></i>
+    {% elsif _btn_type == "issues" %}<i class="fa-brands fa-github"></i>
+    {% elsif _btn_type == "email" %}<i class="fa-solid fa-envelope"></i>
+    {% elsif _btn_type == "docs" %}<i class="fa-solid fa-book"></i>
+    {% elsif _btn_type == "paper" %}<i class="fa-solid fa-file-lines"></i>
+    {% elsif _btn_type == "web" %}<i class="fa-solid fa-globe"></i>
+    {% else %}<i class="fa-solid fa-download"></i>
+    {% endif %}
+  </span>
   {{ _btn_label }}
-{% if include.disabled or _btn_url == nil or _btn_url == "" %}
-</span>
-{% else %}
 </a>
-{% endif %}
+{% endunless %}

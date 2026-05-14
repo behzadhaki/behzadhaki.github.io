@@ -485,59 +485,61 @@
 .proj-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.4em;
-  padding: 0.38em 0.85em;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 500;
+  gap: 0;
+  padding: 0 0.72em 0 0;
+  border-radius: 4px;
+  overflow: hidden;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   text-decoration: none !important;
-  border: 1.5px solid transparent;
-  border-bottom: 1.5px solid transparent !important;  // override .project-section__body a
+  border: none !important;
+  border-bottom: none !important;
   white-space: nowrap;
   cursor: pointer;
-  transition: opacity 0.15s, transform 0.12s;
+  line-height: 1;
+  transition: filter 0.15s ease;
 
   &:hover:not(.proj-btn--unavailable) {
-    opacity: 0.78;
-    transform: translateY(-1px);
+    filter: brightness(1.18);
     color: inherit !important;
   }
 
-  i { font-size: 0.9em; }
+  .proj-btn__badge {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.55em 0.65em;
+    margin-right: 0.6em;
+    background: rgba(0,0,0,0.28);
+    font-size: 1em;
+    flex-shrink: 0;
+  }
 }
 
-// — Download variants
-.proj-btn--mac-arm   { background: rgba(#2ecc71, 0.1); border-color: #2ecc71 !important; color: #2ecc71; }
-.proj-btn--mac-intel { background: rgba(#27ae60, 0.1); border-color: #27ae60 !important; color: #27ae60; }
-.proj-btn--win       { background: rgba(#3b82f6, 0.1); border-color: #3b82f6 !important; color: #5b9cf8; }
-.proj-btn--linux     { background: rgba(#e67e22, 0.1); border-color: #e67e22 !important; color: #e67e22; }
-.proj-btn--download  { background: rgba(#1abc9c, 0.1); border-color: #1abc9c !important; color: #1abc9c; }
-
-// — Redirect / link variants
-.proj-btn--github  { background: rgba(#aaa, 0.08); border-color: #777 !important;    color: #bbb; }
-.proj-btn--issues  { background: rgba(#aaa, 0.08); border-color: #777 !important;    color: #bbb; }
-.proj-btn--email   { background: rgba(#e67e22, 0.1); border-color: #e67e22 !important; color: #e8944d; }
-.proj-btn--docs    { background: rgba(#5dade2, 0.1); border-color: #5dade2 !important; color: #5dade2; }
-.proj-btn--paper   { background: rgba(#a29bfe, 0.1); border-color: #a29bfe !important; color: #a29bfe; }
-.proj-btn--web     { background: rgba(#00cec9, 0.1); border-color: #00cec9 !important; color: #00cec9; }
-
-// — License popup trigger
+// ── All button types — unified colour ───────────────────────────────────────
+.proj-btn--mac-arm,
+.proj-btn--mac-intel,
+.proj-btn--win,
+.proj-btn--linux,
+.proj-btn--download,
+.proj-btn--github,
+.proj-btn--web,
+.proj-btn--docs,
+.proj-btn--paper,
+.proj-btn--issues,
+.proj-btn--email,
 .proj-btn--license {
-  background: rgba(#f39c12, 0.1);
-  border-color: #f39c12 !important;
-  color: #f39c12;
-  cursor: pointer;
-  font-family: inherit;
-  line-height: 1;
+  background: #525252;
+  color: #f0f0f0;
 }
 
-// — Unavailable / coming soon
-.proj-btn--unavailable {
-  background: rgba(#fff, 0.03);
-  border-color: #3a3a3a !important;
-  color: #555 !important;
-  cursor: not-allowed;
-  &:hover { opacity: 1 !important; transform: none !important; }
+.proj-btn--license,
+.proj-btn--email {
+  font-family: inherit;
+  cursor: pointer;
 }
 
 // Buttons
