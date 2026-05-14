@@ -40,12 +40,11 @@ menu-settings:
         - title: Hardware
           url: /works/hardware/
           project_type: hardware
-        - title: Installations & Performances
-          url: /works/installations-performances/
-          project_type: installations-performances
         - title: Datasets
           url: /works/datasets/
           project_type: datasets
+    - title: Installations & Performances
+      url: /installations-performances/
     - title: Dev Resources
       url: /dev-resources/
       sub_menus:

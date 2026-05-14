@@ -11,10 +11,9 @@ hide_title: true
 {% assign plugin_posts       = site.posts | where_exp: "doc", "doc.project_types contains 'plugins'"                    | where_exp: "doc", "doc.hidden != true" %}
 {% assign web_posts          = site.posts | where_exp: "doc", "doc.project_types contains 'web'"                        | where_exp: "doc", "doc.hidden != true" %}
 {% assign hardware_posts     = site.posts | where_exp: "doc", "doc.project_types contains 'hardware'"                   | where_exp: "doc", "doc.hidden != true" %}
-{% assign installation_posts = site.posts | where_exp: "doc", "doc.project_types contains 'installations-performances'" | where_exp: "doc", "doc.hidden != true" %}
 {% assign dataset_posts      = site.posts | where_exp: "doc", "doc.project_types contains 'datasets'"                   | where_exp: "doc", "doc.hidden != true" %}
 
-{% assign all_works = "" | split: "" | concat: max_posts | concat: pd_posts | concat: plugin_posts | concat: web_posts | concat: hardware_posts | concat: installation_posts | concat: dataset_posts | uniq | sort: "date" | reverse %}
+{% assign all_works = "" | split: "" | concat: max_posts | concat: pd_posts | concat: plugin_posts | concat: web_posts | concat: hardware_posts | concat: dataset_posts | uniq | sort: "date" | reverse %}
 
 <div class="works-filter" id="works-filter">
   <button class="works-filter__btn is-active" data-filter="all">All</button>
@@ -23,7 +22,6 @@ hide_title: true
   {% if plugin_posts.size > 0 %}<button class="works-filter__btn" data-filter="plugins">Plugins</button>{% endif %}
   {% if web_posts.size > 0 %}<button class="works-filter__btn" data-filter="web">Web</button>{% endif %}
   {% if hardware_posts.size > 0 %}<button class="works-filter__btn" data-filter="hardware">Hardware</button>{% endif %}
-  {% if installation_posts.size > 0 %}<button class="works-filter__btn" data-filter="installations-performances">Installations</button>{% endif %}
   {% if dataset_posts.size > 0 %}<button class="works-filter__btn" data-filter="datasets">Datasets</button>{% endif %}
 </div>
 
