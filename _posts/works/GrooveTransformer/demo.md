@@ -11,7 +11,8 @@ We are interested in hearing about your use cases and how you use the GrooveTran
 
 ### Basic Operation Using A/B Patterns
 
-{: .hint}Refer to [Documentation]({{site.baseurl}}/GrooveTransformer/Documentation/#selecting-ab-patterns) to see how A/B patterns can be programmed.
+Refer to [Documentation]({{site.baseurl}}/GrooveTransformer/Documentation/#selecting-ab-patterns) to see how A/B patterns can be programmed.
+{: .hint}
 
 The simplest way to use the GrooveTransformer is to use the A/B patterns to switch/morph between two different grooves, while also manipulating the generation parameters in real-time. 
 

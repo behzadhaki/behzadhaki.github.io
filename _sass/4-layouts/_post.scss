@@ -189,7 +189,7 @@
     user-select: none;
   }
 
-  .note, .tip, .important, .warning, .caution {
+  .hint, .note, .tip, .important, .warning, .caution {
     position: relative;
     padding: 20px 0 20px 52px;
     border-radius: 4px;
@@ -228,6 +228,13 @@
   .caution {
     border-left: 3px solid $callout-caution;
     background: rgba($callout-caution, .1);
+  }
+
+  .hint {
+    border-left: 3px solid rgba($gray, 0.6);
+    background: rgba($gray, .08);
+    color: $gray;
+    &::after { content: "ℹ️"; }
   }
 }
 
@@ -814,60 +821,94 @@
 
     // ── Outline block wrappers (JS-injected) ─────────────────────
     .outline-block--h2 {
+      position: relative;
       border: 2px solid rgba($light-gray, 0.28);
       border-radius: 4px;
-      padding: 0 0.9rem 0.8rem;
+      padding: 1.4rem 0.9rem 0.9rem;
       margin-top: 2.6rem;
-      &:first-child { margin-top: 0.4rem; }
+      &:first-child { margin-top: 1.2rem; }
       > h2 {
-        margin: 0 -0.9rem 0.8rem;
-        padding: 0.3rem 0.9rem;
-        border-bottom: 2px solid rgba($light-gray, 0.28);
-        border-radius: 2px 2px 0 0;
-        background: rgba($white, 0.05);
+        position: absolute;
+        top: 0;
+        left: 0.75rem;
+        transform: translateY(-50%);
+        margin: 0;
+        padding: 0.15rem 0.55rem;
+        background: #2a2a2a;
+        border: 2px solid rgba($light-gray, 0.28);
+        border-radius: 3px;
+        font-size: 1.0rem;
+        font-weight: 700;
+        color: $light-gray;
+        line-height: 1.3;
+        white-space: nowrap;
       }
     }
     .outline-block--h3 {
+      position: relative;
       margin: 1.8rem 0.6rem 0 0.6rem;
       border: 2px solid rgba($light-gray, 0.20);
       border-radius: 4px;
-      padding: 0 0.8rem 0.7rem;
-      &:first-child { margin-top: 0.4rem; }
+      padding: 1.2rem 0.8rem 0.7rem;
+      &:first-child { margin-top: 1rem; }
       > h3 {
-        margin: 0 -0.8rem 0.7rem;
-        padding: 0.25rem 0.8rem;
-        border-bottom: 2px solid rgba($light-gray, 0.20);
-        border-radius: 2px 2px 0 0;
-        background: rgba($white, 0.04);
+        position: absolute;
+        top: 0; left: 0.65rem;
+        transform: translateY(-50%);
+        margin: 0;
+        padding: 0.12rem 0.5rem;
+        background: #2a2a2a;
+        border: 2px solid rgba($light-gray, 0.20);
+        border-radius: 3px;
+        font-size: 0.92rem; font-weight: 600;
+        color: rgba($light-gray, 0.9);
+        line-height: 1.3;
+        white-space: nowrap;
       }
     }
     .outline-block--h4 {
+      position: relative;
       margin: 1.3rem 0.6rem 0 0.6rem;
       border: 2px solid rgba($light-gray, 0.12);
       border-radius: 4px;
-      padding: 0 0.75rem 0.6rem;
-      &:first-child { margin-top: 0.4rem; }
+      padding: 1.1rem 0.75rem 0.6rem;
+      &:first-child { margin-top: 0.8rem; }
       > h4 {
-        margin: 0 -0.75rem 0.6rem;
-        padding: 0.22rem 0.75rem;
-        border-bottom: 2px solid rgba($light-gray, 0.12);
-        border-radius: 2px 2px 0 0;
-        background: rgba($white, 0.03);
+        position: absolute;
+        top: 0; left: 0.6rem;
+        transform: translateY(-50%);
+        margin: 0;
+        padding: 0.1rem 0.45rem;
+        background: #2a2a2a;
+        border: 2px solid rgba($light-gray, 0.12);
+        border-radius: 3px;
+        font-size: 0.85rem; font-weight: 500; font-style: italic;
+        color: rgba($light-gray, 0.65);
+        line-height: 1.3;
+        white-space: nowrap;
       }
     }
     .outline-block--h5,
     .outline-block--h6 {
+      position: relative;
       margin: 1rem 0.6rem 0 0.6rem;
       border: 2px solid rgba($light-gray, 0.07);
       border-radius: 4px;
-      padding: 0 0.7rem 0.5rem;
-      &:first-child { margin-top: 0.4rem; }
+      padding: 1rem 0.7rem 0.5rem;
+      &:first-child { margin-top: 0.7rem; }
       > h5, > h6 {
-        margin: 0 -0.7rem 0.5rem;
-        padding: 0.2rem 0.7rem;
-        border-bottom: 2px solid rgba($light-gray, 0.07);
-        border-radius: 2px 2px 0 0;
-        background: rgba($white, 0.02);
+        position: absolute;
+        top: 0; left: 0.55rem;
+        transform: translateY(-50%);
+        margin: 0;
+        padding: 0.1rem 0.4rem;
+        background: #2a2a2a;
+        border: 2px solid rgba($light-gray, 0.07);
+        border-radius: 3px;
+        font-size: 0.8rem; font-weight: 500; font-style: italic;
+        color: rgba($light-gray, 0.45);
+        line-height: 1.3;
+        white-space: nowrap;
       }
     }
 
