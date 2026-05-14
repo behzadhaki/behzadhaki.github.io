@@ -99,6 +99,7 @@
 .navigation {
   display: flex;
   align-items: center;
+  margin-left: auto;
 }
 
 .top-nav {
@@ -165,7 +166,7 @@
   align-items: center;
   font-size: 24px;
   color: $text-color;
-  margin-left: 1.5rem;
+  margin-left: 2rem;
 
   .search-button {
     display: flex;
@@ -276,7 +277,7 @@
 // Navigation with dropdown
 .top-nav .nav__list {
   display: flex;
-  gap: 0.1rem;
+  gap: 1rem;
 }
 
 // Mobile nav — flat vertical list, no dropdowns
