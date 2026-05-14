@@ -519,27 +519,45 @@
   }
 }
 
-// ── All button types — unified colour ───────────────────────────────────────
+// ── Downloads — muted steel blue ────────────────────────────────────────────
 .proj-btn--mac-arm,
 .proj-btn--mac-intel,
 .proj-btn--win,
 .proj-btn--linux,
-.proj-btn--download,
-.proj-btn--github,
-.proj-btn--web,
-.proj-btn--docs,
-.proj-btn--paper,
-.proj-btn--issues,
-.proj-btn--email,
-.proj-btn--license {
-  background: #525252;
-  color: #f0f0f0;
+.proj-btn--download {
+  background: #3a5068;
+  color: #c8dcea;
 }
 
-.proj-btn--license,
+// ── Source code — muted forest green ────────────────────────────────────────
+.proj-btn--github {
+  background: #2e4e40;
+  color: #9fcfbc;
+}
+
+// ── Reports (issues + email) — muted terracotta ──────────────────────────────
+.proj-btn--issues,
 .proj-btn--email {
+  background: #553324;
+  color: #d4a08a;
   font-family: inherit;
   cursor: pointer;
+}
+
+// ── License — muted indigo ───────────────────────────────────────────────────
+.proj-btn--license {
+  background: #3c3858;
+  color: #b0aad4;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+// ── Others (web, docs, paper) — muted slate ──────────────────────────────────
+.proj-btn--web,
+.proj-btn--docs,
+.proj-btn--paper {
+  background: #384060;
+  color: #a8b4d0;
 }
 
 // Buttons

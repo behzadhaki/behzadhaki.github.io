@@ -338,15 +338,31 @@ html[data-theme='light'] {
   .proj-btn--mac-intel,
   .proj-btn--win,
   .proj-btn--linux,
-  .proj-btn--download,
-  .proj-btn--github,
+  .proj-btn--download {
+    background: #4a6e8a;
+    color: #fff;
+  }
+
+  .proj-btn--github {
+    background: #3a6e55;
+    color: #fff;
+  }
+
+  .proj-btn--issues,
+  .proj-btn--email {
+    background: #7a4832;
+    color: #fff;
+  }
+
+  .proj-btn--license {
+    background: #524e7a;
+    color: #fff;
+  }
+
   .proj-btn--web,
   .proj-btn--docs,
-  .proj-btn--paper,
-  .proj-btn--issues,
-  .proj-btn--email,
-  .proj-btn--license {
-    background: #888;
+  .proj-btn--paper {
+    background: #4a5880;
     color: #fff;
   }
 }
