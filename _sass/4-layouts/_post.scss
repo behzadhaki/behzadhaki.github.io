@@ -685,13 +685,18 @@
   }
 }
 
-.project-section,
+// Scroll offset for native anchor links — clear sticky navbar only
+.project-section {
+  scroll-margin-top: calc(var(--navbar-height, 60px) + 16px);
+}
+
+// Section body headings also need to clear the sticky section header
 .project-section__body h2,
 .project-section__body h3,
 .project-section__body h4,
 .project-section__body h5,
 .project-section__body h6 {
-  scroll-margin-top: 150px;
+  scroll-margin-top: calc(var(--navbar-height, 60px) + 80px);
 }
 
 .project-section {

@@ -231,7 +231,16 @@ document.addEventListener('keydown', function(e) {
     }
 
     function scrollToEl(el) {
-      var top = el.getBoundingClientRect().top + window.pageYOffset - navbarOffset();
+      var offset = navbarOffset();
+      // When scrolling to a heading inside a section body, also offset for the sticky section header
+      if (el.closest && el.closest('.project-section__body')) {
+        var section = el.closest('.project-section');
+        if (section) {
+          var sectionHeader = section.querySelector('.project-section__header');
+          if (sectionHeader) offset += sectionHeader.offsetHeight;
+        }
+      }
+      var top = el.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: top, behavior: "instant" });
     }
 
