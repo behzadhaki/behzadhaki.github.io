@@ -2,7 +2,7 @@
 # Site Settings
 title: Behzad Haki
 description: Researcher &amp; Developer · Music Technology · Barcelona
-logo: # Leave blank to use text title
+logo: /assets/img/logo.PNG
 
 #-------------------------------
 # Hero Settings (text-only hero on homepage)
