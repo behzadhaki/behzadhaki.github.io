@@ -123,7 +123,7 @@ document.addEventListener('keydown', function(e) {
       var offset = navEl ? navEl.offsetHeight + 24 : 24;
       setTimeout(function () {
         var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
-        window.scrollTo({ top: top, behavior: "smooth" });
+        window.scrollTo({ top: top, behavior: "instant" });
       }, 50);
     }
 
@@ -201,7 +201,7 @@ document.addEventListener('keydown', function(e) {
 
     function scrollToEl(el) {
       var top = el.getBoundingClientRect().top + window.pageYOffset - navbarOffset();
-      window.scrollTo({ top: top, behavior: "smooth" });
+      window.scrollTo({ top: top, behavior: "instant" });
     }
 
     function makeLink(label, id, cls, onClick) {
@@ -255,16 +255,110 @@ document.addEventListener('keydown', function(e) {
       });
     }
 
+    // ── Hover preview helpers ────────────────────────────────────────────────
+    var isPreviewing = false;
+
+    function restoreRows() {
+      isPreviewing = false;
+      row2.innerHTML = "";
+      row3.innerHTML = "";
+      var actSNode = tree.find(function (s) { return s.id === activeSection; });
+      if (!actSNode || actSNode.h2s.length === 0) return;
+      actSNode.h2s.forEach(function (h2) {
+        row2.appendChild(makeLink(h2.label, h2.id, "post-nav-link--l2", function () {
+          history.pushState(null, "", "#" + h2.id);
+          scrollToEl(h2.el);
+          activeH2 = h2.id;
+          activeH3 = null;
+          highlightRow(row2, h2.id);
+          renderRow3(h2);
+        }));
+      });
+      highlightRow(row2, activeH2);
+      if (activeH2) {
+        var actH2Node = actSNode.h2s.find(function (h) { return h.id === activeH2; });
+        if (actH2Node && actH2Node.h3s.length > 0) {
+          actH2Node.h3s.forEach(function (h3) {
+            row3.appendChild(makeLink(h3.label, h3.id, "post-nav-link--l3", function () {
+              history.pushState(null, "", "#" + h3.id);
+              scrollToEl(h3.el);
+              activeH3 = h3.id;
+              highlightRow(row3, h3.id);
+            }));
+          });
+          highlightRow(row3, activeH3);
+        }
+      }
+    }
+
+    function previewRow3(h2Node, sNode) {
+      row3.innerHTML = "";
+      if (!h2Node || h2Node.h3s.length === 0) return;
+      h2Node.h3s.forEach(function (h3) {
+        row3.appendChild(makeLink(h3.label, h3.id, "post-nav-link--l3", function () {
+          sNode.el.classList.remove("is-collapsed");
+          history.pushState(null, "", "#" + h3.id);
+          scrollToEl(h3.el);
+          activeSection = sNode.id;
+          activeH2 = h2Node.id;
+          activeH3 = h3.id;
+          highlightRow(row1, activeSection);
+          renderRow2(sNode);
+          highlightRow(row2, activeH2);
+          renderRow3(h2Node);
+          highlightRow(row3, activeH3);
+          isPreviewing = false;
+        }));
+      });
+    }
+
+    function previewRow2(sNode) {
+      isPreviewing = true;
+      row2.innerHTML = "";
+      row3.innerHTML = "";
+      if (!sNode || sNode.h2s.length === 0) return;
+      sNode.h2s.forEach(function (h2) {
+        var a = makeLink(h2.label, h2.id, "post-nav-link--l2", function () {
+          sNode.el.classList.remove("is-collapsed");
+          history.pushState(null, "", "#" + h2.id);
+          scrollToEl(h2.el);
+          activeSection = sNode.id;
+          activeH2 = h2.id;
+          activeH3 = null;
+          highlightRow(row1, activeSection);
+          highlightRow(row2, activeH2);
+          renderRow3(h2);
+          isPreviewing = false;
+        });
+        a.addEventListener("mouseenter", function () { previewRow3(h2, sNode); });
+        row2.appendChild(a);
+      });
+    }
+
     // Render row1
     tree.forEach(function (sectionNode) {
-      row1.appendChild(makeLink(sectionNode.label, sectionNode.id, "post-nav-link--l1", function () {
+      var a = makeLink(sectionNode.label, sectionNode.id, "post-nav-link--l1", function () {
         history.pushState(null, "", "#" + sectionNode.id);
         sectionNode.el.classList.remove("is-collapsed");
         activeSection = sectionNode.id;
         highlightRow(row1, sectionNode.id);
         renderRow2(sectionNode);
         scrollToEl(sectionNode.el);
-      }));
+        isPreviewing = false;
+      });
+      a.addEventListener("mouseenter", function () {
+        if (sectionNode.id !== activeSection) {
+          previewRow2(sectionNode);
+        } else if (isPreviewing) {
+          restoreRows();
+        }
+      });
+      row1.appendChild(a);
+    });
+
+    // Mouse leaves the whole navbar → restore active state
+    navInner.addEventListener("mouseleave", function () {
+      if (isPreviewing) restoreRows();
     });
 
     // Section headers toggle their own section only
