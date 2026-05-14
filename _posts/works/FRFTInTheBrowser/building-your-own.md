@@ -22,6 +22,8 @@ html[data-theme='light'] .byo-download-btn:hover:not(:disabled) {
 
 ## Resources
 
+The engine is written in C++ and compiled to WebAssembly. All usage examples and widgets are in plain JavaScript — no framework or bundler required.
+
 <button class="byo-download-btn" id="byoDownloadBtn">⬇ Download FRFT engine files</button>
 
 Three files are included in the ZIP:
