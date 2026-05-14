@@ -81,7 +81,7 @@ During the session, we navigate the triangular area and change the patterns in r
 
 [//]: # (<iframe width="800" width="800" height="600" src="/assets/works/GrooveTransformer/Non-drum Extra Sequencing.mp4" frameborder="20" allowfullscreen autoplay="false"></iframe>)
 
-[TBD INSERT SESSION OVERVIEW]
+<!-- [TBD INSERT SESSION OVERVIEW] -->
 
 
 <video width="50%" controls>
@@ -94,7 +94,7 @@ What's worth noting is that so far, we've only used mainly percussive sources as
 Specifically, for sounds with slow attack times, the GrooveTransformer may not be able to capture the rhythmic content accurately (or at all). In the following example, we feed non-percussive audio to the plugin and perform on the sequencer same as before. Note that only some of the audio events can be 
 detected by the GrooveTransformer, and the rest are ignored.
 
-[TBD INSERT SESSION OVERVIEW]
+<!-- [TBD INSERT SESSION OVERVIEW] -->
 
 
 <video width="50%" controls>
@@ -111,7 +111,7 @@ This way, the top corner will also be associated with an "artificially static" g
 In the following example, we start from A, morph to B, and then to morph to G (fed with a looping MIDI sequence that is not synthesized). Note that, the pad sounds you hear in this example are not fed to the plugin and are just being played for the sake of the performance.
 
 
-[TBD INSERT SESSION OVERVIEW]
+<!-- [TBD INSERT SESSION OVERVIEW] -->
 
 <video width="50%" controls>
   <source src="/assets/works/GrooveTransformer/PatternMorph3Grooves_trimmed.mp4" type="video/mp4">
@@ -133,7 +133,7 @@ In the following example, we don't interact with the plugin directly, except for
 The plugin then generates the accompaniment based on the input and we synthesize the output accordingly.
 
 
-[TBD INSERT SESSION OVERVIEW]
+<!-- [TBD INSERT SESSION OVERVIEW] -->
 
 
 <video width="50%" controls>
@@ -181,7 +181,7 @@ Instead of using it as a trigger sequencer, we can use it to sequence parameters
 In the following example, we have prepared a virtual modular patch (in [VCV Rack](https://vcvrack.com/)) that uses the velocity of the generations to modulate some parameters of the [Mutable Instruments Plaits module](https://mutable-instruments.net/modules/plaits/).
 
 
-[TBD INSERT SESSION OVERVIEW]
+<!-- [TBD INSERT SESSION OVERVIEW] -->
 
 
 <video width="50%" controls>

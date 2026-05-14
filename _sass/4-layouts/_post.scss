@@ -470,6 +470,76 @@
   }
 }
 
+// ─── Project link / download buttons ───────────────────────────────────────
+.proj-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.6rem 0 0.9rem;
+
+  &--header {
+    margin: 1rem 0 0;
+  }
+}
+
+.proj-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.38em 0.85em;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: none !important;
+  border: 1.5px solid transparent;
+  border-bottom: 1.5px solid transparent !important;  // override .project-section__body a
+  white-space: nowrap;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.12s;
+
+  &:hover:not(.proj-btn--unavailable) {
+    opacity: 0.78;
+    transform: translateY(-1px);
+    color: inherit !important;
+  }
+
+  i { font-size: 0.9em; }
+}
+
+// — Download variants
+.proj-btn--mac-arm   { background: rgba(#2ecc71, 0.1); border-color: #2ecc71 !important; color: #2ecc71; }
+.proj-btn--mac-intel { background: rgba(#27ae60, 0.1); border-color: #27ae60 !important; color: #27ae60; }
+.proj-btn--win       { background: rgba(#3b82f6, 0.1); border-color: #3b82f6 !important; color: #5b9cf8; }
+.proj-btn--linux     { background: rgba(#e67e22, 0.1); border-color: #e67e22 !important; color: #e67e22; }
+.proj-btn--download  { background: rgba(#1abc9c, 0.1); border-color: #1abc9c !important; color: #1abc9c; }
+
+// — Redirect / link variants
+.proj-btn--github  { background: rgba(#aaa, 0.08); border-color: #777 !important;    color: #bbb; }
+.proj-btn--issues  { background: rgba(#aaa, 0.08); border-color: #777 !important;    color: #bbb; }
+.proj-btn--email   { background: rgba(#e67e22, 0.1); border-color: #e67e22 !important; color: #e8944d; }
+.proj-btn--docs    { background: rgba(#5dade2, 0.1); border-color: #5dade2 !important; color: #5dade2; }
+.proj-btn--paper   { background: rgba(#a29bfe, 0.1); border-color: #a29bfe !important; color: #a29bfe; }
+.proj-btn--web     { background: rgba(#00cec9, 0.1); border-color: #00cec9 !important; color: #00cec9; }
+
+// — License popup trigger
+.proj-btn--license {
+  background: rgba(#f39c12, 0.1);
+  border-color: #f39c12 !important;
+  color: #f39c12;
+  cursor: pointer;
+  font-family: inherit;
+  line-height: 1;
+}
+
+// — Unavailable / coming soon
+.proj-btn--unavailable {
+  background: rgba(#fff, 0.03);
+  border-color: #3a3a3a !important;
+  color: #555 !important;
+  cursor: not-allowed;
+  &:hover { opacity: 1 !important; transform: none !important; }
+}
+
 // Buttons
 .btn {
   display: inline-block;
@@ -1030,4 +1100,63 @@ hr {
 .post__content tr:nth-child(even),
 .page__content tr:nth-child(even) {
   background-color: rgba($white, 0.05); // zebra stripes
+}
+
+// ─── Header note (below buttons) ────────────────────────────────────────────
+.proj-note {
+  margin-top: 0.6rem;
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: #aaa;  // works on dark bg; overridden in light mode below
+
+  p { margin: 0 0 0.3rem; &:last-child { margin-bottom: 0; } }
+  a { color: inherit; border-bottom: 1px solid rgba(#aaa, 0.3);
+      &:hover { color: $white; border-color: $brand-color; } }
+  strong { color: $light-gray !important; font-weight: 600; }
+  code { font-size: 0.72rem; background: rgba(255,255,255,0.07); padding: 0.1em 0.3em; border-radius: 3px; }
+}
+
+// ─── License modal ──────────────────────────────────────────────────────────
+.proj-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+
+  &__box {
+    position: relative;
+    background: #1a1825;
+    border: 1px solid rgba($white, 0.1);
+    border-radius: 10px;
+    padding: 2rem 2rem 1.5rem;
+    max-width: 620px;
+    width: 90%;
+    max-height: 78vh;
+    overflow-y: auto;
+    font-size: 0.85rem;
+    line-height: 1.75;
+    color: rgba($light-gray, 0.85);
+
+    h1, h2, h3 { color: $light-gray; margin: 1.2rem 0 0.4rem; }
+    p { margin: 0 0 0.6rem; }
+    a { color: $light-gray; border-bottom: 1px solid rgba($light-gray, 0.2);
+        &:hover { border-color: $brand-color; } }
+  }
+
+  &__close {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.8rem;
+    background: none;
+    border: none;
+    color: $gray;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+    &:hover { color: $white; }
+  }
 }

@@ -51,6 +51,7 @@ layout: default
 
             </div>
           </div>
+          {% include proj-links.html %}
         </div>
       </div>
     </div>
@@ -69,6 +70,15 @@ layout: default
 <!-- end post -->
 
 {% if site.related_posts_include %}{% include related-posts.html %}{% endif %}
+
+<script>
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    var m = document.getElementById('proj-license-modal');
+    if (m) m.style.display = 'none';
+  }
+});
+</script>
 
 <!-- Section & Content Anchor JavaScript -->
 <script>

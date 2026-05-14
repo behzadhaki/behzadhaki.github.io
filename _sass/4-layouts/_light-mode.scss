@@ -324,3 +324,12 @@ html[data-theme='light'] {
 
   &:hover { opacity: 1; }
 }
+
+// ─── Header note (light mode) ─────────────────────────────────────────────
+html[data-theme='light'] {
+  .proj-note {
+    color: #555;
+    strong { color: #1a1827 !important; }
+    a { color: #555; &:hover { color: #1a1827; } }
+  }
+}
