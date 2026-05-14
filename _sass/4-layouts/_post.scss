@@ -519,45 +519,53 @@
   }
 }
 
-// ── Downloads — muted steel blue ────────────────────────────────────────────
+// ── Downloads — steel blue ──────────────────────────────────────────────────
 .proj-btn--mac-arm,
 .proj-btn--mac-intel,
 .proj-btn--win,
 .proj-btn--linux,
 .proj-btn--download {
-  background: #3a5068;
-  color: #c8dcea;
+  background: rgba(58, 80, 104, 0.6);
+  color: #b8d0e4;
 }
 
-// ── Source code — muted forest green ────────────────────────────────────────
+// ── Source code — forest green ──────────────────────────────────────────────
 .proj-btn--github {
-  background: #2e4e40;
-  color: #9fcfbc;
+  background: rgba(46, 78, 64, 0.6);
+  color: #8ec0ac;
 }
 
-// ── Reports (issues + email) — muted terracotta ──────────────────────────────
+// ── Reports (issues + email) — terracotta ───────────────────────────────────
 .proj-btn--issues,
 .proj-btn--email {
-  background: #553324;
-  color: #d4a08a;
+  background: rgba(85, 51, 36, 0.6);
+  color: #c89080;
   font-family: inherit;
   cursor: pointer;
 }
 
-// ── License — muted indigo ───────────────────────────────────────────────────
+// ── Cite — muted teal ───────────────────────────────────────────────────────
+.proj-btn--cite {
+  background: rgba(28, 72, 72, 0.6);
+  color: #80c0b8;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+// ── License — indigo ────────────────────────────────────────────────────────
 .proj-btn--license {
-  background: #3c3858;
-  color: #b0aad4;
+  background: rgba(60, 56, 88, 0.6);
+  color: #a098cc;
   font-family: inherit;
   cursor: pointer;
 }
 
-// ── Others (web, docs, paper) — muted slate ──────────────────────────────────
+// ── Others (web, docs, paper) — slate ───────────────────────────────────────
 .proj-btn--web,
 .proj-btn--docs,
 .proj-btn--paper {
-  background: #384060;
-  color: #a8b4d0;
+  background: rgba(56, 64, 96, 0.6);
+  color: #98a8c8;
 }
 
 // Buttons

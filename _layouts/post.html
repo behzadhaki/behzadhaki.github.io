@@ -76,8 +76,10 @@ layout: default
 <script>
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
-    var m = document.getElementById('proj-license-modal');
-    if (m) m.style.display = 'none';
+    ['proj-license-modal', 'proj-cite-modal'].forEach(function(id) {
+      var m = document.getElementById(id);
+      if (m) m.style.display = 'none';
+    });
   }
 });
 </script>

@@ -17,18 +17,3 @@
 {% endfor %}
 {% endif %}
 
-{% if page.cite_keys %}
-<section class="project-section" id="cite">
-  <h2 class="project-section__header">
-    Cite
-    <a class="section-anchor" href="#cite" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
-  </h2>
-  <div class="project-section__body markdown-body">
-    <div class="project-pubs">
-      {% for key in page.cite_keys %}
-        {% bibliography -f papers -q @*[key={{ key }}] %}
-      {% endfor %}
-    </div>
-  </div>
-</section>
-{% endif %}
