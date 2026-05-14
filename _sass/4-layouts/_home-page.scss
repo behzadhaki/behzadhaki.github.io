@@ -555,7 +555,7 @@
 .work-card__header {
   position: relative;
   min-height: 120px;
-  background: #2a2736;
+  background: #1a1a1a;
   overflow: hidden;
   line-height: 0; // kill inline baseline gap
 }
@@ -570,7 +570,7 @@
 }
 
 .work-card__body {
-  background: #1a1825;
+  background: #2e2e2e;
   padding: 0.9rem 1.1rem 1rem;
   display: flex;
   flex-direction: column;
