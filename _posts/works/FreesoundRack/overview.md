@@ -1,4 +1,5 @@
 
+
 ## What is Freesound Rack?
 
 `Freesound Rack` is a VST/AU/Standalone plugin that allows users to search, preview, and load sounds from the Freesound database directly into their Digital Audio Workstation (DAW) or audio software. 

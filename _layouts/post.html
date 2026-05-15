@@ -30,6 +30,10 @@ layout: default
 
           <h2 class="post__title">{{ page.title }}</h2>
 
+          {% if page.description %}
+          <p class="post__description">{{ page.description }}</p>
+          {% endif %}
+
           <div class="post__bottom">
             <div class="post__bottom-meta">
 
@@ -235,18 +239,18 @@ document.addEventListener('keydown', function(e) {
     navInner.appendChild(row2);
     navInner.appendChild(row3);
 
-    // Set CSS variables AFTER navbar has content so offsetHeight is correct.
-    function updateNavbarHeightVar() {
-      document.documentElement.style.setProperty('--navbar-height', navbar.offsetHeight + 'px');
-    }
-    updateNavbarHeightVar();
-    window.addEventListener('resize', updateNavbarHeightVar);
-
     // Show only as many rows as the content has levels (determined once at init)
     var hasH2s = tree.some(function (s) { return s.h2s.length > 0; });
     var hasH3s = tree.some(function (s) { return s.h2s.some(function (h2) { return h2.h3s.length > 0; }); });
     if (!hasH2s) row2.style.display = 'none';
     if (!hasH3s) row3.style.display = 'none';
+
+    // Set CSS variable AFTER rows are shown/hidden so offsetHeight reflects actual navbar height.
+    function updateNavbarHeightVar() {
+      document.documentElement.style.setProperty('--navbar-height', navbar.offsetHeight + 'px');
+    }
+    updateNavbarHeightVar();
+    window.addEventListener('resize', updateNavbarHeightVar);
 
     var activeSection = null;
     var activeH2 = null;

@@ -92,6 +92,13 @@
   }
 }
 
+.post__description {
+  margin: -10px 0 16px;
+  font-size: 14px;
+  color: rgba($light-gray, 0.6);
+  line-height: 1.5;
+}
+
 .post__bottom {
   display: flex;
   align-items: center;
