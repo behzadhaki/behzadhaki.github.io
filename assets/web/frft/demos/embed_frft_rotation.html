@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FRFT Rotation</title>
+<script>
+  window._wasmCacheBust = Date.now();
+  (function() {
+    const sp = new URLSearchParams(location.search);
+    const w = sp.get('w'), h = sp.get('h');
+    const s = document.documentElement.style;
+    if (w) s.width  = Math.max(200, +w) + 'px';
+    if (h) s.height = Math.max(200, +h) + 'px';
+    const wave = sp.get('wave');
+    if (['sine','triangle','sawtooth','square','sweep'].includes(wave)) window._initWave = wave;
+    const freq = parseFloat(sp.get('freq'));
+    if (!isNaN(freq) && freq > 0) window._initFreq = freq;
+    const disp = sp.get('disp');
+    if (disp === 'wave' || disp === 'scope') window._initDisp = disp;
+  })();
+</script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button, input, select { font: inherit; }
+
+:root {
+  --bg:        #1a1a1a;
+  --surface:   #1e1e1e;
+  --border:    #333333;
+  --border2:   #3a3a3a;
+  --accent:    #c8902a;
+  --accent-lo: #7a5418;
+  --text:      #d0d0d0;
+  --muted:     #888888;
+  --red:       #cc4444;
+}
+
+html { font-size: 12px; }
+html, body {
+  width: 100%; height: 100%;
+  background: transparent;
+  color: var(--text);
+  font-family: "Inter", "Segoe UI", -apple-system, sans-serif;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#topBar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.25em 0.6em;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  height: 2.4em;
+}
+#topBar label { font-size: 0.78em; color: var(--muted); white-space: nowrap; }
+#topBar select, #topBar input[type="number"] {
+  height: 1.8em;
+  background: var(--bg); border: 1px solid var(--border2); border-radius: 3px;
+  color: var(--text); padding: 0 0.4em; font-size: 0.82em; outline: none; cursor: pointer;
+}
+#topBar select:focus, #topBar input:focus { border-color: var(--accent); }
+#freqNum { width: 4.5em; -moz-appearance: textfield; }
+#freqNum::-webkit-inner-spin-button,
+#freqNum::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+#status {
+  flex: 1; font-size: 0.78em; color: var(--muted);
+  text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+#status.err { color: var(--red); }
+
+#infoBtn {
+  height: 1.8em; padding: 0 0.55em;
+  background: var(--surface); color: var(--muted);
+  border: 1px solid var(--border2); border-radius: 3px;
+  font-size: 0.9em; font-weight: 700; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center;
+}
+#infoBtn:hover { color: var(--text); }
+
+#main {
+  flex: 1; position: relative; overflow: hidden; background: var(--bg);
+}
+
+#bgCanvas { position: absolute; inset: 0; pointer-events: none; }
+
+/* ── Panels ──────────────────────────────────────────────── */
+.panel {
+  position: absolute;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  cursor: pointer;
+  transition: border-color 0.1s;
+}
+.panel:hover  { border-color: rgba(200,144,42,0.55); }
+.panel.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-lo), 0 1px 5px rgba(0,0,0,0.5); }
+
+.pcv { flex: 1; width: 100%; min-height: 0; display: block; image-rendering: auto; }
+
+.pbar {
+  display: flex; align-items: center; padding: 0 0.3em; gap: 0.25em;
+  flex-shrink: 0; height: 14px;
+  background: var(--surface); border-top: 1px solid var(--border);
+}
+.plbl {
+  flex: 1; font-size: 0.60em; color: var(--muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.pbtn {
+  flex-shrink: 0; height: 10px; width: 10px; padding: 0;
+  background: var(--accent-lo); color: var(--accent); border: 1px solid var(--accent-lo);
+  border-radius: 2px; font-size: 0.50em; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; line-height: 1;
+}
+.pbtn:disabled { opacity: 0.3; cursor: default; }
+.pbtn.playing  { background: var(--accent); color: var(--bg); }
+button:hover:not(:disabled) { filter: brightness(1.15); }
+button:active:not(:disabled) { filter: brightness(0.85); }
+
+/* ── Detail view ─────────────────────────────────────────── */
+</style>
+</head>
+<body>
+<div id="topBar">
+  <label>Wave</label>
+  <select id="waveSel">
+    <option value="sine" selected>Sine</option>
+    <option value="triangle">Triangle</option>
+    <option value="sawtooth">Sawtooth</option>
+    <option value="square">Square</option>
+    <option value="sweep">Freq sweep</option>
+  </select>
+  <label>Freq</label>
+  <input id="freqNum" type="number" value="440" min="20" max="20000" step="10">
+  <label>Hz</label>
+  <label style="margin-left:0.4em">View</label>
+  <select id="dispSel">
+    <option value="wave" selected>Waveform</option>
+    <option value="scope">Spectrogram</option>
+  </select>
+  <span id="status">Loading…</span>
+  <button id="infoBtn" title="More info &amp; embed instructions">&lt;/&gt;</button>
+</div>
+<div id="main">
+  <canvas id="bgCanvas"></canvas>
+</div>
+<script>
+'use strict';
+
+// ── Constants ────────────────────────────────────────────────────────────────
+const ALPHA_LIST = [0, 0.1, 0.5, 0.9, 1.0, 1.1, 1.5, 1.9, 2.0, 2.1, 2.5, 2.9, 3.0, 3.1, 3.5, 3.9];
+const NUM_ALPHA  = ALPHA_LIST.length;
+const CARD_IDX   = [0, 4, 8, 12];
+const CARD_NAMES = ['Time', 'Freq', '−Time', '−Freq'];
+const N_SAMPLES  = 88200;   // 2 seconds at 44100 Hz
+const PBAR_H     = 14;
+
+// Layout fractions (of min(mainW, mainH))
+const CIR_R_F    = 0.175;  // inner circle radius
+const PANEL_D_IN = 0.265;  // distance for even-idx: cardinals + midpoints
+const PANEL_D_OUT= 0.440;  // distance for odd-idx:  near-cardinals
+const PANEL_W_F  = 0.120;  // panel width
+const PANEL_H_F  = 0.140;  // panel height
+
+// ── State ────────────────────────────────────────────────────────────────────
+let sampleRate  = 44100;
+let dryBuf      = null;
+let wetBufs     = new Array(NUM_ALPHA).fill(null);
+let specCache   = new Map();
+let computeDone = false;
+let arrowAlpha  = -1;
+let activeIdx   = -1;
+let audioCtx    = null;
+let activeSrc   = null;
+
+let frftWorker  = null;
+let workerReady = false;
+let queuePid    = 0;
+let queuePos    = 0;
+
+// ── DOM ───────────────────────────────────────────────────────────────────────
+const mainEl      = document.getElementById('main');
+const bgCanvas    = document.getElementById('bgCanvas');
+const waveSel     = document.getElementById('waveSel');
+const freqNum     = document.getElementById('freqNum');
+const dispSel     = document.getElementById('dispSel');
+const statusEl    = document.getElementById('status');
+const infoBtn     = document.getElementById('infoBtn');
+
+if (window._initWave) waveSel.value = window._initWave;
+if (window._initFreq) freqNum.value = String(window._initFreq);
+if (window._initDisp) dispSel.value = window._initDisp;
+freqNum.disabled = waveSel.value === 'sweep';
+
+// ── Create panels ─────────────────────────────────────────────────────────────
+const panels = ALPHA_LIST.map((alpha, idx) => {
+  const cardPos = CARD_IDX.indexOf(idx);
+  const isCard  = cardPos >= 0;
+
+  const div = document.createElement('div');
+  div.className = 'panel';
+
+  const cv = document.createElement('canvas');
+  cv.className = 'pcv';
+
+  const bar = document.createElement('div');
+  bar.className = 'pbar';
+
+  const lbl = document.createElement('span');
+  lbl.className = 'plbl';
+  lbl.textContent = isCard ? CARD_NAMES[cardPos] : '';
+
+  const btn = document.createElement('button');
+  btn.className = 'pbtn';
+  btn.textContent = '▶';
+  btn.disabled = true;
+  btn.addEventListener('click', e => { e.stopPropagation(); togglePlay(idx); });
+
+  bar.append(lbl, btn);
+  div.append(cv, bar);
+  mainEl.appendChild(div);
+
+  return { div, cv, btn, lbl, alpha, isCard, cardPos };
+});
+
+// ── Layout ────────────────────────────────────────────────────────────────────
+function panelPos(mW, mH, alpha, idx) {
+  const angle = -Math.PI / 2 * alpha;
+  const size  = Math.min(mW, mH);
+  const D  = ((idx % 2 === 0) ? PANEL_D_IN : PANEL_D_OUT) * size;
+  const pw = PANEL_W_F * size;
+  const ph = PANEL_H_F * size;
+  const cx = mW / 2 + D * Math.cos(angle);
+  const cy = mH / 2 + D * Math.sin(angle);
+  return { left: cx - pw / 2, top: cy - ph / 2, width: pw, height: ph };
+}
+
+function layoutAll() {
+  const mW = mainEl.clientWidth, mH = mainEl.clientHeight;
+  if (mW < 10 || mH < 10) return;
+  const dpr = window.devicePixelRatio || 1;
+
+  bgCanvas.width  = Math.round(mW * dpr);
+  bgCanvas.height = Math.round(mH * dpr);
+  bgCanvas.style.width  = mW + 'px';
+  bgCanvas.style.height = mH + 'px';
+
+  panels.forEach(({ div, cv, alpha }, idx) => {
+    const p = panelPos(mW, mH, alpha, idx);
+    Object.assign(div.style, {
+      left:   Math.round(p.left)   + 'px',
+      top:    Math.round(p.top)    + 'px',
+      width:  Math.round(p.width)  + 'px',
+      height: Math.round(p.height) + 'px',
+    });
+    const cvH = Math.max(1, Math.round(p.height) - PBAR_H);
+    cv.width  = Math.round(p.width * dpr);
+    cv.height = Math.round(cvH * dpr);
+    renderPanel(idx);
+  });
+
+  drawBg();
+}
+
+new ResizeObserver(layoutAll).observe(mainEl);
+
+// ── Background canvas ─────────────────────────────────────────────────────────
+function drawBg() {
+  const mW = mainEl.clientWidth, mH = mainEl.clientHeight;
+  if (mW < 10 || mH < 10) return;
+  const dpr = window.devicePixelRatio || 1;
+  const ctx = bgCanvas.getContext('2d');
+  ctx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+  ctx.save();
+  ctx.scale(dpr, dpr);
+
+  const size = Math.min(mW, mH);
+  const cx = mW / 2, cy = mH / 2;
+  const R  = CIR_R_F * size;
+
+  // Connector lines
+  panels.forEach(({ alpha }, idx) => {
+    const p     = panelPos(mW, mH, alpha, idx);
+    const angle = -Math.PI / 2 * alpha;
+    const pcx   = p.left + p.width  / 2;
+    const pcy   = p.top  + p.height / 2;
+    const rx    = cx + R * Math.cos(angle);
+    const ry    = cy + R * Math.sin(angle);
+    const isActive = idx === activeIdx;
+    ctx.strokeStyle = isActive ? 'rgba(200,144,42,0.85)' : 'rgba(130,130,130,0.70)';
+    ctx.lineWidth   = isActive ? 1.8 : 0.9;
+    ctx.beginPath(); ctx.moveTo(rx, ry); ctx.lineTo(pcx, pcy); ctx.stroke();
+  });
+
+  // Main circle
+  ctx.strokeStyle = '#606060';
+  ctx.lineWidth   = 1.5;
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2 * Math.PI); ctx.stroke();
+
+  // Tick marks + alpha labels on circle edge
+  const lblFont = Math.max(8, R * 0.075);
+  ctx.font         = `${lblFont}px -apple-system, sans-serif`;
+  ctx.textBaseline = 'middle';
+
+  ALPHA_LIST.forEach((alpha, idx) => {
+    const angle  = -Math.PI / 2 * alpha;
+    const isCard = CARD_IDX.includes(idx);
+    const isActive = idx === activeIdx;
+
+    // Tick
+    const inner = R - (isCard ? 7 : 4);
+    const outer = R + (isCard ? 7 : 4);
+    ctx.strokeStyle = isActive ? 'rgba(200,144,42,0.95)'
+                    : isCard   ? '#888888'
+                    :            '#5a5a5a';
+    ctx.lineWidth = isCard ? 1.5 : 0.9;
+    ctx.beginPath();
+    ctx.moveTo(cx + inner * Math.cos(angle), cy + inner * Math.sin(angle));
+    ctx.lineTo(cx + outer * Math.cos(angle), cy + outer * Math.sin(angle));
+    ctx.stroke();
+
+    // Alpha label — drawn just inside the circle ring so panels never cover it
+    const lblR = R * 0.865;
+    const lx   = cx + lblR * Math.cos(angle);
+    const ly   = cy + lblR * Math.sin(angle);
+    const txt  = isCard ? String(alpha.toFixed(0)) : alpha.toFixed(1);
+
+    ctx.fillStyle = isActive ? '#c8902a'
+                  : isCard   ? 'rgba(210,210,210,0.95)'
+                  :            'rgba(140,140,140,0.90)';
+    ctx.font      = isCard
+      ? `700 ${lblFont * 1.05}px -apple-system, sans-serif`
+      : `${lblFont}px -apple-system, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt, lx, ly);
+  });
+
+  // Fα arrow
+  if (arrowAlpha >= 0) {
+    const angle  = -Math.PI / 2 * arrowAlpha;
+    const arrowR = R * 0.82;
+    const px = cx + arrowR * Math.cos(angle);
+    const py = cy + arrowR * Math.sin(angle);
+    const headLen = Math.max(6, R * 0.08);
+    const theta   = Math.atan2(py - cy, px - cx);
+
+    ctx.strokeStyle = '#c8902a'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(px, py); ctx.stroke();
+    ctx.lineCap = 'butt';
+
+    ctx.fillStyle = '#c8902a';
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(px - headLen * Math.cos(theta - 0.4), py - headLen * Math.sin(theta - 0.4));
+    ctx.lineTo(px - headLen * Math.cos(theta + 0.4), py - headLen * Math.sin(theta + 0.4));
+    ctx.closePath(); ctx.fill();
+  }
+
+  // Center label
+  const cFont = Math.max(10, R * 0.18);
+  ctx.font         = `600 ${cFont}px -apple-system, sans-serif`;
+  ctx.textAlign    = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle    = arrowAlpha >= 0 ? '#c8902a' : '#707070';
+  ctx.fillText(arrowAlpha >= 0 ? `α=${arrowAlpha.toFixed(1)}` : 'Fα', cx, cy);
+
+  ctx.restore();
+}
+
+// ── Signal generation ─────────────────────────────────────────────────────────
+function generateSignal(freq, n, sr, wave) {
+  const buf = new Float32Array(n);
+  if (wave === 'triangle') {
+    for (let i = 0; i < n; i++)
+      buf[i] = (2 / Math.PI) * Math.asin(Math.sin(2 * Math.PI * freq * i / sr));
+  } else if (wave === 'sawtooth') {
+    for (let i = 0; i < n; i++)
+      buf[i] = 2 * ((freq * i / sr) % 1) - 1;
+  } else if (wave === 'square') {
+    for (let i = 0; i < n; i++)
+      buf[i] = Math.sin(2 * Math.PI * freq * i / sr) >= 0 ? 1 : -1;
+  } else if (wave === 'sweep') {
+    const f0 = 20, f1 = Math.min(sr / 2 - 100, 20000);
+    for (let i = 0; i < n; i++)
+      buf[i] = Math.sin(2 * Math.PI * (f0 * i + (f1 - f0) * i * i / (2 * n)) / sr);
+  } else {
+    for (let i = 0; i < n; i++)
+      buf[i] = Math.sin(2 * Math.PI * freq * i / sr);
+  }
+  return buf;
+}
+
+// ── Precompute ────────────────────────────────────────────────────────────────
+function startPrecompute() {
+  if (!workerReady) return;
+  stopPlayback();
+  computeDone = false;
+  wetBufs.fill(null);
+  specCache.clear();
+  panels.forEach((_, i) => { panels[i].btn.disabled = true; renderPanel(i); });
+
+  const freq = Math.max(20, Math.min(20000, parseFloat(freqNum.value) || 440));
+  dryBuf = generateSignal(freq, N_SAMPLES, sampleRate, waveSel.value);
+
+  queuePid++;
+  queuePos = 0;
+  setStatus('Computing…');
+  sendNextJob();
+}
+
+function sendNextJob() {
+  if (queuePos >= NUM_ALPHA) return;
+  frftWorker.postMessage({
+    type: 'process', samples: dryBuf, alpha: ALPHA_LIST[queuePos],
+    bufSize: N_SAMPLES, overlapFactor: 1, noWindow: false, halfSpectrum: false,
+    jobId: queuePid * 100 + queuePos,
+  });
+  queuePos++;
+}
+
+function handleResult(jobId, output) {
+  const pid = Math.floor(jobId / 100);
+  if (pid !== queuePid) return;
+  const idx = jobId % 100;
+  wetBufs[idx] = output;
+  setStatus(`Computing… ${idx + 1}/${NUM_ALPHA}`);
+  renderPanel(idx);
+  if (idx + 1 < NUM_ALPHA) {
+    sendNextJob();
+  } else {
+    computeDone = true;
+    setStatus('');
+    panels.forEach(p => { p.btn.disabled = false; });
+    drawBg();
+  }
+}
+
+// ── Panel rendering ───────────────────────────────────────────────────────────
+function renderPanel(idx) {
+  const { cv } = panels[idx];
+  const W = cv.width, H = cv.height;
+  if (W < 2 || H < 2) return;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#0c0c0c';
+  ctx.fillRect(0, 0, W, H);
+  const buf = wetBufs[idx];
+  if (!buf) return;
+  if (dispSel.value === 'scope') renderSpectrogram(ctx, buf, W, H);
+  else                           renderWaveform(ctx, buf, W, H);
+}
+
+function renderWaveform(ctx, buf, W, H) {
+  const start = Math.floor(buf.length * 0.25);
+  const end   = Math.floor(buf.length * 0.75);
+  const n     = end - start;
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth   = 0.5;
+  ctx.beginPath(); ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2); ctx.stroke();
+  ctx.strokeStyle = '#c8902a';
+  ctx.lineWidth   = Math.max(0.7, W / 500);
+  ctx.beginPath();
+  for (let x = 0; x < W; x++) {
+    const val = Math.max(-1, Math.min(1, buf[start + Math.floor(x / W * n)]));
+    const y   = (1 - (val + 1) / 2) * H;
+    if (x === 0) ctx.moveTo(0.5, y); else ctx.lineTo(x + 0.5, y);
+  }
+  ctx.stroke();
+}
+
+function renderSpectrogram(ctx, buf, W, H) {
+  const stft = computeSTFT(buf);
+  if (!stft) return;
+  const { magDB, numFrames, NUM_BINS, renderMin, renderMax, topBin } = stft;
+  const img = ctx.createImageData(W, H);
+  const px4 = img.data;
+  for (let y = 0; y < H; y++) {
+    const ki = Math.round((1 - (y + 0.5) / H) * topBin);
+    const k  = Math.min(NUM_BINS - 1, Math.max(0, ki));
+    for (let x = 0; x < W; x++) {
+      const fi = Math.min(numFrames - 1, Math.floor((x + 0.5) / W * numFrames));
+      const db = magDB[fi * NUM_BINS + k];
+      const t  = Math.max(0, Math.min(1, (db - renderMin) / (renderMax - renderMin)));
+      const [r, g, b] = spectrogramColor(t);
+      const i4 = (y * W + x) * 4;
+      px4[i4]=r; px4[i4+1]=g; px4[i4+2]=b; px4[i4+3]=255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  // Top-freq label
+  const dpr      = window.devicePixelRatio || 1;
+  const topFreq  = (topBin / NUM_BINS) * (sampleRate / 2);
+  const fStr     = topFreq >= 1000 ? (topFreq / 1000).toFixed(1) + 'k' : Math.round(topFreq) + '';
+  const fSize    = Math.max(7, Math.round(H / dpr * 0.13)) * dpr;
+  ctx.font       = `${fSize}px -apple-system, sans-serif`;
+  ctx.fillStyle  = 'rgba(255,255,255,0.7)';
+  ctx.textAlign  = 'left'; ctx.textBaseline = 'top';
+  ctx.fillText(fStr + ' Hz', 3, 2);
+}
+
+// ── STFT (cached by buffer reference) ────────────────────────────────────────
+function computeSTFT(samples) {
+  if (!samples) return null;
+  if (!computeSTFT._cache) computeSTFT._cache = new WeakMap();
+  const cached = computeSTFT._cache.get(samples);
+  if (cached) return cached;
+
+  const FFT_SIZE  = 1024;
+  const HOP       = FFT_SIZE >> 2;
+  const NUM_BINS  = FFT_SIZE >> 1;
+  const numFrames = Math.max(1, Math.floor((samples.length - FFT_SIZE) / HOP) + 1);
+
+  const win = new Float32Array(FFT_SIZE);
+  for (let i = 0; i < FFT_SIZE; i++) win[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (FFT_SIZE - 1));
+
+  const magDB = new Float32Array(numFrames * NUM_BINS);
+  const re = new Float64Array(FFT_SIZE), im = new Float64Array(FFT_SIZE);
+  let dBmax = -Infinity, dBmin = Infinity;
+
+  for (let f = 0; f < numFrames; f++) {
+    const off = f * HOP;
+    for (let i = 0; i < FFT_SIZE; i++) {
+      re[i] = (off + i < samples.length ? samples[off + i] : 0) * win[i]; im[i] = 0;
+    }
+    fftInPlace(re, im, FFT_SIZE);
+    for (let k = 0; k < NUM_BINS; k++) {
+      const db = 20 * Math.log10(Math.sqrt(re[k]*re[k] + im[k]*im[k]) / FFT_SIZE + 1e-10);
+      magDB[f * NUM_BINS + k] = db;
+      if (db > dBmax) dBmax = db;
+      if (db < dBmin) dBmin = db;
+    }
+  }
+
+  // Percentile normalization for contrast
+  const step = Math.max(1, Math.floor(magDB.length / 8000));
+  const samp = [];
+  for (let i = 0; i < magDB.length; i += step) samp.push(magDB[i]);
+  samp.sort((a, b) => a - b);
+  const renderMin = samp[Math.floor(samp.length * 0.02)];
+  const renderMax = samp[Math.floor(samp.length * 0.98)];
+
+  // Top significant frequency bin
+  const thr = dBmax - 55;
+  let topBin = 5;
+  for (let f = 0; f < numFrames; f++)
+    for (let k = NUM_BINS - 1; k > topBin; k--)
+      if (magDB[f * NUM_BINS + k] >= thr) { topBin = k; break; }
+  topBin = Math.min(topBin + 8, NUM_BINS - 1);
+
+  const result = { magDB, numFrames, NUM_BINS, dBmax, dBmin, renderMin, renderMax, topBin };
+  computeSTFT._cache.set(samples, result);
+  return result;
+}
+
+// ── Audio ─────────────────────────────────────────────────────────────────────
+function togglePlay(idx) {
+  if (activeIdx === idx) stopPlayback(); else startPlay(idx);
+}
+
+function startPlay(idx) {
+  stopPlayback();
+  const buf = wetBufs[idx];
+  if (!buf) return;
+  audioCtx  = new AudioContext({ sampleRate });
+  const gain = audioCtx.createGain(); gain.gain.value = 0.5;
+  gain.connect(audioCtx.destination);
+  const ab = audioCtx.createBuffer(1, buf.length, sampleRate);
+  ab.copyToChannel(buf, 0);
+  activeSrc = audioCtx.createBufferSource();
+  activeSrc.buffer = ab;
+  activeSrc.connect(gain);
+  activeSrc.start();
+  activeIdx  = idx;
+  arrowAlpha = ALPHA_LIST[idx];
+  panels[idx].btn.textContent = '■';
+  panels[idx].btn.classList.add('playing');
+  panels[idx].div.classList.add('active');
+  drawBg();
+}
+
+function stopPlayback() {
+  if (activeSrc) { try { activeSrc.stop(); } catch {} activeSrc = null; }
+  if (audioCtx)  { audioCtx.close(); audioCtx = null; }
+  if (activeIdx >= 0) {
+    panels[activeIdx].btn.textContent = '▶';
+    panels[activeIdx].btn.classList.remove('playing');
+    panels[activeIdx].div.classList.remove('active');
+  }
+  activeIdx  = -1;
+  arrowAlpha = -1;
+  drawBg();
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function setStatus(text, cls = '') {
+  statusEl.textContent = text;
+  statusEl.className   = cls;
+}
+
+// ── Event listeners ───────────────────────────────────────────────────────────
+waveSel.addEventListener('change', () => {
+  freqNum.disabled = waveSel.value === 'sweep';
+  stopPlayback(); startPrecompute();
+});
+freqNum.addEventListener('change', () => { stopPlayback(); startPrecompute(); });
+freqNum.addEventListener('input',  () => {
+  clearTimeout(freqNum._t);
+  freqNum._t = setTimeout(() => { stopPlayback(); startPrecompute(); }, 500);
+});
+dispSel.addEventListener('change', () => {
+  panels.forEach((_, i) => renderPanel(i));
+});
+infoBtn.addEventListener('click', () => {
+  window.open('https://behzadhaki.com/works/frft-in-the-browser/#frft-rotation-diagram', '_blank');
+});
+
+// ── FFT ───────────────────────────────────────────────────────────────────────
+function fftInPlace(re, im, N) {
+  let j = 0;
+  for (let i = 1; i < N; i++) {
+    let bit = N >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) {
+      let t = re[i]; re[i]=re[j]; re[j]=t;
+          t = im[i]; im[i]=im[j]; im[j]=t;
+    }
+  }
+  for (let len = 2; len <= N; len <<= 1) {
+    const half = len >> 1;
+    const ang  = -2 * Math.PI / len;
+    const wcos = Math.cos(ang), wsin = Math.sin(ang);
+    for (let i = 0; i < N; i += len) {
+      let wr = 1, wi = 0;
+      for (let k = 0; k < half; k++) {
+        const tr = wr*re[i+k+half] - wi*im[i+k+half];
+        const ti = wr*im[i+k+half] + wi*re[i+k+half];
+        re[i+k+half] = re[i+k]-tr; im[i+k+half] = im[i+k]-ti;
+        re[i+k] += tr;             im[i+k] += ti;
+        const nwr = wr*wcos - wi*wsin;
+        wi = wr*wsin + wi*wcos; wr = nwr;
+      }
+    }
+  }
+}
+
+// ── Colormap ──────────────────────────────────────────────────────────────────
+const CMAP = [[5,5,25],[100,0,150],[200,50,100],[255,140,20],[255,255,100]];
+function spectrogramColor(t) {
+  const s  = t * (CMAP.length - 1);
+  const lo = Math.floor(s);
+  const hi = Math.min(lo + 1, CMAP.length - 1);
+  const f  = s - lo;
+  return [
+    Math.round(CMAP[lo][0] + f*(CMAP[hi][0]-CMAP[lo][0])),
+    Math.round(CMAP[lo][1] + f*(CMAP[hi][1]-CMAP[lo][1])),
+    Math.round(CMAP[lo][2] + f*(CMAP[hi][2]-CMAP[lo][2])),
+  ];
+}
+
+// ── Worker ────────────────────────────────────────────────────────────────────
+function initWorker() {
+  const cb       = window._wasmCacheBust;
+  const jsUrl    = new URL('../wasm/dist/frft.js',    location.href).href + '?v=' + cb;
+  const wasmBase = new URL('../wasm/dist/',           location.href).href;
+  frftWorker = new Worker(new URL('../audio/frft-worker.js', location.href).href + '?v=' + cb);
+  frftWorker.onmessage = e => {
+    const { type } = e.data;
+    if      (type === 'ready')  { workerReady = true; startPrecompute(); }
+    else if (type === 'result') { handleResult(e.data.jobId, e.data.output); }
+    else if (type === 'error')  { setStatus(e.data.message || 'Worker error', 'err'); }
+  };
+  frftWorker.onerror = () => setStatus('Worker error', 'err');
+  frftWorker.postMessage({ type: 'init', jsUrl, wasmBaseUrl: wasmBase, cacheBust: cb });
+}
+initWorker();
+</script>
+</body>
+</html>

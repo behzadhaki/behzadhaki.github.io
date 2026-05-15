@@ -175,6 +175,44 @@ html[data-theme='light'] .fe-hosting-bar button:hover:not(:disabled) { backgroun
 
 Adjust the parameters for each widget below, then click **Apply** to update the live preview and generate a ready-to-paste `<iframe>` embed snippet with those values baked in as defaults.
 
+## FRFT Rotation Diagram
+
+Shows the FRFT output at 16 fractional orders simultaneously — four large panels at the cardinal positions (time, frequency, reversed-time, inverse-FT) and twelve small panels at intermediate α values arranged around a circle. Click any play button to hear the output at that order; an arrow in the centre tracks the active position.
+
+<div class="frft-embeds">
+<div class="fe-controls">
+  <label>Width</label>
+  <input type="number" id="fe5-w" value="600" min="200" step="10">
+  <label>Height</label>
+  <input type="number" id="fe5-h" value="620" min="200" step="10">
+  <label>Waveform</label>
+  <select id="fe5-wave">
+    <option value="sine" selected>Sine</option>
+    <option value="triangle">Triangle</option>
+    <option value="sawtooth">Sawtooth</option>
+    <option value="square">Square</option>
+    <option value="sweep">Freq sweep</option>
+  </select>
+  <label id="fe5-freq-lbl">Freq (Hz)</label>
+  <input type="number" id="fe5-freq" value="440" min="20" max="20000">
+  <label>View</label>
+  <select id="fe5-disp">
+    <option value="wave" selected>Waveform</option>
+    <option value="scope">Spectrogram</option>
+  </select>
+  <button onclick="feApply5()">Apply</button>
+</div>
+<div class="fe-bottom-row">
+<div class="fe-frame-wrap">
+  <iframe id="fe5-frame" class="reframe-off" width="600" height="620"></iframe>
+</div>
+<div class="fe-code-wrap">
+  <pre id="fe5-code"></pre>
+  <button class="fe-copy-btn" onclick="feCopy('fe5-code',this)">⧉</button>
+</div>
+</div>
+</div>
+
 ## Interactive FRFT
 
 Full controls — let visitors change signal type, α order, block size and overlap directly in the widget.
@@ -429,6 +467,24 @@ Shows how block-processing artefacts change with different block sizes and overl
     });
   };
 
+  /* ── 5. Rotation diagram ────────────────────────────────── */
+  window.feApply5 = function () {
+    const w = Math.max(200, parseInt(g('fe5-w').value) || 600);
+    const h = Math.max(200, parseInt(g('fe5-h').value) || 620);
+    g('fe5-w').value = w; g('fe5-h').value = h;
+    const wave = g('fe5-wave').value;
+    const hasFreq = wave !== 'sweep';
+    g('fe5-freq').disabled = !hasFreq;
+    g('fe5-freq-lbl').style.opacity = hasFreq ? '1' : '0.4';
+    const p = new URLSearchParams({ w, h, wave, disp: g('fe5-disp').value });
+    if (hasFreq) p.set('freq', g('fe5-freq').value);
+    g('fe5-code').textContent = buildCode('embed_frft_rotation.html', p.toString(), w, h);
+    loadFrame('fe5-frame', 'embed_frft_rotation.html', p.toString(), w, h);
+  };
+  g('fe5-wave').addEventListener('change', feApply5);
+  g('fe5-disp').addEventListener('change', feApply5);
+  feApply5();
+
   /* ── 1. Interactive ──────────────────────────────────────── */
   window.feApply1 = function () {
     const w = Math.max(200, parseInt(g('fe1-w').value) || 600);
@@ -529,12 +585,13 @@ Shows how block-processing artefacts change with different block sizes and overl
   }
   feHostMode.addEventListener('change', function () {
     syncHostUI();
-    feApply1(); feApply2(); feApply3(); feApply4();
+    feApply5(); feApply1(); feApply2(); feApply3(); feApply4();
   });
   syncHostUI();
 
   /* ── ZIP download ────────────────────────────────────────────────────── */
   const ZIP_FILES = [
+    { src:'/assets/web/frft/demos/embed_frft_rotation.html',         dst:'web/frft/demos/embed_frft_rotation.html' },
     { src:'/assets/web/frft/demos/embed_interactive_frft.html',     dst:'web/frft/demos/embed_interactive_frft.html' },
     { src:'/assets/web/frft/demos/embed_non_interactive_frft.html', dst:'web/frft/demos/embed_non_interactive_frft.html' },
     { src:'/assets/web/frft/demos/embed_alpha_sweep_frft.html',     dst:'web/frft/demos/embed_alpha_sweep_frft.html' },
