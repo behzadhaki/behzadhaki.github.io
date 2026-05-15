@@ -195,7 +195,7 @@
     padding: 20px 0 20px 52px;
     border-radius: 4px;
     color: $white;
-    background: $blue-dark;
+    background: #3c3c3c;
 
     &::after {
       content: "💡";
@@ -206,35 +206,12 @@
     }
   }
 
-  .note {
-    border-left: 3px solid $callout-note;
-    background: rgba($callout-note, .1);
-  }
 
-  .tip {
-    border-left: 3px solid $callout-tip;
-    background: rgba($callout-tip, .1);
-  }
-
-  .important {
-    border-left: 3px solid $callout-important;
-    background: rgba($callout-important, .1);
-  }
-
-  .warning {
-    border-left: 3px solid $callout-warning;
-    background: rgba($callout-warning, .1);
-  }
-
-  .caution {
-    border-left: 3px solid $callout-caution;
-    background: rgba($callout-caution, .1);
+  .note, .tip, .important, .warning, .caution, .hint {
+    border-left: 3px solid rgba($light-gray, 0.35);
   }
 
   .hint {
-    border-left: 3px solid rgba($gray, 0.6);
-    background: rgba($gray, .08);
-    color: $gray;
     &::after { content: "ℹ️"; }
   }
 }
@@ -826,7 +803,7 @@
       &:first-child { margin-top: 0.4rem; }
     }
     h5, h6 {
-      font-size: 11px; font-weight: 500; font-style: italic;
+      font-size: 9px; font-weight: 500; font-style: italic;
       color: rgba($light-gray, 0.45);
       margin-top: 1rem;
       &:first-child { margin-top: 0.4rem; }
@@ -916,7 +893,7 @@
         background: #2a2a2a;
         border: 1px solid rgba($light-gray, 0.07);
         border-radius: 3px;
-        font-size: 11px; font-weight: 500; font-style: italic;
+        font-size: 9px; font-weight: 500; font-style: italic;
         color: #888888;
         line-height: 1.3;
         white-space: nowrap;
@@ -934,7 +911,7 @@
     }
 
     code {
-      font-size: 0.8rem;
+      font-size: 9px;
       background: rgba(255,255,255,0.07);
       padding: 0.1em 0.35em;
       border-radius: 4px;
@@ -943,7 +920,7 @@
     pre code {
       background: none;
       padding: 0;
-      font-size: 0.78rem;
+      font-size: 9px;
     }
 
     table {
@@ -1234,7 +1211,7 @@ hr {
   }
 
   pre, code {
-    font-size: 0.75rem;
+    font-size: 9px;
     background: transparent;
   }
 }
