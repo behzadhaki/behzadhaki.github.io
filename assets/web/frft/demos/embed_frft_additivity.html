@@ -383,13 +383,13 @@ function getNodeRects(mW, mH) {
   const PW    = Math.round(mW / 6);
   const GAPX  = Math.round(mW / 6);   // interior gaps, wide enough for label text
   const SMALL = Math.round(mW / 12);  // edge margins
-  const TOPM  = Math.round(mH * 0.04);
   const GAPY  = Math.round(mH * 0.07);
   const PH_r  = Math.round(mH * 0.24);
   const PH_e  = PH_r;                 // Error panel same height as output panels
-  const y0    = TOPM;
-  const y1    = y0 + PH_r + GAPY;    // Error top
-  const y2    = y1 + PH_e + GAPY;    // Direct top
+  // y1: Input/Error top positioned so Input center = mH/2
+  const y1    = Math.round(mH / 2 - PH_r / 2);
+  const y0    = y1 - GAPY - PH_r;    // top row top (After FRFT / Sequential)
+  const y2    = y1 + PH_r + GAPY;    // Direct top
   const x0    = SMALL;
   const x1    = x0 + PW + GAPX;
   const x2    = x1 + PW + GAPX;
@@ -574,7 +574,7 @@ function drawBg() {
     ctx.lineTo(ex, ey);
     ctx.stroke();
     arrowTip(ex, ey);
-    connLabel((r[1].left + r[1].width + r[2].left) / 2, ey, 'FRFT(α₁+α₂=' + fmtAlpha(a1 + a2) + ')');
+    connLabel((xElbow + r[3].left) / 2, ey, 'FRFT(α₁+α₂=' + fmtAlpha(a1 + a2) + ')');
   }
 
   // ── Error connections: dashed verticals from Sequential & Direct into Error ──

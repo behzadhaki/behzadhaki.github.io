@@ -236,9 +236,9 @@ Demonstrates that FRFT(α₂) ∘ FRFT(α₁) = FRFT(α₁+α₂). The widget sh
 <div class="frft-embeds">
 <div class="fe-controls">
   <label>Width</label>
-  <input type="number" id="fe6-w" value="680" min="200" step="10">
+  <input type="number" id="fe6-w" value="750" min="200" step="10">
   <label>Height</label>
-  <input type="number" id="fe6-h" value="650" min="300" step="10">
+  <input type="number" id="fe6-h" value="400" min="200" step="10">
   <label>Waveform</label>
   <select id="fe6-wave">
     <option value="sine" selected>Sine</option>
@@ -272,7 +272,7 @@ Demonstrates that FRFT(α₂) ∘ FRFT(α₁) = FRFT(α₁+α₂). The widget sh
 </div>
 <div class="fe-bottom-row">
 <div class="fe-frame-wrap">
-  <iframe id="fe6-frame" class="reframe-off" width="680" height="650"></iframe>
+  <iframe id="fe6-frame" class="reframe-off" width="750" height="400"></iframe>
 </div>
 <div class="fe-code-wrap">
   <pre id="fe6-code"></pre>
@@ -567,8 +567,8 @@ Shows how block-processing artefacts change with different block sizes and overl
 
   /* ── 6. Index Additivity ─────────────────────────────────── */
   window.feApply6 = function () {
-    const w = Math.max(200, parseInt(g('fe6-w').value) || 680);
-    const h = Math.max(300, parseInt(g('fe6-h').value) || 650);
+    const w = Math.max(200, parseInt(g('fe6-w').value) || 750);
+    const h = Math.max(200, parseInt(g('fe6-h').value) || 400);
     g('fe6-w').value = w;
     g('fe6-h').value = h;
     const interactive = g('fe6-interactive').value;
