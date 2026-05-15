@@ -9,7 +9,7 @@
 
 ## PCB
 
-### `Production Resources`
+### Production Resources
 
 <div class="proj-btn-row">
 <a class="proj-btn proj-btn--download" href="/assets/works/GrooveTransformerEurorack/Schematic_FrontPCB.pdf" target="_blank" rel="noopener"><span class="proj-btn__badge"><i class="fa-solid fa-download"></i></span> Front PCB Schematic (.pdf)</a>
@@ -18,7 +18,7 @@
 <a class="proj-btn proj-btn--download" href="https://groovetransformer.github.io/assets/zip/JLCPCB_Production_Files.zip" target="_blank" rel="noopener"><span class="proj-btn__badge"><i class="fa-solid fa-download"></i></span> JLCPCB Production Files (.zip)</a>
 </div>
 
-### `Images`
+### Images
 
 <img src="/assets/works/GrooveTransformerEurorack/pcb/BackPCB.png" alt="BackPCP 1" style="width: 25%;">
 <img src="/assets/works/GrooveTransformerEurorack/pcb/BackPCB2.png" alt="BackPCP 2" style="width: 25%;">
@@ -28,11 +28,11 @@
 
 ## Faceplate
 
-### `Design`
+### Design
 
 <img src="/assets/works/GrooveTransformerEurorack/pcb/Panel Design.jpg" alt="Panel Design" style="width: 25%;">
 
-### `Different Finishes`
+### Different Finishes
 
 `No Faceplate:`
 
