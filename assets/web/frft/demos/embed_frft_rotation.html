@@ -137,6 +137,11 @@ button:active:not(:disabled) { filter: brightness(0.85); }
   <label>Freq</label>
   <input id="freqNum" type="number" value="440" min="20" max="20000" step="10">
   <label>Hz</label>
+  <label style="margin-left:0.4em">Win</label>
+  <select id="winSel">
+    <option value="hann" selected>Hann</option>
+    <option value="rect">Rectangular</option>
+  </select>
   <div class="tab-group" style="margin-left:0.4em">
     <button class="tab active" id="tabWave">Waveform</button>
     <button class="tab" id="tabSpec">Spectrogram</button>
@@ -191,6 +196,7 @@ const mainEl      = document.getElementById('main');
 const bgCanvas    = document.getElementById('bgCanvas');
 const waveSel     = document.getElementById('waveSel');
 const freqNum     = document.getElementById('freqNum');
+const winSel      = document.getElementById('winSel');
 const tabWave     = document.getElementById('tabWave');
 const tabSpec     = document.getElementById('tabSpec');
 const statusEl    = document.getElementById('status');
@@ -388,7 +394,7 @@ function sendNextJob() {
   if (queuePos >= NUM_ALPHA) return;
   frftWorker.postMessage({
     type: 'process', samples: dryBuf, alpha: ALPHA_LIST[queuePos],
-    bufSize: N_SAMPLES, overlapFactor: 1, noWindow: false, halfSpectrum: false,
+    bufSize: N_SAMPLES, overlapFactor: 1, noWindow: winSel.value === 'rect', halfSpectrum: false,
     jobId: queuePid * 100 + queuePos,
   });
   queuePos++;
@@ -421,7 +427,7 @@ function renderPanel(idx) {
   ctx.fillRect(0, 0, W, H);
   const buf = wetBufs[idx];
   if (!buf) return;
-  if (activeView === 'scope') renderSpectrogram(ctx, buf, W, H);
+  if (activeView === 'scope') renderSpectrogram(ctx, buf, W, H, panels[idx].isCard);
   else                        renderWaveform(ctx, buf, W, H);
   // Playhead
   if (idx === activeIdx && audioCtx) {
@@ -454,14 +460,15 @@ function renderWaveform(ctx, buf, W, H) {
   ctx.stroke();
 }
 
-function renderSpectrogram(ctx, buf, W, H) {
+function renderSpectrogram(ctx, buf, W, H, dynamic = false) {
   const stft = computeSTFT(buf);
   if (!stft) return;
-  const { magDB, numFrames, NUM_BINS, renderMin, renderMax } = stft;
+  const { magDB, numFrames, NUM_BINS, renderMin, renderMax, topBin } = stft;
+  const maxBin = dynamic ? topBin : NUM_BINS - 1;
   const img = ctx.createImageData(W, H);
   const px4 = img.data;
   for (let y = 0; y < H; y++) {
-    const kf = (1 - (y + 0.5) / H) * (NUM_BINS - 1);
+    const kf = (1 - (y + 0.5) / H) * maxBin;
     const k0 = Math.max(0, Math.floor(kf));
     const k1 = Math.min(NUM_BINS - 1, k0 + 1);
     const ky = kf - k0;
@@ -470,7 +477,6 @@ function renderSpectrogram(ctx, buf, W, H) {
       const f0 = Math.max(0, Math.floor(ff));
       const f1 = Math.min(numFrames - 1, f0 + 1);
       const fx = ff - f0;
-      // bilinear interpolation in dB
       const db = (magDB[f0 * NUM_BINS + k0] * (1-fx) + magDB[f1 * NUM_BINS + k0] * fx) * (1-ky)
                + (magDB[f0 * NUM_BINS + k1] * (1-fx) + magDB[f1 * NUM_BINS + k1] * fx) * ky;
       const t  = Math.max(0, Math.min(1, (db - renderMin) / (renderMax - renderMin)));
@@ -480,6 +486,20 @@ function renderSpectrogram(ctx, buf, W, H) {
     }
   }
   ctx.putImageData(img, 0, 0);
+
+  if (dynamic && maxBin > 0) {
+    const freqHz = maxBin / NUM_BINS * (sampleRate / 2);
+    const label  = freqHz >= 1000
+      ? (freqHz / 1000).toFixed(freqHz >= 10000 ? 0 : 1) + ' kHz'
+      : Math.round(freqHz) + ' Hz';
+    ctx.font      = `${Math.max(9, Math.round(W * 0.09))}px sans-serif`;
+    ctx.textAlign = 'right';
+    const tw = ctx.measureText(label).width;
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(W - tw - 7, 2, tw + 6, parseInt(ctx.font) + 4);
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    ctx.fillText(label, W - 4, parseInt(ctx.font) + 2);
+  }
 }
 
 // ── STFT (cached by buffer reference) ────────────────────────────────────────
@@ -494,6 +514,7 @@ function computeSTFT(samples) {
   const NUM_BINS  = FFT_SIZE >> 1;
   const numFrames = Math.max(1, Math.floor((samples.length - FFT_SIZE) / HOP) + 1);
 
+  // Spectrogram always uses Hann window for analysis
   const win = new Float32Array(FFT_SIZE);
   for (let i = 0; i < FFT_SIZE; i++) win[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (FFT_SIZE - 1));
 
@@ -514,9 +535,11 @@ function computeSTFT(samples) {
     }
   }
 
-  // Fixed-range normalization: peak down 60 dB
-  const renderMax = dBmax;
-  const renderMin = dBmax - 60;
+  // Fixed-range normalization: peak down 60 dB.
+  // Floor renderMax so noise-only signals (e.g. discarded imaginary FT)
+  // render as black rather than solid yellow.
+  const renderMax = Math.max(dBmax, -20);
+  const renderMin = renderMax - 60;
 
   // Top significant frequency bin
   const thr = dBmax - 55;
@@ -600,6 +623,7 @@ freqNum.addEventListener('input',  () => {
 });
 tabWave.addEventListener('click', () => setView('wave'));
 tabSpec.addEventListener('click', () => setView('scope'));
+winSel.addEventListener('change', () => { stopPlayback(); startPrecompute(); });
 infoBtn.addEventListener('click', () => {
   window.open('https://behzadhaki.com/works/frft-in-the-browser/#frft-rotation-diagram', '_blank');
 });
