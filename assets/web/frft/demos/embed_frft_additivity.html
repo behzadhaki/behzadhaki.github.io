@@ -22,9 +22,9 @@
     const win = sp.get('win');
     if (win === 'hann' || win === 'rect') window._initWin = win;
     const a1 = parseFloat(sp.get('alpha1'));
-    if (!isNaN(a1) && a1 >= 0) window._initAlpha1 = a1;
+    if (!isNaN(a1) && a1 >= -4 && a1 <= 4) window._initAlpha1 = a1;
     const a2 = parseFloat(sp.get('alpha2'));
-    if (!isNaN(a2) && a2 >= 0) window._initAlpha2 = a2;
+    if (!isNaN(a2) && a2 >= -4 && a2 <= 4) window._initAlpha2 = a2;
   })();
 </script>
 <style>
@@ -100,7 +100,7 @@ html, body {
 #infoBtn:hover { color: var(--text); }
 
 #main { flex: 1; position: relative; overflow: hidden; background: var(--bg); }
-#bgCanvas { position: absolute; inset: 0; pointer-events: none; }
+#bgCanvas { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
 
 .panel {
   position: absolute;
@@ -112,6 +112,7 @@ html, body {
   box-shadow: 0 1px 4px rgba(0,0,0,0.5);
   cursor: pointer;
   transition: border-color 0.1s;
+  z-index: 1;
 }
 .panel:hover   { border-color: rgba(200,144,42,0.55); }
 .panel.active  { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-lo), 0 1px 5px rgba(0,0,0,0.5); }
@@ -119,10 +120,7 @@ html, body {
 .pcv { flex: 1; width: 100%; min-height: 0; display: block; image-rendering: auto; }
 
 .panel-label {
-  position: absolute; pointer-events: none;
-  font-size: 0.70em; font-weight: 500; white-space: nowrap;
-  color: rgba(200,200,200,0.70);
-  transform: translateX(-50%);
+  display: none;
 }
 
 .tab-group { display: flex; flex-shrink: 0; height: 1.8em; }
@@ -145,10 +143,10 @@ html, body {
   padding: 0.22em 0.8em;
   background: var(--surface);
   border-top: 1px solid var(--border);
-  font-size: 0.74em;
+  font-size: 0.92em;
   white-space: nowrap;
   overflow: hidden;
-  min-height: 1.9em;
+  min-height: 2.1em;
 }
 .pipe-path {
   color: var(--muted);
@@ -190,18 +188,18 @@ html, body {
     <option value="square">Square</option>
     <option value="sweep">Freq sweep</option>
   </select>
-  <label>Freq</label>
+  <label id="freqLbl">Freq</label>
   <input id="freqNum" type="number" value="440" min="20" max="20000" step="10">
-  <label>Hz</label>
+  <label id="freqHzLbl">Hz</label>
   <label style="margin-left:0.4em">Win</label>
   <select id="winSel">
     <option value="hann" selected>Hann</option>
     <option value="rect">Rectangular</option>
   </select>
   <label style="margin-left:0.5em">&alpha;&#x2081;</label>
-  <input id="alpha1Num" class="alpha-num" type="number" value="0.5" min="0" step="0.05">
+  <input id="alpha1Num" class="alpha-num" type="number" value="0.5" min="-4" max="4" step="0.05">
   <label>&alpha;&#x2082;</label>
-  <input id="alpha2Num" class="alpha-num" type="number" value="0.75" min="0" step="0.05">
+  <input id="alpha2Num" class="alpha-num" type="number" value="0.75" min="-4" max="4" step="0.05">
   <span id="alphaSumLbl">&alpha;&#x2081;+&alpha;&#x2082; = 1.25</span>
   </span>
   <div class="tab-group" style="margin-left:0.4em">
@@ -228,8 +226,8 @@ const N_SAMPLES = 88200; // 2 s at 44100 Hz
 // ── State ─────────────────────────────────────────────────────────────────────
 let sampleRate       = 44100;
 let dryBuf           = null;
-let nodeBufs         = [null, null, null, null];
-let nodeImagBufs     = [null, null, null, null]; // imag part needed for sequential step
+let nodeBufs         = [null, null, null, null, null];
+let nodeImagBufs     = [null, null, null, null, null];
 let computeDone      = false;
 let playStartCtxTime = 0;
 let playDuration     = 0;
@@ -247,6 +245,13 @@ const mainEl      = document.getElementById('main');
 const bgCanvas    = document.getElementById('bgCanvas');
 const waveSel     = document.getElementById('waveSel');
 const freqNum     = document.getElementById('freqNum');
+const freqLbl     = document.getElementById('freqLbl');
+const freqHzLbl   = document.getElementById('freqHzLbl');
+function syncFreqDisabled() {
+  const sweep = waveSel.value === 'sweep';
+  freqNum.disabled = sweep;
+  [freqLbl, freqNum, freqHzLbl].forEach(el => el.style.opacity = sweep ? '0.35' : '');
+}
 const winSel      = document.getElementById('winSel');
 const alpha1Num   = document.getElementById('alpha1Num');
 const alpha2Num   = document.getElementById('alpha2Num');
@@ -271,10 +276,10 @@ if (window._initDisp)            activeView       = window._initDisp;
 if (window._initWin)             winSel.value     = window._initWin;
 if (window._initAlpha1 != null)  alpha1Num.value  = String(window._initAlpha1);
 if (window._initAlpha2 != null)  alpha2Num.value  = String(window._initAlpha2);
-freqNum.disabled = waveSel.value === 'sweep';
+syncFreqDisabled();
 
-function getAlpha1() { return Math.max(0, parseFloat(alpha1Num.value) || 0); }
-function getAlpha2() { return Math.max(0, parseFloat(alpha2Num.value) || 0); }
+function getAlpha1() { return Math.max(-4, Math.min(4, parseFloat(alpha1Num.value) || 0)); }
+function getAlpha2() { return Math.max(-4, Math.min(4, parseFloat(alpha2Num.value) || 0)); }
 function fmtAlpha(v) { return String(parseFloat(v.toFixed(4))); }
 
 function updateSumLabel() {
@@ -330,22 +335,30 @@ const NODE_LABELS = [
   'After FRFT(α₁)',
   'Sequential',
   'Direct',
+  'Error  |  Seq − Dir',
 ];
 
 const panels = NODE_LABELS.map((label, idx) => {
   const div = document.createElement('div');
   div.className = 'panel' + (idx > 0 ? ' computing' : '');
-  div.addEventListener('click', () => togglePlay(idx));
+  if (idx < 4) {
+    div.addEventListener('click', () => togglePlay(idx));
+  } else {
+    div.style.cursor = 'default';
+  }
 
   const cv = document.createElement('canvas');
   cv.className = 'pcv';
   div.append(cv);
   mainEl.appendChild(div);
 
-  const labelEl = document.createElement('span');
-  labelEl.className = 'panel-label';
-  labelEl.textContent = label;
-  mainEl.appendChild(labelEl);
+  let labelEl = null;
+  if (idx < 4) {
+    labelEl = document.createElement('span');
+    labelEl.className = 'panel-label';
+    labelEl.textContent = label;
+    mainEl.appendChild(labelEl);
+  }
 
   return { div, cv, labelEl };
 });
@@ -358,21 +371,35 @@ tabSpec.classList.toggle('active', activeView === 'scope');
 // Node 1: left col, row 2
 // Node 2: left col, row 3
 // Node 3: right col, row 3  (same y as Node 2 → horizontal equality line)
+// Layout: left-to-right
+//   Top row  (y0):  After FRFT(α₁) [col1]  Sequential [col2]
+//   Mid row  (y1):                          Error       [col2]
+//   Bot row  (y2):                          Direct      [col2]
+//   Input [col0] is vertically centered on the Error panel.
+//   TOPM (top margin) gives space for arrow labels above the top row panels.
 function getNodeRects(mW, mH) {
-  const PW   = Math.round(mW * 0.41);
-  const PH   = Math.round(mH * 0.24);
-  const GAPX = Math.round(mW * 0.04);
-  const GAPY = Math.round(mH * 0.07);
-  const xL   = GAPX;
-  const xR   = mW - GAPX - PW;
-  const y0   = Math.round(mH * 0.03);
-  const y1   = y0 + PH + GAPY;
-  const y2   = y1 + PH + GAPY;
+  // PW = panel width = GAPX = interior gap = mW/6
+  // Edge margins (x0, trailing) = mW/12 — half a gap, so total = mW/12+PW+mW/6+PW+mW/6+PW+mW/12 = mW ✓
+  const PW    = Math.round(mW / 6);
+  const GAPX  = Math.round(mW / 6);   // interior gaps, wide enough for label text
+  const SMALL = Math.round(mW / 12);  // edge margins
+  const TOPM  = Math.round(mH * 0.04);
+  const GAPY  = Math.round(mH * 0.07);
+  const PH_r  = Math.round(mH * 0.24);
+  const PH_e  = PH_r;                 // Error panel same height as output panels
+  const y0    = TOPM;
+  const y1    = y0 + PH_r + GAPY;    // Error top
+  const y2    = y1 + PH_e + GAPY;    // Direct top
+  const x0    = SMALL;
+  const x1    = x0 + PW + GAPX;
+  const x2    = x1 + PW + GAPX;
+  const yInp  = y1;                  // Input top = Error top (same height panels)
   return [
-    { left: Math.round((mW - PW) / 2), top: y0, width: PW, height: PH },
-    { left: xL, top: y1, width: PW, height: PH },
-    { left: xL, top: y2, width: PW, height: PH },
-    { left: xR, top: y2, width: PW, height: PH },
+    { left: x0, top: yInp, width: PW, height: PH_r },  // 0: Input
+    { left: x1, top: y0,   width: PW, height: PH_r },  // 1: After FRFT(α₁)
+    { left: x2, top: y0,   width: PW, height: PH_r },  // 2: Sequential
+    { left: x2, top: y2,   width: PW, height: PH_r },  // 3: Direct
+    { left: x2, top: y1,   width: PW, height: PH_e },  // 4: Error
   ];
 }
 
@@ -397,9 +424,11 @@ function layoutAll() {
     cv.height = Math.round(r.height * dpr);
     renderPanel(idx);
 
-    labelEl.style.left      = (r.left + r.width / 2) + 'px';
-    labelEl.style.top       = (r.top + r.height + 5) + 'px';
-    labelEl.style.transform = 'translateX(-50%)';
+    if (labelEl) {
+      labelEl.style.left      = (r.left + r.width / 2) + 'px';
+      labelEl.style.top       = (r.top + r.height + 5) + 'px';
+      labelEl.style.transform = 'translateX(-50%)';
+    }
   });
 
   drawBg();
@@ -446,10 +475,10 @@ function drawArrow(ctx, x1, y1, x2, y2, label, color, dashed) {
   if (label) {
     const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
     const len = Math.hypot(x2 - x1, y2 - y1) || 1;
-    // perpendicular offset so label doesn't sit on the line
-    const px = -(y2 - y1) / len * 14;
-    const py =  (x2 - x1) / len * 14;
-    ctx.font         = 'bold 10px -apple-system, sans-serif';
+    // perpendicular offset — labels appear above horizontal arrows
+    const px =  (y2 - y1) / len * 16;
+    const py = -(x2 - x1) / len * 16;
+    ctx.font         = 'bold 13px -apple-system, sans-serif';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
     const tw = ctx.measureText(label).width;
@@ -470,42 +499,110 @@ function drawBg() {
   ctx.save();
   ctx.scale(dpr, dpr);
 
-  const rects = getNodeRects(mW, mH);
+  const r  = getNodeRects(mW, mH);
   const a1 = getAlpha1(), a2 = getAlpha2();
   const ARROW = 'rgba(200,160,80,0.85)';
   const EQUAL = 'rgba(80,185,80,0.90)';
+  const CR = Math.max(6, Math.round(Math.min(mW, mH) * 0.018)); // rounded corner radius
 
-  // 0 → 1: α₁ path (input to intermediate)
+  // ── helpers ──────────────────────────────────────────────────────────────
+  const arrowTip = (x, y) => {              // arrowhead pointing right at (x,y)
+    const hl = 8;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x - hl, y - hl * 0.45);
+    ctx.lineTo(x - hl, y + hl * 0.45);
+    ctx.closePath();
+    ctx.fill();
+  };
+  const connLabel = (x, yRef, text) => {   // label with its bottom edge at yRef-4
+    ctx.font = 'bold 13px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    const tw = ctx.measureText(text).width;
+    ctx.fillStyle = 'rgba(16,16,16,0.86)';
+    ctx.fillRect(x - tw / 2 - 4, yRef - 20, tw + 8, 17);
+    ctx.fillStyle = ARROW;
+    ctx.fillText(text, x, yRef - 3);
+  };
+
+  ctx.lineWidth = 1.6;
+
+  // xElbow: midpoint of gap between Input right edge and col1 left edge
+  const xElbow = r[0].left + r[0].width + Math.round((r[1].left - r[0].left - r[0].width) / 2);
+
+  // ── 0 → 1: Input → After FRFT(α₁)  [Z-shape: right → elbow → UP → right] ──
   {
-    const c1 = rectCtr(rects[1]);
-    const s  = rectEdge(rects[0], c1.x, c1.y);
-    const e  = rectEdge(rects[1], rectCtr(rects[0]).x, rectCtr(rects[0]).y);
-    drawArrow(ctx, s.x, s.y, e.x, e.y, 'α₁ = ' + fmtAlpha(a1), ARROW, false);
+    const sx = r[0].left + r[0].width, sy = r[0].top + r[0].height / 2;
+    const ex = r[1].left,              ey = r[1].top  + r[1].height / 2;
+    ctx.strokeStyle = ARROW; ctx.fillStyle = ARROW;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(xElbow - CR, sy);
+    ctx.quadraticCurveTo(xElbow, sy, xElbow, sy - CR);  // right→up
+    ctx.lineTo(xElbow, ey + CR);
+    ctx.quadraticCurveTo(xElbow, ey, xElbow + CR, ey);  // up→right
+    ctx.lineTo(ex, ey);
+    ctx.stroke();
+    arrowTip(ex, ey);
+    connLabel(xElbow, ey, 'FRFT(α₁=' + fmtAlpha(a1) + ')');
   }
-  // 1 → 2: α₂ path (intermediate to sequential)
+
+  // ── 1 → 2: After FRFT(α₁) → Sequential  [straight horizontal] ──
   {
-    const c0 = rectCtr(rects[1]), c2 = rectCtr(rects[2]);
-    const s  = rectEdge(rects[1], c2.x, c2.y);
-    const e  = rectEdge(rects[2], c0.x, c0.y);
-    drawArrow(ctx, s.x, s.y, e.x, e.y, 'α₂ = ' + fmtAlpha(a2), ARROW, false);
+    const sx = r[1].left + r[1].width, sy = r[1].top + r[1].height / 2;
+    const ex = r[2].left,              ey = sy;
+    ctx.strokeStyle = ARROW; ctx.fillStyle = ARROW;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy); ctx.lineTo(ex, ey);
+    ctx.stroke();
+    arrowTip(ex, ey);
+    connLabel((sx + ex) / 2, ey, 'FRFT(α₂=' + fmtAlpha(a2) + ')');
   }
-  // 0 → 3: α₁+α₂ direct path
+
+  // ── 0 → 3: Input → Direct  [Z-shape: right → elbow → DOWN → right] ──
   {
-    const c3 = rectCtr(rects[3]);
-    const s  = rectEdge(rects[0], c3.x, c3.y);
-    const e  = rectEdge(rects[3], rectCtr(rects[0]).x, rectCtr(rects[0]).y);
-    drawArrow(ctx, s.x, s.y, e.x, e.y,
-      'α₁+α₂ = ' + fmtAlpha(a1 + a2), ARROW, false);
+    const sx = r[0].left + r[0].width, sy = r[0].top + r[0].height / 2;
+    const ex = r[3].left,              ey = r[3].top  + r[3].height / 2;
+    ctx.strokeStyle = ARROW; ctx.fillStyle = ARROW;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(xElbow - CR, sy);
+    ctx.quadraticCurveTo(xElbow, sy, xElbow, sy + CR);  // right→down
+    ctx.lineTo(xElbow, ey - CR);
+    ctx.quadraticCurveTo(xElbow, ey, xElbow + CR, ey);  // down→right
+    ctx.lineTo(ex, ey);
+    ctx.stroke();
+    arrowTip(ex, ey);
+    connLabel((r[1].left + r[1].width + r[2].left) / 2, ey, 'FRFT(α₁+α₂=' + fmtAlpha(a1 + a2) + ')');
   }
-  // 2 ↔ 3: identical indicator (shown only after all computations finish)
+
+  // ── Error connections: dashed verticals from Sequential & Direct into Error ──
   if (computeDone) {
-    const c2 = rectCtr(rects[2]), c3 = rectCtr(rects[3]);
-    const s  = rectEdge(rects[2], c3.x, c3.y);
-    const e  = rectEdge(rects[3], c2.x, c2.y);
-    drawArrow(ctx, s.x, s.y, e.x, e.y, '≡ identical', EQUAL, true);
+    const ex = r[4].left + r[4].width / 2;
+    ctx.strokeStyle = EQUAL; ctx.lineWidth = 1.2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(ex, r[2].top + r[2].height); ctx.lineTo(ex, r[4].top);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(ex, r[3].top); ctx.lineTo(ex, r[4].top + r[4].height);
+    ctx.stroke();
+    ctx.setLineDash([]);
   }
 
   ctx.restore();
+}
+
+// ── Window function ───────────────────────────────────────────────────────────
+function applyWindow(buf, noWindow) {
+  const n = buf.length;
+  const out = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const w = noWindow ? 1.0 : 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (n - 1));
+    out[i] = buf[i] * w;
+  }
+  return out;
 }
 
 // ── Signal generation ─────────────────────────────────────────────────────────
@@ -532,21 +629,23 @@ function generateSignal(freq, n, sr, wave) {
 }
 
 // ── Precompute: 3 sequential FRFT jobs ───────────────────────────────────────
-// Job 0: FRFT(α₁, input)                    → nodeBufs[1]+nodeImagBufs[1]  (raw complex engine output)
-// Job 1: FRFT(α₂, complex_intermediate)    → nodeBufs[2]  (rawInput — feeds engine directly, no re-fftshift)
-// Job 2: FRFT(α₁+α₂, input)               → nodeBufs[3]  (standard path, identical to job 1 by additivity)
+// Job 0: FRFT(α₁, input)                  → nodeBufs[1]+nodeImagBufs[1]  (raw complex engine output)
+// Job 1: FRFT(α₂, complex_intermediate)  → nodeBufs[2]  (rawInput — no re-fftshift)
+// Job 2: FRFT(α₁+α₂, input)             → nodeBufs[3]  (standard path, identical by additivity)
+// Post:  error = nodeBufs[2] − nodeBufs[3] → nodeBufs[4]  (floating-point noise only)
 function startPrecompute() {
   if (!workerReady) return;
   stopPlayback();
   computeDone = false;
-  nodeBufs     = [null, null, null, null];
-  nodeImagBufs = [null, null, null, null];
+  nodeBufs     = [null, null, null, null, null];
+  nodeImagBufs = [null, null, null, null, null];
   if (computeSTFT._cache) computeSTFT._cache = new WeakMap();
   panels.forEach((p, i) => { if (i > 0) p.div.classList.add('computing'); renderPanel(i); });
 
-  const freq = Math.max(20, Math.min(20000, parseFloat(freqNum.value) || 440));
+  const freq  = Math.max(20, Math.min(20000, parseFloat(freqNum.value) || 440));
+  const noWin = winSel.value === 'rect';
   dryBuf      = generateSignal(freq, N_SAMPLES, sampleRate, waveSel.value);
-  nodeBufs[0] = dryBuf;
+  nodeBufs[0] = applyWindow(dryBuf, noWin);
   renderPanel(0);
 
   queuePid++;
@@ -603,6 +702,11 @@ function handleResult(jobId, output, outputImag) {
     setStatus('Computing ' + (jobIdx + 2) + '/3…');
     sendCurrentJob();
   } else {
+    const errBuf = new Float32Array(nodeBufs[2].length);
+    for (let i = 0; i < errBuf.length; i++) errBuf[i] = nodeBufs[2][i] - nodeBufs[3][i];
+    nodeBufs[4] = errBuf;
+    panels[4].div.classList.remove('computing');
+    renderPanel(4);
     computeDone = true;
     setStatus('');
     drawBg();
@@ -619,8 +723,26 @@ function renderPanel(idx) {
   ctx.fillRect(0, 0, W, H);
   const buf = nodeBufs[idx];
   if (!buf) return;
+  if (idx === 4) {
+    if (activeView === 'scope') renderDiffSpectrogram(ctx, W, H);
+    else                        renderErrorPanel(ctx, buf, W, H);
+    return;
+  }
   if (activeView === 'scope') renderSpectrogram(ctx, buf, W, H);
   else                        renderWaveform(ctx, buf, W, H);
+  // Node label — top-left corner of canvas
+  {
+    const dpr = window.devicePixelRatio || 1;
+    const fs  = Math.round(11 * dpr);
+    const pad = Math.round(5 * dpr);
+    ctx.font = fs + 'px -apple-system, "Segoe UI", sans-serif';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    const tw = ctx.measureText(NODE_LABELS[idx]).width;
+    ctx.fillStyle = 'rgba(15,15,15,0.68)';
+    ctx.fillRect(pad, pad, tw + pad * 2, fs + pad);
+    ctx.fillStyle = 'rgba(200,200,200,0.80)';
+    ctx.fillText(NODE_LABELS[idx], pad * 2, Math.round(pad * 1.2));
+  }
   if (idx === activeIdx && audioCtx) {
     const frac = Math.min(1, (audioCtx.currentTime - playStartCtxTime) / playDuration);
     const px   = Math.round(frac * W);
@@ -649,6 +771,81 @@ function renderWaveform(ctx, buf, W, H) {
     if (x === 0) ctx.moveTo(0.5, y); else ctx.lineTo(x + 0.5, y);
   }
   ctx.stroke();
+}
+
+function drawPanelLabel(ctx, text) {
+  const dpr = window.devicePixelRatio || 1;
+  const fs  = Math.round(11 * dpr);
+  const pad = Math.round(5 * dpr);
+  ctx.font = fs + 'px -apple-system, "Segoe UI", sans-serif';
+  ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  const tw = ctx.measureText(text).width;
+  ctx.fillStyle = 'rgba(15,15,15,0.68)';
+  ctx.fillRect(pad, pad, tw + pad * 2, fs + pad);
+  ctx.fillStyle = 'rgba(200,200,200,0.80)';
+  ctx.fillText(text, pad * 2, Math.round(pad * 1.2));
+}
+
+function renderErrorPanel(ctx, buf, W, H) {
+  const n = buf.length;
+
+  // Scale relative to the Sequential output so the error is visually comparable
+  const ref = nodeBufs[2];
+  let refPeak = 0;
+  if (ref) for (let i = 0; i < ref.length; i++) { const v = Math.abs(ref[i]); if (v > refPeak) refPeak = v; }
+  const range = refPeak < 1e-12 ? 1 : refPeak * 2;
+
+  const midY = H / 2;
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth   = 0.5;
+  ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(W, midY); ctx.stroke();
+
+  ctx.strokeStyle = 'rgba(190,190,190,0.85)';
+  ctx.lineWidth   = Math.max(0.7, W / 500);
+  ctx.beginPath();
+  for (let x = 0; x < W; x++) {
+    const val = buf[Math.floor(x / W * n)];
+    const y   = (0.5 - val / range) * H;
+    if (x === 0) ctx.moveTo(0.5, y); else ctx.lineTo(x + 0.5, y);
+  }
+  ctx.stroke();
+  drawPanelLabel(ctx, 'Error');
+}
+
+function diffColor(t) {
+  // t: -1 → blue (Direct louder), 0 → black, +1 → orange (Sequential louder)
+  if (t >= 0) return [Math.round(200*t), Math.round(144*t), Math.round(42*t)];
+  const a = -t;
+  return [Math.round(42*a), Math.round(106*a), Math.round(200*a)];
+}
+
+function renderDiffSpectrogram(ctx, W, H) {
+  const stft2 = computeSTFT(nodeBufs[2]);
+  const stft3 = computeSTFT(nodeBufs[3]);
+  if (!stft2 || !stft3) return;
+  const { magDB: db2, numFrames, NUM_BINS } = stft2;
+  const { magDB: db3 } = stft3;
+  const RANGE = 20; // ±20 dB display range
+  const img  = ctx.createImageData(W, H);
+  const px4  = img.data;
+  for (let y = 0; y < H; y++) {
+    const kf = (1 - (y + 0.5) / H) * (NUM_BINS - 1);
+    const k0 = Math.max(0, Math.floor(kf)), k1 = Math.min(NUM_BINS-1, k0+1), ky = kf-k0;
+    for (let x = 0; x < W; x++) {
+      const ff = (x + 0.5) / W * (numFrames - 1);
+      const f0 = Math.max(0, Math.floor(ff)), f1 = Math.min(numFrames-1, f0+1), fx = ff-f0;
+      const d2 = (db2[f0*NUM_BINS+k0]*(1-fx) + db2[f1*NUM_BINS+k0]*fx) * (1-ky)
+               + (db2[f0*NUM_BINS+k1]*(1-fx) + db2[f1*NUM_BINS+k1]*fx) * ky;
+      const d3 = (db3[f0*NUM_BINS+k0]*(1-fx) + db3[f1*NUM_BINS+k0]*fx) * (1-ky)
+               + (db3[f0*NUM_BINS+k1]*(1-fx) + db3[f1*NUM_BINS+k1]*fx) * ky;
+      const t  = Math.max(-1, Math.min(1, (d2 - d3) / RANGE));
+      const [r, g, b] = diffColor(t);
+      const i4 = (y * W + x) * 4;
+      px4[i4]=r; px4[i4+1]=g; px4[i4+2]=b; px4[i4+3]=255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  drawPanelLabel(ctx, 'Error');
 }
 
 function renderSpectrogram(ctx, buf, W, H) {
@@ -770,10 +967,7 @@ function startPlayheadLoop() {
 function setStatus(text, cls) { statusEl.textContent = text; statusEl.className = cls || ''; }
 
 // ── Event listeners ───────────────────────────────────────────────────────────
-waveSel.addEventListener('change', () => {
-  freqNum.disabled = waveSel.value === 'sweep';
-  stopPlayback(); startPrecompute();
-});
+waveSel.addEventListener('change', () => { syncFreqDisabled(); stopPlayback(); startPrecompute(); });
 freqNum.addEventListener('change', () => { stopPlayback(); startPrecompute(); });
 freqNum.addEventListener('input',  () => {
   clearTimeout(freqNum._t);
