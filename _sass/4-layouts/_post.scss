@@ -759,6 +759,15 @@
     &:hover .section-anchor { opacity: 1; }
   }
 
+  &.no-section-header {
+    &::before { display: none; }
+    .project-section__body {
+      border-radius: 8px;
+      margin-top: 0;
+      padding-top: 1rem;
+    }
+  }
+
   .project-section__body {
     position: relative;
     z-index: 1;

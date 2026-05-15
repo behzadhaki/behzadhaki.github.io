@@ -175,6 +175,14 @@ document.addEventListener('keydown', function(e) {
       });
     });
 
+    // STEP 4b: Single-section posts — hide the redundant section header (independent of navbar)
+    var allPostSections = document.querySelectorAll("section.project-section[id]");
+    if (allPostSections.length === 1) {
+      allPostSections[0].classList.add('no-section-header');
+      var onlyHeader = allPostSections[0].querySelector('.project-section__header');
+      if (onlyHeader) onlyHeader.style.display = 'none';
+    }
+
     // STEP 5: Build 3-row horizontal navbar (Section | H2 | H3)
     var navbar = document.getElementById("post-navbar");
     if (!navbar) return;
@@ -210,6 +218,8 @@ document.addEventListener('keydown', function(e) {
       return { id: section.id, label: label, el: section, h2s: h2s };
     });
 
+    var singleSection = tree.length === 1;
+
     // Create inner wrapper and 3 row elements
     var navInner = document.createElement("div");
     navInner.className = "post-navbar__rows";
@@ -221,7 +231,7 @@ document.addEventListener('keydown', function(e) {
     row2.className = "navbar-row navbar-row--2";
     var row3 = document.createElement("div");
     row3.className = "navbar-row navbar-row--3";
-    navInner.appendChild(row1);
+    if (!singleSection) navInner.appendChild(row1);
     navInner.appendChild(row2);
     navInner.appendChild(row3);
 
@@ -232,15 +242,11 @@ document.addEventListener('keydown', function(e) {
     updateNavbarHeightVar();
     window.addEventListener('resize', updateNavbarHeightVar);
 
-    // Auto-hide empty rows and keep navbar height var in sync
-    row2.style.display = 'none';
-    row3.style.display = 'none';
-    [row2, row3].forEach(function (row) {
-      new MutationObserver(function () {
-        row.style.display = row.children.length > 0 ? '' : 'none';
-        updateNavbarHeightVar();
-      }).observe(row, { childList: true });
-    });
+    // Show only as many rows as the content has levels (determined once at init)
+    var hasH2s = tree.some(function (s) { return s.h2s.length > 0; });
+    var hasH3s = tree.some(function (s) { return s.h2s.some(function (h2) { return h2.h3s.length > 0; }); });
+    if (!hasH2s) row2.style.display = 'none';
+    if (!hasH3s) row3.style.display = 'none';
 
     var activeSection = null;
     var activeH2 = null;
