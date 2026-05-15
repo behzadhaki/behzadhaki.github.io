@@ -157,19 +157,18 @@ button:active:not(:disabled) { filter: brightness(0.85); }
 'use strict';
 
 // ── Constants ────────────────────────────────────────────────────────────────
-const ALPHA_LIST = [0, 0.1, 0.5, 0.9, 1.0, 1.1, 1.5, 1.9, 2.0, 2.1, 2.5, 2.9, 3.0, 3.1, 3.5, 3.9];
+const ALPHA_LIST = [0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75];
 const NUM_ALPHA  = ALPHA_LIST.length;
 const CARD_IDX   = [0, 4, 8, 12];
-const CARD_NAMES = ['Time', 'Freq', '−Time', '−Freq'];
+const CARD_NAMES = ['Time Domain', 'FFT', 'Inv. Time', 'iFFT'];
 const N_SAMPLES  = 88200;   // 2 seconds at 44100 Hz
 const PBAR_H     = 14;
 
 // Layout fractions (of min(mainW, mainH))
-const CIR_R_F    = 0.175;  // inner circle radius
-const PANEL_D_IN = 0.265;  // distance for even-idx: cardinals + midpoints
-const PANEL_D_OUT= 0.440;  // distance for odd-idx:  near-cardinals
-const PANEL_W_F  = 0.120;  // panel width
-const PANEL_H_F  = 0.140;  // panel height
+const CIR_R_F    = 0.155;  // inner circle radius
+const PANEL_D    = 0.430;  // single-ring radius for all panel centers
+const PANEL_W_F  = 0.125;  // panel width
+const PANEL_H_F  = 0.130;  // panel height
 
 // ── State ────────────────────────────────────────────────────────────────────
 let sampleRate  = 44100;
@@ -236,7 +235,7 @@ const panels = ALPHA_LIST.map((alpha, idx) => {
 function panelPos(mW, mH, alpha, idx) {
   const angle = -Math.PI / 2 * alpha;
   const size  = Math.min(mW, mH);
-  const D  = ((idx % 2 === 0) ? PANEL_D_IN : PANEL_D_OUT) * size;
+  const D  = PANEL_D * size;
   const pw = PANEL_W_F * size;
   const ph = PANEL_H_F * size;
   const cx = mW / 2 + D * Math.cos(angle);
@@ -307,8 +306,7 @@ function drawBg() {
   ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2 * Math.PI); ctx.stroke();
 
   // Tick marks + alpha labels on circle edge
-  const lblFont = Math.max(8, R * 0.075);
-  ctx.font         = `${lblFont}px -apple-system, sans-serif`;
+  const lblFont = Math.max(10, R * 0.11);
   ctx.textBaseline = 'middle';
 
   ALPHA_LIST.forEach((alpha, idx) => {
@@ -328,50 +326,20 @@ function drawBg() {
     ctx.lineTo(cx + outer * Math.cos(angle), cy + outer * Math.sin(angle));
     ctx.stroke();
 
-    // Alpha label — drawn just inside the circle ring so panels never cover it
+    // Alpha value label inside ring
     const lblR = R * 0.865;
     const lx   = cx + lblR * Math.cos(angle);
     const ly   = cy + lblR * Math.sin(angle);
-    const txt  = isCard ? String(alpha.toFixed(0)) : alpha.toFixed(1);
-
+    const txt  = alpha.toFixed(alpha % 1 === 0 ? 0 : 2).replace(/\.?0+$/, '') || '0';
     ctx.fillStyle = isActive ? '#c8902a'
                   : isCard   ? 'rgba(210,210,210,0.95)'
                   :            'rgba(140,140,140,0.90)';
     ctx.font      = isCard
-      ? `700 ${lblFont * 1.05}px -apple-system, sans-serif`
+      ? `700 ${lblFont * 1.1}px -apple-system, sans-serif`
       : `${lblFont}px -apple-system, sans-serif`;
     ctx.textAlign = 'center';
     ctx.fillText(txt, lx, ly);
   });
-
-  // Fα arrow
-  if (arrowAlpha >= 0) {
-    const angle  = -Math.PI / 2 * arrowAlpha;
-    const arrowR = R * 0.82;
-    const px = cx + arrowR * Math.cos(angle);
-    const py = cy + arrowR * Math.sin(angle);
-    const headLen = Math.max(6, R * 0.08);
-    const theta   = Math.atan2(py - cy, px - cx);
-
-    ctx.strokeStyle = '#c8902a'; ctx.lineWidth = 2; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(px, py); ctx.stroke();
-    ctx.lineCap = 'butt';
-
-    ctx.fillStyle = '#c8902a';
-    ctx.beginPath();
-    ctx.moveTo(px, py);
-    ctx.lineTo(px - headLen * Math.cos(theta - 0.4), py - headLen * Math.sin(theta - 0.4));
-    ctx.lineTo(px - headLen * Math.cos(theta + 0.4), py - headLen * Math.sin(theta + 0.4));
-    ctx.closePath(); ctx.fill();
-  }
-
-  // Center label
-  const cFont = Math.max(10, R * 0.18);
-  ctx.font         = `600 ${cFont}px -apple-system, sans-serif`;
-  ctx.textAlign    = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle    = arrowAlpha >= 0 ? '#c8902a' : '#707070';
-  ctx.fillText(arrowAlpha >= 0 ? `α=${arrowAlpha.toFixed(1)}` : 'Fα', cx, cy);
 
   ctx.restore();
 }
