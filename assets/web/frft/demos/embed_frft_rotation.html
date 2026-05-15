@@ -110,6 +110,13 @@ html, body {
 button:hover:not(:disabled) { filter: brightness(1.15); }
 button:active:not(:disabled) { filter: brightness(0.85); }
 
+.panel-label {
+  position: absolute; pointer-events: none;
+  font-size: 0.70em; font-weight: 500; white-space: nowrap;
+  color: rgba(200,200,200,0.70);
+  transform: translateX(-50%);
+}
+
 .tab-group { display: flex; flex-shrink: 0; height: 1.8em; }
 .tab {
   padding: 0 0.7em; height: 100%;
@@ -230,7 +237,16 @@ const panels = ALPHA_LIST.map((alpha, idx) => {
   div.append(cv);
   mainEl.appendChild(div);
 
-  return { div, cv, alpha, isCard, cardPos };
+  const CARD_LABELS = ['Time Signal', 'FFT', 'Time Reversed', 'Inverse FFT'];
+  let labelEl = null;
+  if (isCard) {
+    labelEl = document.createElement('span');
+    labelEl.className = 'panel-label';
+    labelEl.textContent = CARD_LABELS[cardPos];
+    mainEl.appendChild(labelEl);
+  }
+
+  return { div, cv, alpha, isCard, cardPos, labelEl };
 });
 
 // Sync tab state now that panels exist
@@ -259,7 +275,7 @@ function layoutAll() {
   bgCanvas.style.width  = mW + 'px';
   bgCanvas.style.height = mH + 'px';
 
-  panels.forEach(({ div, cv, alpha }, idx) => {
+  panels.forEach(({ div, cv, alpha, cardPos, labelEl }, idx) => {
     const p = panelPos(mW, mH, alpha, idx);
     Object.assign(div.style, {
       left:   Math.round(p.left)   + 'px',
@@ -270,6 +286,21 @@ function layoutAll() {
     cv.width  = Math.round(p.width * dpr);
     cv.height = Math.round(p.height * dpr);
     renderPanel(idx);
+
+    if (labelEl) {
+      const GAP = 5;
+      const cx  = Math.round(p.left + p.width / 2);
+      // cardPos 1 = FFT (top panel) → label above; all others → label below
+      if (cardPos === 1) {
+        labelEl.style.left = cx + 'px';
+        labelEl.style.top  = Math.round(p.top - GAP) + 'px';
+        labelEl.style.transform = 'translateX(-50%) translateY(-100%)';
+      } else {
+        labelEl.style.left = cx + 'px';
+        labelEl.style.top  = Math.round(p.top + p.height + GAP) + 'px';
+        labelEl.style.transform = 'translateX(-50%)';
+      }
+    }
   });
 
   drawBg();
