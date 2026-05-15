@@ -25,6 +25,9 @@
 
     const al = parseFloat(sp.get('alpha'));
     if (!isNaN(al)) window._initAlpha = Math.max(0, Math.min(1, al));
+
+    const wave = sp.get('wave');
+    if (['sine','triangle','sawtooth','square'].includes(wave)) window._initWave = wave;
   })();
 </script>
 <style>
@@ -170,14 +173,15 @@
   .tab:last-child  { border-radius: 3px; }
   .tab.active { background: var(--accent-lo); color: var(--accent); border-color: var(--accent); }
 
-  /* Detail button */
-  #detailBtn {
-    height: 100%; padding: 0 0.65em;
+  #infoBtn {
+    height: 100%; padding: 0 0.55em;
     background: var(--surface2); color: var(--muted);
     border: 1px solid var(--border2); border-radius: 3px;
-    font-size: 0.78em; font-weight: 600; cursor: pointer; flex-shrink: 0; white-space: nowrap;
+    font-size: 0.9em; font-weight: 700;
+    cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
   }
-  #detailBtn.active { background: var(--accent-lo); color: var(--accent); border-color: var(--accent); }
+  #infoBtn:hover { color: var(--text); border-color: var(--border); }
 
   /* Spec area */
   .spec-area { flex: 6; min-height: 0; display: flex; gap: 0.4em; }
@@ -275,6 +279,15 @@
       <h1>Source</h1>
       <div class="rows-wrap" style="flex:none">
         <div class="row">
+          <label class="lbl">Waveform</label>
+          <select id="waveSel">
+            <option value="sine" selected>Sine</option>
+            <option value="triangle">Triangle</option>
+            <option value="sawtooth">Sawtooth</option>
+            <option value="square">Square</option>
+          </select>
+        </div>
+        <div class="row">
           <label class="lbl">Window</label>
           <select id="winSel">
             <option value="hann" selected>Hann</option>
@@ -345,8 +358,8 @@
           <button class="tab" id="tabBoth">Both</button>
         </div>
         <span id="status"></span>
-        <button id="detailBtn" style="margin-left:auto" title="Boost low-amplitude detail">Detail</button>
-        <button class="btn-neutral" id="downloadBtn" disabled>⬇</button>
+        <button class="btn-neutral" id="downloadBtn" style="margin-left:auto" disabled>⬇</button>
+        <button id="infoBtn" title="More info &amp; embed instructions">&lt;/&gt;</button>
       </div>
     </div>
 
@@ -443,6 +456,7 @@ let queueTotal   = 0;
 let queueBusy    = false;
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
+const waveSel       = document.getElementById('waveSel');
 const winSel        = document.getElementById('winSel');
 const halfSpecSel   = document.getElementById('halfSpecSel');
 const freqSlider    = document.getElementById('freqSlider');
@@ -451,6 +465,7 @@ const alphaSlider   = document.getElementById('alphaSlider');
 const alphaSweepBtn = document.getElementById('alphaSweepBtn');
 
 // Apply URL param defaults for source settings (before first precompute)
+if (window._initWave)                      waveSel.value     = window._initWave;
 if (window._initWin)                       winSel.value      = window._initWin;
 if (window._initHalfspec !== undefined)    halfSpecSel.value = window._initHalfspec ? '1' : '0';
 
@@ -463,7 +478,7 @@ const playBtn       = document.getElementById('playBtn');
 const tabDry        = document.getElementById('tabDry');
 const tabWet        = document.getElementById('tabWet');
 const tabBoth       = document.getElementById('tabBoth');
-const detailBtn     = document.getElementById('detailBtn');
+const infoBtn       = document.getElementById('infoBtn');
 const downloadBtn   = document.getElementById('downloadBtn');
 const statusEl      = document.getElementById('status');
 const specCanvas    = document.getElementById('specCanvas');
@@ -491,17 +506,28 @@ const specRO = new ResizeObserver(() => {
 specRO.observe(specWrap);
 specRO.observe(spectrumCanvas);
 
-// ── Sine generation ───────────────────────────────────────────────────────────
-function generateSine(freq, n, sr) {
+// ── Signal generation ─────────────────────────────────────────────────────────
+function generateSignal(freq, n, sr, wave) {
   const buf = new Float32Array(n);
-  for (let i = 0; i < n; i++)
-    buf[i] = Math.sin(2 * Math.PI * freq * i / sr);
+  if (wave === 'triangle') {
+    for (let i = 0; i < n; i++)
+      buf[i] = (2 / Math.PI) * Math.asin(Math.sin(2 * Math.PI * freq * i / sr));
+  } else if (wave === 'sawtooth') {
+    for (let i = 0; i < n; i++)
+      buf[i] = 2 * ((freq * i / sr) % 1) - 1;
+  } else if (wave === 'square') {
+    for (let i = 0; i < n; i++)
+      buf[i] = Math.sin(2 * Math.PI * freq * i / sr) >= 0 ? 1 : -1;
+  } else {
+    for (let i = 0; i < n; i++)
+      buf[i] = Math.sin(2 * Math.PI * freq * i / sr);
+  }
   return buf;
 }
 
 // ── Pre-computation ───────────────────────────────────────────────────────────
 function settingsKey() {
-  return `${winSel.value}_${halfSpecSel.value}`;
+  return `${waveSel.value}_${winSel.value}_${halfSpecSel.value}`;
 }
 
 // Apply initial freq/alpha from URL params (once only — cleared after first use)
@@ -558,7 +584,7 @@ function startPrecompute() {
   const halfSpec = halfSpecSel.value === '1';
 
   // Build all dry sines for each frequency
-  dryBufsAll = FREQ_VALUES.map(f => generateSine(f, N_SAMPLES, sampleRate));
+  dryBufsAll = FREQ_VALUES.map(f => generateSignal(f, N_SAMPLES, sampleRate, waveSel.value));
 
   // Initialise 2D wet buffer grid
   wetBufs2D = Array.from({ length: NUM_FREQ }, () => new Array(NUM_ALPHA).fill(null));
@@ -849,7 +875,7 @@ function setActiveTabs(tab) {
 // ── Event listeners ───────────────────────────────────────────────────────────
 
 // Source settings → auto-recompute (restart any running sweep afterwards)
-[winSel, halfSpecSel].forEach(el =>
+[waveSel, winSel, halfSpecSel].forEach(el =>
   el.addEventListener('change', () => {
     window._restartFreqSweep  = freqSweepRunning;
     window._restartAlphaSweep = alphaSweepRunning;
@@ -878,11 +904,8 @@ alphaSlider.addEventListener('input', () => {
   updateDisplay();
 });
 
-detailBtn.addEventListener('click', () => {
-  specGamma = specGamma === 1.0 ? 0.3 : 1.0;
-  detailBtn.classList.toggle('active', specGamma !== 1.0);
-  renderActiveTab();
-  if (!playingWhich) drawSweepSpectrum();
+infoBtn.addEventListener('click', () => {
+  window.open('https://behzadhaki.com/works/frft-in-the-browser/#alpha-sweep', '_blank');
 });
 
 playBtn.addEventListener('click', () => {

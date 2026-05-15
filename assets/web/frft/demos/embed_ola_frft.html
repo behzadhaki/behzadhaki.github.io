@@ -22,6 +22,9 @@
     if (bs > 0)         window._initBlocksize = bs;
     const hs = sp.get('halfspec');
     if (hs !== null)    window._initHalfspec = hs === '1';
+
+    const wave = sp.get('wave');
+    if (['sine','triangle','sawtooth','square'].includes(wave)) window._initWave = wave;
   })();
 </script>
 <style>
@@ -142,13 +145,15 @@
   .right-col > .card { flex: none; display: flex; flex-direction: column; justify-content: center; }
   .controls-row > *, .tab { display: flex; align-items: center; }
 
-  #detailBtn {
-    height: 100%; padding: 0 0.65em;
+  #infoBtn {
+    height: 100%; padding: 0 0.55em;
     background: var(--surface2); color: var(--muted);
     border: 1px solid var(--border2); border-radius: 3px;
-    font-size: 0.78em; font-weight: 600; cursor: pointer; flex-shrink: 0; white-space: nowrap;
+    font-size: 0.9em; font-weight: 700;
+    cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
   }
-  #detailBtn.active { background: var(--accent-lo); color: var(--accent); border-color: var(--accent); }
+  #infoBtn:hover { color: var(--text); border-color: var(--border); }
 
   /* ── Panel 1: single FRFT window — lives in left column ── */
   .panel1-area {
@@ -210,6 +215,15 @@
     <div class="card">
       <h1>Source</h1>
       <div class="rows-wrap">
+        <div class="row">
+          <label class="lbl">Waveform</label>
+          <select id="waveSel">
+            <option value="sine" selected>Sine</option>
+            <option value="triangle">Triangle</option>
+            <option value="sawtooth">Sawtooth</option>
+            <option value="square">Square</option>
+          </select>
+        </div>
         <div class="row">
           <label class="lbl">Freq</label>
           <input type="number" id="freqNum" min="20" max="20000" step="1" value="440">
@@ -274,8 +288,8 @@
           <button class="tab active" id="tabWet">OLA</button>
         </div>
         <span id="status">loading…</span>
-        <button id="detailBtn" style="margin-left:auto" title="Boost low-amplitude detail">Detail</button>
-        <button class="btn-neutral" id="downloadBtn" disabled>⬇</button>
+        <button class="btn-neutral" id="downloadBtn" style="margin-left:auto" disabled>⬇</button>
+        <button id="infoBtn" title="More info &amp; embed instructions">&lt;/&gt;</button>
       </div>
     </div>
 
@@ -371,6 +385,7 @@ let playbackStartTime   = 0;
 let activeTab           = 'wet';
 
 // ── DOM ───────────────────────────────────────────────────────────────────────
+const waveSel        = document.getElementById('waveSel');
 const freqNum        = document.getElementById('freqNum');
 
 const alphaNum       = document.getElementById('alphaNum');
@@ -379,6 +394,7 @@ const blocksizeSel   = document.getElementById('blocksizeSel');
 const modeSel        = document.getElementById('modeSel');
 
 // Apply URL param defaults
+if (window._initWave      !== undefined) waveSel.value      = window._initWave;
 if (window._initFreq      !== undefined) freqNum.value      = window._initFreq;
 if (window._initAlpha     !== undefined) alphaNum.value     = window._initAlpha;
 if (window._initOverlap   !== undefined) overlapSel.value   = String(window._initOverlap);
@@ -394,7 +410,7 @@ const playBtn        = document.getElementById('playBtn');
 const tabDry         = document.getElementById('tabDry');
 const tabWet         = document.getElementById('tabWet');
 const downloadBtn    = document.getElementById('downloadBtn');
-const detailBtn      = document.getElementById('detailBtn');
+const infoBtn        = document.getElementById('infoBtn');
 const panel1Canvas   = document.getElementById('panel1Canvas');
 const specCanvas     = document.getElementById('specCanvas');
 const playheadCanvas = document.getElementById('playheadCanvas');
@@ -491,7 +507,7 @@ async function autoProcess() {
 
   const numDisplay   = NUM_FRAMES;
   const needSamples  = (numDisplay - 1) * H + blockSize;
-  const signal       = generateSine(needSamples / sampleRate, sampleRate, freq);
+  const signal       = generateSignal(needSamples / sampleRate, sampleRate, freq, waveSel.value);
 
   blockOutputs = [];
   blockSTFTs   = [];
@@ -607,6 +623,7 @@ function handleWorkerMessage(e) {
 }
 
 // ── Controls ──────────────────────────────────────────────────────────────────
+waveSel.addEventListener('change', scheduleProcess);
 freqNum.addEventListener('change', () => {
   freqNum.value = Math.max(20, Math.min(20000, parseFloat(freqNum.value) || 440));
   scheduleProcess();
@@ -891,12 +908,8 @@ function renderActiveTab() {
   renderPanel2();
 }
 
-// ── Detail toggle ─────────────────────────────────────────────────────────────
-detailBtn.addEventListener('click', () => {
-  specGamma = specGamma === 1.0 ? 0.3 : 1.0;
-  detailBtn.classList.toggle('active', specGamma !== 1.0);
-  if (blockSTFTs.length > 0) renderPanel1();
-  if (olaSTFT) renderPanel2();
+infoBtn.addEventListener('click', () => {
+  window.open('https://behzadhaki.com/works/frft-in-the-browser/#overlap-add-visualiser', '_blank');
 });
 
 // ── Playback ──────────────────────────────────────────────────────────────────
@@ -1058,10 +1071,22 @@ function setStatus(text, cls = '') {
 }
 
 // ── Signal ────────────────────────────────────────────────────────────────────
-function generateSine(seconds, sr, freq) {
+function generateSignal(seconds, sr, freq, wave) {
   const n = Math.floor(seconds * sr);
   const buf = new Float32Array(n);
-  for (let i = 0; i < n; i++) buf[i] = Math.sin(2 * Math.PI * freq * i / sr);
+  if (wave === 'triangle') {
+    for (let i = 0; i < n; i++)
+      buf[i] = (2 / Math.PI) * Math.asin(Math.sin(2 * Math.PI * freq * i / sr));
+  } else if (wave === 'sawtooth') {
+    for (let i = 0; i < n; i++)
+      buf[i] = 2 * ((freq * i / sr) % 1) - 1;
+  } else if (wave === 'square') {
+    for (let i = 0; i < n; i++)
+      buf[i] = Math.sin(2 * Math.PI * freq * i / sr) >= 0 ? 1 : -1;
+  } else {
+    for (let i = 0; i < n; i++)
+      buf[i] = Math.sin(2 * Math.PI * freq * i / sr);
+  }
   return buf;
 }
 

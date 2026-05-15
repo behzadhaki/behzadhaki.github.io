@@ -173,6 +173,8 @@ html[data-theme='light'] .fe-hosting-bar button:hover:not(:disabled) { backgroun
   </ol>
 </div>
 
+Adjust the parameters for each widget below, then click **Apply** to update the live preview and generate a ready-to-paste `<iframe>` embed snippet with those values baked in as defaults.
+
 ## Interactive FRFT
 
 Full controls — let visitors change signal type, α order, block size and overlap directly in the widget.
@@ -187,6 +189,9 @@ Full controls — let visitors change signal type, α order, block size and over
   <select id="fe1-type">
     <option value="">(default)</option>
     <option value="sine">Sine</option>
+    <option value="triangle">Triangle</option>
+    <option value="sawtooth">Sawtooth</option>
+    <option value="square">Square</option>
     <option value="sweep">Sweep</option>
   </select>
   <label id="fe1-freq-lbl">Freq (Hz)</label>
@@ -245,6 +250,9 @@ Fixed parameters set at embed time — auto-plays on load, no controls shown to 
   <select id="fe2-type">
     <option value="sweep" selected>Sweep</option>
     <option value="sine">Sine</option>
+    <option value="triangle">Triangle</option>
+    <option value="sawtooth">Sawtooth</option>
+    <option value="square">Square</option>
     <option value="file">File picker</option>
   </select>
   <label id="fe2-freq-lbl">Freq (Hz)</label>
@@ -296,6 +304,13 @@ Interactive slider that sweeps the fractional order α — shows how the spectru
   <input type="number" id="fe3-w" value="600" min="300" step="10">
   <label>Height</label>
   <input type="number" id="fe3-h" value="300" min="200" step="10">
+  <label>Waveform</label>
+  <select id="fe3-wave">
+    <option value="sine" selected>Sine</option>
+    <option value="triangle">Triangle</option>
+    <option value="sawtooth">Sawtooth</option>
+    <option value="square">Square</option>
+  </select>
   <label>Window</label>
   <select id="fe3-win">
     <option value="hann" selected>Hann</option>
@@ -337,6 +352,13 @@ Shows how block-processing artefacts change with different block sizes and overl
   <input type="number" id="fe4-w" value="600" min="300" step="10">
   <label>Height</label>
   <input type="number" id="fe4-h" value="250" min="200" step="10">
+  <label>Waveform</label>
+  <select id="fe4-wave">
+    <option value="sine" selected>Sine</option>
+    <option value="triangle">Triangle</option>
+    <option value="sawtooth">Sawtooth</option>
+    <option value="square">Square</option>
+  </select>
   <label>Freq (Hz)</label>
   <input type="number" id="fe4-freq" value="440" min="20" max="20000">
   <label>α (order)</label>
@@ -415,7 +437,8 @@ Shows how block-processing artefacts change with different block sizes and overl
     const p = new URLSearchParams({ w, h });
     const type = g('fe1-type').value;
     if (type) p.set('type', type);
-    if (type === 'sine') p.set('freq', g('fe1-freq').value);
+    const hasFreq = type === 'sine' || type === 'triangle' || type === 'sawtooth' || type === 'square';
+    if (hasFreq) p.set('freq', g('fe1-freq').value);
     p.set('dur',   g('fe1-dur').value);
     p.set('alpha', g('fe1-alpha').value);
     const block = g('fe1-block').value;
@@ -426,9 +449,8 @@ Shows how block-processing artefacts change with different block sizes and overl
     if (hs)      p.set('halfspec', hs);
     g('fe1-code').textContent = buildCode('embed_interactive_frft.html', p.toString(), w, h);
     loadFrame('fe1-frame', 'embed_interactive_frft.html', p.toString(), w, h);
-    const isSine = type === 'sine';
-    g('fe1-freq').disabled = !isSine;
-    g('fe1-freq-lbl').style.opacity = isSine ? '1' : '0.4';
+    g('fe1-freq').disabled = !hasFreq;
+    g('fe1-freq-lbl').style.opacity = hasFreq ? '1' : '0.4';
   };
   g('fe1-type').addEventListener('change', feApply1);
   feApply1();
@@ -442,15 +464,15 @@ Shows how block-processing artefacts change with different block sizes and overl
     const block = g('fe2-block').value;
     const isAll = block === 'all' || block === 'all-nowin';
     g('fe2-overlap').disabled = isAll;
-    const isSine = type === 'sine';
-    g('fe2-freq').disabled = !isSine;
-    g('fe2-freq-lbl').style.opacity = isSine ? '1' : '0.4';
+    const hasFreq = type === 'sine' || type === 'triangle' || type === 'sawtooth' || type === 'square';
+    g('fe2-freq').disabled = !hasFreq;
+    g('fe2-freq-lbl').style.opacity = hasFreq ? '1' : '0.4';
     const p = new URLSearchParams({ w, h,
       type, dur: g('fe2-dur').value, alpha: g('fe2-alpha').value,
       blocksize: block, overlap: isAll ? '1' : g('fe2-overlap').value,
       halfspec: g('fe2-halfspec').value,
     });
-    if (isSine) p.set('freq', g('fe2-freq').value);
+    if (hasFreq) p.set('freq', g('fe2-freq').value);
     g('fe2-code').textContent = buildCode('embed_non_interactive_frft.html', p.toString(), w, h);
     loadFrame('fe2-frame', 'embed_non_interactive_frft.html', p.toString(), w, h);
   };
@@ -466,12 +488,14 @@ Shows how block-processing artefacts change with different block sizes and overl
     const h = Math.max(200, parseInt(g('fe3-h').value) || 300);
     g('fe3-w').value = w; g('fe3-h').value = h;
     const p = new URLSearchParams({ w, h,
-      win: g('fe3-win').value, halfspec: g('fe3-halfspec').value,
+      wave: g('fe3-wave').value, win: g('fe3-win').value,
+      halfspec: g('fe3-halfspec').value,
       freqidx: g('fe3-freqidx').value, alpha: g('fe3-alpha').value,
     });
     g('fe3-code').textContent = buildCode('embed_alpha_sweep_frft.html', p.toString(), w, h);
     loadFrame('fe3-frame', 'embed_alpha_sweep_frft.html', p.toString(), w, h);
   };
+  g('fe3-wave').addEventListener('change', feApply3);
   feApply3();
 
   /* ── 4. OLA ──────────────────────────────────────────────── */
@@ -480,13 +504,14 @@ Shows how block-processing artefacts change with different block sizes and overl
     const h = Math.max(200, parseInt(g('fe4-h').value) || 250);
     g('fe4-w').value = w; g('fe4-h').value = h;
     const p = new URLSearchParams({ w, h,
-      freq: g('fe4-freq').value, alpha: g('fe4-alpha').value,
-      blocksize: g('fe4-block').value, overlap: g('fe4-overlap').value,
-      halfspec: g('fe4-halfspec').value,
+      wave: g('fe4-wave').value, freq: g('fe4-freq').value,
+      alpha: g('fe4-alpha').value, blocksize: g('fe4-block').value,
+      overlap: g('fe4-overlap').value, halfspec: g('fe4-halfspec').value,
     });
     g('fe4-code').textContent = buildCode('embed_ola_frft.html', p.toString(), w, h);
     loadFrame('fe4-frame', 'embed_ola_frft.html', p.toString(), w, h);
   };
+  g('fe4-wave').addEventListener('change', feApply4);
   g('fe4-block').addEventListener('change', feApply4);
   g('fe4-overlap').addEventListener('change', feApply4);
   g('fe4-halfspec').addEventListener('change', feApply4);

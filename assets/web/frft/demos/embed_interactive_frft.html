@@ -294,22 +294,17 @@
   .controls-row > *, .tab { display: flex; align-items: center; }
 
   /* Detail-boost toggle */
-  #detailBtn {
-    height: 100%; padding: 0 0.65em;
+  #infoBtn {
+    height: 100%; padding: 0 0.55em;
     background: var(--surface2);
     color: var(--muted);
     border: 1px solid var(--border2);
     border-radius: 3px;
-    font-size: 0.78em; font-weight: 600;
-    cursor: pointer;
-    flex-shrink: 0;
-    white-space: nowrap;
+    font-size: 0.9em; font-weight: 700;
+    cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
   }
-  #detailBtn.active {
-    background: var(--accent-lo);
-    color: var(--accent);
-    border-color: var(--accent);
-  }
+  #infoBtn:hover { color: var(--text); border-color: var(--border); }
 
   /* ── Spectrum + spectrogram side-by-side ── */
   .spec-area {
@@ -374,6 +369,9 @@
           <label class="lbl">Type</label>
           <select id="srcType">
             <option value="sine">Sine wave</option>
+            <option value="triangle">Triangle wave</option>
+            <option value="sawtooth">Sawtooth wave</option>
+            <option value="square">Square wave</option>
             <option value="sweep">Sweep 200→4000 Hz</option>
             <option value="file">Audio file</option>
           </select>
@@ -457,8 +455,8 @@
           <button class="tab" id="tabBoth">Both</button>
         </div>
         <span id="status">loading…</span>
-        <button id="detailBtn" style="margin-left:auto" title="Boost low-amplitude detail">Detail</button>
-        <button class="btn-neutral" id="downloadBtn" disabled>⬇</button>
+        <button class="btn-neutral" id="downloadBtn" style="margin-left:auto" disabled>⬇</button>
+        <button id="infoBtn" title="More info &amp; embed instructions">&lt;/&gt;</button>
       </div>
     </div>
 
@@ -536,7 +534,7 @@ const tabDry      = document.getElementById('tabDry');
 const tabWet      = document.getElementById('tabWet');
 const tabBoth     = document.getElementById('tabBoth');
 const downloadBtn = document.getElementById('downloadBtn');
-const detailBtn   = document.getElementById('detailBtn');
+const infoBtn     = document.getElementById('infoBtn');
 const specCanvas      = document.getElementById('specCanvas');
 const playheadCanvas  = document.getElementById('playheadCanvas');
 const spectrumCanvas  = document.getElementById('spectrumCanvas');
@@ -693,10 +691,10 @@ function handleWorkerMessage(e) {
 
 // ── Source type toggle ────────────────────────────────────────────────────────
 srcType.addEventListener('change', () => {
-  const isSine = srcType.value === 'sine';
-  const isFile = srcType.value === 'file';
+  const isFile  = srcType.value === 'file';
+  const isSweep = srcType.value === 'sweep';
   document.getElementById('durRow').style.display   = isFile ? 'none' : '';
-  document.getElementById('freqRow').style.display  = isSine ? 'inline-flex' : 'none';
+  document.getElementById('freqRow').style.display  = (!isFile && !isSweep) ? 'inline-flex' : 'none';
   document.getElementById('fileRow').style.display  = isFile ? '' : 'none';
   if (!isFile) {
     // Reset file label when switching away
@@ -760,11 +758,8 @@ function setActiveTabs(tab) {
   renderActiveTab();
 }
 
-// ── Spectrogram detail boost ──────────────────────────────────────────────────
-detailBtn.addEventListener('click', () => {
-  specGamma = specGamma === 1.0 ? 0.3 : 1.0;
-  detailBtn.classList.toggle('active', specGamma !== 1.0);
-  if (drySTFT) renderActiveTab();
+infoBtn.addEventListener('click', () => {
+  window.open('https://behzadhaki.com/works/frft-in-the-browser/#interactive-frft', '_blank');
 });
 
 // ── Play button ───────────────────────────────────────────────────────────────
@@ -847,6 +842,15 @@ function generateSignal(type, seconds, sr, freq) {
   if (type === 'sine') {
     for (let i = 0; i < n; i++)
       buf[i] = Math.sin(2 * Math.PI * freq * i / sr);
+  } else if (type === 'triangle') {
+    for (let i = 0; i < n; i++)
+      buf[i] = (2 / Math.PI) * Math.asin(Math.sin(2 * Math.PI * freq * i / sr));
+  } else if (type === 'sawtooth') {
+    for (let i = 0; i < n; i++)
+      buf[i] = 2 * ((freq * i / sr) % 1) - 1;
+  } else if (type === 'square') {
+    for (let i = 0; i < n; i++)
+      buf[i] = Math.sin(2 * Math.PI * freq * i / sr) >= 0 ? 1 : -1;
   } else if (type === 'sweep') {
     const f0 = 20, f1 = 4000;
     for (let i = 0; i < n; i++) {

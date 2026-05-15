@@ -146,23 +146,17 @@
     border-color: var(--accent);
   }
 
-  /* Detail-boost toggle */
-  #detailBtn {
-    height: 100%; padding: 0 0.65em;
+  #infoBtn {
+    height: 100%; padding: 0 0.55em;
     background: var(--surface2);
     color: var(--muted);
     border: 1px solid var(--border2);
     border-radius: 3px;
-    font-size: 0.78em; font-weight: 600;
-    cursor: pointer;
-    flex-shrink: 0;
-    white-space: nowrap;
+    font-size: 0.9em; font-weight: 700;
+    cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
   }
-  #detailBtn.active {
-    background: var(--accent-lo);
-    color: var(--accent);
-    border-color: var(--accent);
-  }
+  #infoBtn:hover { color: var(--text); border-color: var(--border); }
 
   /* ── Controls row ── */
   .controls-row {
@@ -295,8 +289,8 @@
       <label id="fileLabel" for="fileInput">📂 Choose file</label>
       <input type="file" id="fileInput" accept="audio/*">
       <span id="status">loading…</span>
-      <button id="detailBtn" style="margin-left:auto" title="Boost low-amplitude detail">Detail</button>
-      <button class="btn-neutral" id="downloadBtn" disabled>⬇</button>
+      <button class="btn-neutral" id="downloadBtn" style="margin-left:auto" disabled>⬇</button>
+      <button id="infoBtn" title="More info &amp; embed instructions">&lt;/&gt;</button>
     </div>
   </div>
 
@@ -332,7 +326,7 @@ let drySTFT      = null;
 let wetSTFT      = null;
 let mixSTFT      = null;   // averaged mix (dry+wet)/2 — used for 'both' tab
 let sharedTopBin = 0;
-let specGamma = 1.0;  // toggled by detailBtn; 0.3 = detail boost
+let specGamma = 1.0;
 let activeTab    = 'wet';
 let zoomView     = null;  // null = full view, or { t0, t1, b0, b1 }
 
@@ -354,7 +348,7 @@ const playBtn     = document.getElementById('playBtn');
 const tabDry      = document.getElementById('tabDry');
 const tabWet      = document.getElementById('tabWet');
 const tabBoth     = document.getElementById('tabBoth');
-const detailBtn   = document.getElementById('detailBtn');
+const infoBtn     = document.getElementById('infoBtn');
 const downloadBtn = document.getElementById('downloadBtn');
 const fileLabel   = document.getElementById('fileLabel');
 const fileInput   = document.getElementById('fileInput');
@@ -581,11 +575,8 @@ tabBoth.addEventListener('click', () => {
   if (playingWhich !== null) { applyMix('both'); playingWhich = 'both'; }
 });
 
-// ── Detail toggle ─────────────────────────────────────────────────────────────
-detailBtn.addEventListener('click', () => {
-  specGamma = specGamma === 1.0 ? 0.3 : 1.0;
-  detailBtn.classList.toggle('active', specGamma !== 1.0);
-  if (drySTFT) renderActiveTab();
+infoBtn.addEventListener('click', () => {
+  window.open('https://behzadhaki.com/works/frft-in-the-browser/#non-interactive-frft', '_blank');
 });
 
 // ── Download ZIP ──────────────────────────────────────────────────────────────
@@ -643,6 +634,15 @@ function generateSignal(type, seconds, sr, freq) {
   if (type === 'sine') {
     for (let i = 0; i < n; i++)
       buf[i] = Math.sin(2 * Math.PI * freq * i / sr);
+  } else if (type === 'triangle') {
+    for (let i = 0; i < n; i++)
+      buf[i] = (2 / Math.PI) * Math.asin(Math.sin(2 * Math.PI * freq * i / sr));
+  } else if (type === 'sawtooth') {
+    for (let i = 0; i < n; i++)
+      buf[i] = 2 * ((freq * i / sr) % 1) - 1;
+  } else if (type === 'square') {
+    for (let i = 0; i < n; i++)
+      buf[i] = Math.sin(2 * Math.PI * freq * i / sr) >= 0 ? 1 : -1;
   } else {
     // sweep: 20 Hz → Nyquist
     const f0 = 20, f1 = 4000;
