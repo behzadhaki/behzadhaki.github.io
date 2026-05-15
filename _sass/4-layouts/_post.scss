@@ -167,6 +167,7 @@
 
 .post__content,
 .page__content {
+  font-size: 12px;
   color: $gray;
 
   a {
@@ -728,7 +729,7 @@
     gap: 0.5rem;
     padding: 0.6rem 0.9rem;
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 16px;
     font-weight: 700;
     text-transform: capitalize;
     color: $white;
@@ -765,7 +766,7 @@
     border-radius: 0 0 8px 8px;
     margin-top: -8px;
     padding: calc(1rem + 8px) 1.25rem 1rem;
-    font-size: 0.85rem;
+    font-size: 12px;
     line-height: 1.7;
     color: rgba($light-gray, 0.8);
 
@@ -793,32 +794,32 @@
       &:hover .heading-anchor { opacity: 1; }
     }
     h1 {
-      font-size: 1.15rem; font-weight: 700;
+      font-size: 16px; font-weight: 700;
       background: rgba($white, 0.05); border-radius: 6px;
       padding: 0.35rem 0.7rem; margin-top: 2rem;
       &:first-child { margin-top: 0.4rem; }
     }
     h2 {
-      font-size: 1.0rem; font-weight: 700;
+      font-size: 14px; font-weight: 700;
       color: $light-gray;
       background: rgba($white, 0.04); border-radius: 4px;
       padding: 0.28rem 0.7rem; margin-top: 2.6rem;
       &:first-child { margin-top: 0.4rem; }
     }
     h3 {
-      font-size: 0.92rem; font-weight: 600;
+      font-size: 13px; font-weight: 600;
       color: rgba($light-gray, 0.9);
       margin-top: 1.8rem;
       &:first-child { margin-top: 0.4rem; }
     }
     h4 {
-      font-size: 0.85rem; font-weight: 500; font-style: italic;
+      font-size: 12px; font-weight: 500; font-style: italic;
       color: rgba($light-gray, 0.65);
       margin-top: 1.3rem;
       &:first-child { margin-top: 0.4rem; }
     }
     h5, h6 {
-      font-size: 0.8rem; font-weight: 500; font-style: italic;
+      font-size: 11px; font-weight: 500; font-style: italic;
       color: rgba($light-gray, 0.45);
       margin-top: 1rem;
       &:first-child { margin-top: 0.4rem; }
@@ -827,7 +828,7 @@
     // ── Outline block wrappers (JS-injected) ─────────────────────
     .outline-block--h2 {
       position: relative;
-      border: 2px solid rgba($light-gray, 0.28);
+      border: 1px solid rgba($light-gray, 0.28);
       border-radius: 4px;
       padding: 1.4rem 0.9rem 0.9rem;
       margin-top: 2.6rem;
@@ -839,10 +840,10 @@
         margin: 0;
         padding: 0.15rem 0.55rem;
         background: #2a2a2a;
-        border: 2px solid rgba($light-gray, 0.28);
+        border: 1px solid rgba($light-gray, 0.28);
         border-radius: 3px;
-        font-size: 1.0rem; font-weight: 700;
-        color: $light-gray;
+        font-size: 14px; font-weight: 700;
+        color: #cccccc;
         line-height: 1.3;
         white-space: nowrap;
       }
@@ -850,7 +851,7 @@
     .outline-block--h3 {
       position: relative;
       margin: 1.8rem 0.6rem 0 0.6rem;
-      border: 2px solid rgba($light-gray, 0.20);
+      border: 1px solid rgba($light-gray, 0.20);
       border-radius: 4px;
       padding: 1.2rem 0.8rem 0.7rem;
       &:first-child { margin-top: 1rem; }
@@ -861,10 +862,10 @@
         margin: 0;
         padding: 0.12rem 0.5rem;
         background: #2a2a2a;
-        border: 2px solid rgba($light-gray, 0.20);
+        border: 1px solid rgba($light-gray, 0.20);
         border-radius: 3px;
-        font-size: 0.92rem; font-weight: 600;
-        color: rgba($light-gray, 0.9);
+        font-size: 13px; font-weight: 600;
+        color: #bbbbbb;
         line-height: 1.3;
         white-space: nowrap;
       }
@@ -872,7 +873,7 @@
     .outline-block--h4 {
       position: relative;
       margin: 1.3rem 0.6rem 0 0.6rem;
-      border: 2px solid rgba($light-gray, 0.12);
+      border: 1px solid rgba($light-gray, 0.12);
       border-radius: 4px;
       padding: 1.1rem 0.75rem 0.6rem;
       &:first-child { margin-top: 0.8rem; }
@@ -883,10 +884,10 @@
         margin: 0;
         padding: 0.1rem 0.45rem;
         background: #2a2a2a;
-        border: 2px solid rgba($light-gray, 0.12);
+        border: 1px solid rgba($light-gray, 0.12);
         border-radius: 3px;
-        font-size: 0.85rem; font-weight: 500; font-style: italic;
-        color: rgba($light-gray, 0.65);
+        font-size: 12px; font-weight: 500; font-style: italic;
+        color: #aaaaaa;
         line-height: 1.3;
         white-space: nowrap;
       }
@@ -895,7 +896,7 @@
     .outline-block--h6 {
       position: relative;
       margin: 1rem 0.6rem 0 0.6rem;
-      border: 2px solid rgba($light-gray, 0.07);
+      border: 1px solid rgba($light-gray, 0.07);
       border-radius: 4px;
       padding: 1rem 0.7rem 0.5rem;
       &:first-child { margin-top: 0.7rem; }
@@ -906,10 +907,10 @@
         margin: 0;
         padding: 0.1rem 0.4rem;
         background: #2a2a2a;
-        border: 2px solid rgba($light-gray, 0.07);
+        border: 1px solid rgba($light-gray, 0.07);
         border-radius: 3px;
-        font-size: 0.8rem; font-weight: 500; font-style: italic;
-        color: rgba($light-gray, 0.45);
+        font-size: 11px; font-weight: 500; font-style: italic;
+        color: #888888;
         line-height: 1.3;
         white-space: nowrap;
       }

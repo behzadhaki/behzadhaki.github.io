@@ -156,20 +156,20 @@ html[data-theme='light'] {
 
     .outline-block--h2 {
       border-color: rgba(42,39,54,0.28);
-      > h2 { background: #e9e9e9; border-color: rgba(42,39,54,0.28); color: #1a1827; }
+      > h2 { background: #e9e9e9; border-color: rgba(42,39,54,0.28); color: #666666; }
     }
     .outline-block--h3 {
       border-color: rgba(42,39,54,0.22);
-      > h3 { background: #e9e9e9; border-color: rgba(42,39,54,0.22); color: #2d2b3d; }
+      > h3 { background: #e9e9e9; border-color: rgba(42,39,54,0.22); color: #777777; }
     }
     .outline-block--h4 {
       border-color: rgba(42,39,54,0.14);
-      > h4 { background: #e9e9e9; border-color: rgba(42,39,54,0.14); color: rgba(#2d2b3d, 0.65); }
+      > h4 { background: #e9e9e9; border-color: rgba(42,39,54,0.14); color: #888888; }
     }
     .outline-block--h5,
     .outline-block--h6 {
       border-color: rgba(42,39,54,0.08);
-      > h5, > h6 { background: #e9e9e9; border-color: rgba(42,39,54,0.08); color: #777; }
+      > h5, > h6 { background: #e9e9e9; border-color: rgba(42,39,54,0.08); color: #999999; }
     }
 
     a {
