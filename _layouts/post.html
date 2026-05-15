@@ -232,6 +232,16 @@ document.addEventListener('keydown', function(e) {
     updateNavbarHeightVar();
     window.addEventListener('resize', updateNavbarHeightVar);
 
+    // Auto-hide empty rows and keep navbar height var in sync
+    row2.style.display = 'none';
+    row3.style.display = 'none';
+    [row2, row3].forEach(function (row) {
+      new MutationObserver(function () {
+        row.style.display = row.children.length > 0 ? '' : 'none';
+        updateNavbarHeightVar();
+      }).observe(row, { childList: true });
+    });
+
     var activeSection = null;
     var activeH2 = null;
     var activeH3 = null;
