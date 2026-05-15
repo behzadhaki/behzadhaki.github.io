@@ -229,6 +229,56 @@ Shows the FRFT output at 16 fractional orders simultaneously — four large pane
 </div>
 </div>
 
+## FRFT Index Additivity
+
+Demonstrates that FRFT(α₂) ∘ FRFT(α₁) = FRFT(α₁+α₂). The widget shows all four stages — input, intermediate (after α₁), sequential output (after α₂), and direct output (α₁+α₂) — and draws a dashed green equality line between the two outputs once computation completes. Click any panel to hear the audio at that stage.
+
+<div class="frft-embeds">
+<div class="fe-controls">
+  <label>Width</label>
+  <input type="number" id="fe6-w" value="680" min="200" step="10">
+  <label>Waveform</label>
+  <select id="fe6-wave">
+    <option value="sine" selected>Sine</option>
+    <option value="triangle">Triangle</option>
+    <option value="sawtooth">Sawtooth</option>
+    <option value="square">Square</option>
+    <option value="sweep">Freq sweep</option>
+  </select>
+  <label id="fe6-freq-lbl">Freq (Hz)</label>
+  <input type="number" id="fe6-freq" value="440" min="20" max="20000">
+  <label>Win</label>
+  <select id="fe6-win">
+    <option value="hann" selected>Hann</option>
+    <option value="rect">Rectangular</option>
+  </select>
+  <label>View</label>
+  <select id="fe6-disp">
+    <option value="wave" selected>Waveform</option>
+    <option value="scope">Spectrogram</option>
+  </select>
+  <label>&alpha;&#x2081;</label>
+  <input type="number" id="fe6-a1" value="0.5" min="0" step="0.05" style="width:52px">
+  <label>&alpha;&#x2082;</label>
+  <input type="number" id="fe6-a2" value="0.75" min="0" step="0.05" style="width:52px">
+  <label>Mode</label>
+  <select id="fe6-interactive">
+    <option value="1" selected>Interactive</option>
+    <option value="0">Static</option>
+  </select>
+  <button onclick="feApply6()">Apply</button>
+</div>
+<div class="fe-bottom-row">
+<div class="fe-frame-wrap">
+  <iframe id="fe6-frame" class="reframe-off" width="680" height="680"></iframe>
+</div>
+<div class="fe-code-wrap">
+  <pre id="fe6-code"></pre>
+  <button class="fe-copy-btn" onclick="feCopy('fe6-code',this)">⧉</button>
+</div>
+</div>
+</div>
+
 ## Interactive FRFT
 
 Full controls — let visitors change signal type, α order, block size and overlap directly in the widget.
@@ -513,6 +563,35 @@ Shows how block-processing artefacts change with different block sizes and overl
   g('fe5-interactive').addEventListener('change', feApply5);
   feApply5();
 
+  /* ── 6. Index Additivity ─────────────────────────────────── */
+  window.feApply6 = function () {
+    const w = Math.max(200, parseInt(g('fe6-w').value) || 680);
+    g('fe6-w').value = w;
+    const interactive = g('fe6-interactive').value;
+    const isStatic    = interactive === '0';
+    const h = Math.round(w * 0.95) + (isStatic ? 30 : 0);
+    const wave    = g('fe6-wave').value;
+    const hasFreq = wave !== 'sweep';
+    g('fe6-wave').disabled = false;
+    g('fe6-freq').disabled = !hasFreq;
+    g('fe6-freq-lbl').style.opacity = hasFreq ? '1' : '0.4';
+    const p = new URLSearchParams({
+      w, h, wave, disp: g('fe6-disp').value,
+      win: g('fe6-win').value,
+      alpha1: g('fe6-a1').value,
+      alpha2: g('fe6-a2').value,
+    });
+    if (hasFreq) p.set('freq', g('fe6-freq').value);
+    if (isStatic) p.set('interactive', '0');
+    g('fe6-code').textContent = buildCode('embed_frft_additivity.html', p.toString(), w, h);
+    loadFrame('fe6-frame', 'embed_frft_additivity.html', p.toString(), w, h);
+  };
+  g('fe6-wave').addEventListener('change', feApply6);
+  g('fe6-win').addEventListener('change', feApply6);
+  g('fe6-disp').addEventListener('change', feApply6);
+  g('fe6-interactive').addEventListener('change', feApply6);
+  feApply6();
+
   /* ── 1. Interactive ──────────────────────────────────────── */
   window.feApply1 = function () {
     const w = Math.max(200, parseInt(g('fe1-w').value) || 600);
@@ -613,13 +692,14 @@ Shows how block-processing artefacts change with different block sizes and overl
   }
   feHostMode.addEventListener('change', function () {
     syncHostUI();
-    feApply5(); feApply1(); feApply2(); feApply3(); feApply4();
+    feApply5(); feApply6(); feApply1(); feApply2(); feApply3(); feApply4();
   });
   syncHostUI();
 
   /* ── ZIP download ────────────────────────────────────────────────────── */
   const ZIP_FILES = [
     { src:'/assets/web/frft/demos/embed_frft_rotation.html',         dst:'web/frft/demos/embed_frft_rotation.html' },
+    { src:'/assets/web/frft/demos/embed_frft_additivity.html',       dst:'web/frft/demos/embed_frft_additivity.html' },
     { src:'/assets/web/frft/demos/embed_interactive_frft.html',     dst:'web/frft/demos/embed_interactive_frft.html' },
     { src:'/assets/web/frft/demos/embed_non_interactive_frft.html', dst:'web/frft/demos/embed_non_interactive_frft.html' },
     { src:'/assets/web/frft/demos/embed_alpha_sweep_frft.html',     dst:'web/frft/demos/embed_alpha_sweep_frft.html' },

@@ -63,17 +63,25 @@ self.onmessage = (e) => {
     }
 
     if (type === 'process') {
-        const { samples, alpha, bufSize, overlapFactor, jobId, halfSpectrum, noWindow } = e.data;
+        const { samples, samplesImag, alpha, bufSize, overlapFactor, jobId,
+                halfSpectrum, noWindow, rawInput, returnComplex, direct } = e.data;
         currentJobId = jobId;
 
         (async () => {
             try {
                 const result = await computeFRFT(
                     samples, alpha, bufSize, overlapFactor, jobId,
-                    halfSpectrum === true, noWindow === true
+                    halfSpectrum === true, noWindow === true,
+                    samplesImag || null, rawInput === true, returnComplex === true,
+                    direct === true
                 );
                 if (result === null) {
                     self.postMessage({ type: 'cancelled', jobId });
+                } else if (result.outputImag) {
+                    self.postMessage(
+                        { type: 'result', jobId, output: result.output, outputImag: result.outputImag },
+                        [result.output.buffer, result.outputImag.buffer]
+                    );
                 } else {
                     self.postMessage({ type: 'result', jobId, output: result }, [result.buffer]);
                 }
@@ -160,7 +168,43 @@ function realIfft(halfSpecRe, halfSpecIm, halfN, re, im) {
 
 // ── Core computation ──────────────────────────────────────────────────────────
 
-async function computeFRFT(samples, alpha, bufSize, overlapFactor, jobId, halfSpectrum, noWindow) {
+async function computeFRFT(samples, alpha, bufSize, overlapFactor, jobId, halfSpectrum, noWindow,
+                           samplesImag, rawInput, returnComplex, direct) {
+
+    // ── Direct path: pure mathematical FRFT via processArrays (no WOLA/windowing) ──
+    if (direct) {
+        const N = samples.length;
+        const proc = new Module.FRFTProcessor();
+        proc.prepare(N);
+        const re64 = new Float64Array(N), im64 = new Float64Array(N);
+        for (let i = 0; i < N; i++) re64[i] = samples[i];
+        if (samplesImag) for (let i = 0; i < N; i++) im64[i] = samplesImag[i];
+
+        if (currentJobId !== jobId) { proc.delete(); return null; }
+
+        const res = proc.processArrays(re64, im64, alpha);
+        // Read results before deleting — res.real/imag may be views into WASM heap.
+        const outR = new Float32Array(N);
+        const outI = returnComplex ? new Float32Array(N) : null;
+        let peak = 0;
+        for (let i = 0; i < N; i++) {
+            const vr = res.real[i], vi = res.imag[i];
+            outR[i] = vr;
+            if (outI) outI[i] = vi;
+            const m = returnComplex ? Math.sqrt(vr*vr + vi*vi) : Math.abs(vr);
+            if (m > peak) peak = m;
+        }
+        proc.delete();
+
+        self.postMessage({ type: 'progress', jobId, value: 1 });
+
+        if (peak > 1e-8) {
+            for (let i = 0; i < N; i++) { outR[i] /= peak; if (outI) outI[i] /= peak; }
+        }
+        if (returnComplex) return { output: outR, outputImag: outI };
+        return outR;
+    }
+
     // frameN  — time-domain window / OLA frame size (= bufSize)
     // fftN    — FFT size for half-spectrum: nextPow2(frameN) so radix-2 works
     //           for any bufSize including non-power-of-2 "all" mode
@@ -219,6 +263,7 @@ async function computeFRFT(samples, alpha, bufSize, overlapFactor, jobId, halfSp
     wNorm /= H;
 
     const output     = new Float32Array(L);
+    const outputImag = returnComplex ? new Float32Array(L) : null;
     const firstFrame = -(overlapFactor - 1) * H;
 
     let totalFrames = 0;
@@ -291,17 +336,31 @@ async function computeFRFT(samples, alpha, bufSize, overlapFactor, jobId, halfSp
             }
 
         } else {
-            // ── Full-spectrum path (original, unchanged) ──────────────────────
+            // ── Full-spectrum path ────────────────────────────────────────────
 
-            for (let i = 0; i < frftN; i++) {
-                const idx = frameStart + i;
-                heapInR[(i + halfFrft) % frftN] =
-                    (idx >= 0 && idx < L ? samples[idx] : 0.0) * win[i];
+            if (rawInput) {
+                // Complex input with pre-fftshift but NO analysis window.
+                // The intermediate from job 0 is raw FRFT output (already in engine-output
+                // space). We apply fftshift so the engine's internal fftshift cancels,
+                // giving: FRFT(α₂)[FRFT(α₁)[windowed_x]] = FRFT(α₁+α₂)[windowed_x].
+                for (let i = 0; i < frftN; i++) {
+                    const idx = frameStart + i;
+                    heapInR[(i + halfFrft) % frftN] = idx >= 0 && idx < L ? samples[idx]      : 0.0;
+                    heapInI[(i + halfFrft) % frftN] = idx >= 0 && idx < L && samplesImag ? samplesImag[idx] : 0.0;
+                }
+            } else {
+                // Standard path: fftshift + analysis window, zero imaginary input.
+                for (let i = 0; i < frftN; i++) {
+                    const idx = frameStart + i;
+                    heapInR[(i + halfFrft) % frftN] =
+                        (idx >= 0 && idx < L ? samples[idx] : 0.0) * win[i];
+                }
+                heapInI.fill(0.0);
             }
-            heapInI.fill(0.0);
 
+            // Identity shortcut only valid for real, standard-path jobs.
             const amod = ((alpha % 4) + 4) % 4;
-            const isId = amod < 1e-9 || amod > 4 - 1e-9;
+            const isId = !rawInput && !returnComplex && (amod < 1e-9 || amod > 4 - 1e-9);
 
             if (isId) {
                 for (let i = 0; i < frftN; i++) {
@@ -312,12 +371,24 @@ async function computeFRFT(samples, alpha, bufSize, overlapFactor, jobId, halfSp
             } else {
                 proc.process(frftN, alpha);
                 remapHeap();
-                for (let i = 0; i < frftN; i++) {
-                    const w = win[i];
-                    if (w < 1e-10) continue;
-                    const idx = frameStart + i;
-                    if (idx >= 0 && idx < L)
-                        output[idx] += heapOutR[i] * w;
+                if (returnComplex) {
+                    // Return raw engine output (both channels, no synthesis window).
+                    // The caller feeds this into the next FRFT as rawInput.
+                    for (let i = 0; i < frftN; i++) {
+                        const idx = frameStart + i;
+                        if (idx >= 0 && idx < L) {
+                            output[idx]     += heapOutR[i];
+                            outputImag[idx] += heapOutI[i];
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < frftN; i++) {
+                        const w = win[i];
+                        if (w < 1e-10) continue;
+                        const idx = frameStart + i;
+                        if (idx >= 0 && idx < L)
+                            output[idx] += heapOutR[i] * w;
+                    }
                 }
             }
         }
@@ -336,17 +407,37 @@ async function computeFRFT(samples, alpha, bufSize, overlapFactor, jobId, halfSp
     self.postMessage({ type: 'progress', jobId, value: 1 });
 
     // Scalar normalisation
-    for (let i = 0; i < L; i++) output[i] /= wNorm;
+    for (let i = 0; i < L; i++) {
+        output[i] /= wNorm;
+        if (outputImag) outputImag[i] /= wNorm;
+    }
 
     // Peak-normalise to prevent clipping
     let peak = 0;
-    for (let i = 0; i < L; i++) { const a = Math.abs(output[i]); if (a > peak) peak = a; }
-    if (peak > 1e-8) for (let i = 0; i < L; i++) output[i] /= peak;
+    if (returnComplex) {
+        for (let i = 0; i < L; i++) {
+            const mag = Math.sqrt(output[i]*output[i] + outputImag[i]*outputImag[i]);
+            if (mag > peak) peak = mag;
+        }
+    } else {
+        for (let i = 0; i < L; i++) { const a = Math.abs(output[i]); if (a > peak) peak = a; }
+    }
+    if (peak > 1e-8) {
+        for (let i = 0; i < L; i++) {
+            output[i] /= peak;
+            if (outputImag) outputImag[i] /= peak;
+        }
+    }
 
     // Trim OLA-invalid edges: (R-1)*H samples each side
     const trimAmt = (overlapFactor - 1) * H;
     const trimEnd = L - trimAmt;
 
     proc.delete();
+    if (returnComplex) {
+        const outR = trimAmt > 0 && trimEnd > trimAmt ? output.slice(trimAmt, trimEnd)     : output;
+        const outI = trimAmt > 0 && trimEnd > trimAmt ? outputImag.slice(trimAmt, trimEnd) : outputImag;
+        return { output: outR, outputImag: outI };
+    }
     return trimAmt > 0 && trimEnd > trimAmt ? output.slice(trimAmt, trimEnd) : output;
 }

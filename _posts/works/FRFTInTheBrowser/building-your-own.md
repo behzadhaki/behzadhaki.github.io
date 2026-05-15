@@ -108,6 +108,81 @@ const result = proc.processArrays(realIn, imagIn, alpha);
 
 For the full build guide (recompiling from C++, Emscripten setup, AudioWorklet wiring) see [`web/README.md`](https://github.com/behzadhaki/FRFT_Max/blob/main/web/README.md) in the repo.
 
+## Cascading FRFTs
+
+The FRFT engine stores its output in **centered form** (DC at N/2, equivalent to an `fftshift` of the mathematical result). This has no visible effect for a single transform, but it matters when you compose two FRFTs — the shift must be accounted for between steps or the additivity property `FRFT(α₂)[FRFT(α₁)[x]] = FRFT(α₁+α₂)[x]` will not hold.
+
+### Via the worker (recommended)
+
+Use `returnComplex: true` on the first job to retrieve the raw complex engine output, then `rawInput: true` on the second job to feed it back in. The worker handles the required shift internally.
+
+```js
+let intermediate = null, intermediateImag = null;
+
+worker.onmessage = ({ data }) => {
+  if (data.type === 'ready') {
+    // Step 1 — FRFT(α₁): get raw complex engine output
+    worker.postMessage({
+      type: 'process',
+      samples: myFloat32Array,
+      alpha: alpha1,
+      bufSize: 16384, overlapFactor: 4,
+      returnComplex: true,   // returns { output, outputImag }
+      jobId: 1,
+    });
+  }
+
+  if (data.type === 'result') {
+    if (data.jobId === 1) {
+      intermediate     = data.output;      // Float32Array — real part
+      intermediateImag = data.outputImag;  // Float32Array — imag part
+
+      // Step 2 — FRFT(α₂) on complex intermediate
+      worker.postMessage({
+        type: 'process',
+        samples:     intermediate,
+        samplesImag: intermediateImag,
+        alpha: alpha2,
+        bufSize: 16384, overlapFactor: 4,
+        rawInput: true,   // fftshifts the complex input, no analysis window
+        jobId: 2,
+      });
+    }
+
+    if (data.jobId === 2) {
+      // data.output ≡ FRFT(α₁+α₂)[myFloat32Array]
+    }
+  }
+};
+```
+
+Any number of steps can be chained this way. Each intermediate step uses `returnComplex: true`; only the final step omits it.
+
+### Via `processArrays` directly
+
+`processArrays` returns its result in centered form. Before passing it as input to the next call, apply an `ifftshift` (circular shift by N/2):
+
+```js
+const proc = new Module.FRFTProcessor();
+proc.prepare(N);
+const zeros = new Float64Array(N);
+
+// Step 1
+const r1 = proc.processArrays(myFloat64Array, zeros, alpha1);
+
+// Undo the output's centered form before the next step
+const H = N >> 1;
+const r1r = new Float64Array(N), r1i = new Float64Array(N);
+for (let i = 0; i < N; i++) {
+  r1r[i] = r1.real[(i + H) % N];
+  r1i[i] = r1.imag[(i + H) % N];
+}
+
+// Step 2
+const r2 = proc.processArrays(r1r, r1i, alpha2);
+// r2.real ≈ FRFT(α₁+α₂)[myFloat64Array]
+```
+
 <script>
 (function () {
   const ZIP_FILES = [
