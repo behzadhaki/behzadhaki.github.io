@@ -165,7 +165,17 @@ document.addEventListener('keydown', function(e) {
       });
     });
 
-    // STEP 4: Build 3-row horizontal navbar (Section | H2 | H3)
+    // STEP 4: Section headers toggle collapse (always, even without navbar)
+    document.querySelectorAll("section.project-section").forEach(function (section) {
+      var header = section.querySelector(".project-section__header");
+      if (!header) return;
+      header.addEventListener("click", function (e) {
+        if (e.target.closest(".section-anchor")) return;
+        section.classList.toggle("is-collapsed");
+      });
+    });
+
+    // STEP 5: Build 3-row horizontal navbar (Section | H2 | H3)
     var navbar = document.getElementById("post-navbar");
     if (!navbar) return;
     var sections = Array.from(document.querySelectorAll("section.project-section[id]"));
@@ -399,16 +409,6 @@ document.addEventListener('keydown', function(e) {
     // Mouse leaves the whole navbar → restore active state
     navInner.addEventListener("mouseleave", function () {
       if (isPreviewing) restoreRows();
-    });
-
-    // Section headers toggle their own section only
-    tree.forEach(function (sectionNode) {
-      var header = sectionNode.el.querySelector(".project-section__header");
-      if (!header) return;
-      header.addEventListener("click", function (e) {
-        if (e.target.closest(".section-anchor")) return;
-        sectionNode.el.classList.toggle("is-collapsed");
-      });
     });
 
     // Initialise with first section active, all expanded
