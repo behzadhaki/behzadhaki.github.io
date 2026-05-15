@@ -10,7 +10,7 @@
 }
 
 .post-head {
-  margin-bottom: 64px;
+  margin-bottom: 32px;
 
   .row {
     align-items: center;
@@ -600,8 +600,8 @@
   top: 0;
   z-index: 30;
   background: $background-color;
-  padding: 0.6rem 0 2.4rem;
-  margin-top: 3rem;
+  padding: 0.6rem 0 0;
+  margin-top: 0.75rem;
   margin-bottom: 0;
 
 }
@@ -650,19 +650,19 @@
 }
 
 .post-nav-link--l1 {
-  font-size: 0.68rem;
+  font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .post-nav-link--l2 {
-  font-size: 0.72rem;
+  font-size: 0.62rem;
   font-weight: 500;
 }
 
 .post-nav-link--l3 {
-  font-size: 0.68rem;
+  font-size: 0.58rem;
   font-weight: 400;
   color: rgba($gray, 0.8);
 }
@@ -701,10 +701,10 @@
 }
 
 .project-section {
-  margin-top: 2rem;
+  margin-top: 1rem;
 
   &:first-of-type {
-    margin-top: 0;
+    margin-top: 1rem;
   }
 
   &.is-collapsed .project-section__body {
