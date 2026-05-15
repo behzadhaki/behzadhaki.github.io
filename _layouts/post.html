@@ -280,14 +280,16 @@ document.addEventListener('keydown', function(e) {
       activeH3 = null;
       if (!sectionNode || sectionNode.h2s.length === 0) return;
       sectionNode.h2s.forEach(function (h2) {
-        row2.appendChild(makeLink(h2.label, h2.id, "post-nav-link--l2", function () {
+        var a = makeLink(h2.label, h2.id, "post-nav-link--l2", function () {
           history.pushState(null, "", "#" + h2.id);
           scrollToEl(h2.el);
           activeH2 = h2.id;
           activeH3 = null;
           highlightRow(row2, h2.id);
           renderRow3(h2);
-        }));
+        });
+        a.addEventListener("mouseenter", function () { renderRow3(h2); });
+        row2.appendChild(a);
       });
     }
 
@@ -315,14 +317,16 @@ document.addEventListener('keydown', function(e) {
       var actSNode = tree.find(function (s) { return s.id === activeSection; });
       if (!actSNode || actSNode.h2s.length === 0) return;
       actSNode.h2s.forEach(function (h2) {
-        row2.appendChild(makeLink(h2.label, h2.id, "post-nav-link--l2", function () {
+        var a = makeLink(h2.label, h2.id, "post-nav-link--l2", function () {
           history.pushState(null, "", "#" + h2.id);
           scrollToEl(h2.el);
           activeH2 = h2.id;
           activeH3 = null;
           highlightRow(row2, h2.id);
           renderRow3(h2);
-        }));
+        });
+        a.addEventListener("mouseenter", function () { renderRow3(h2); });
+        row2.appendChild(a);
       });
       highlightRow(row2, activeH2);
       if (activeH2) {
