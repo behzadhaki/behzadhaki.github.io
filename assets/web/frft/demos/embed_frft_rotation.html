@@ -18,6 +18,14 @@
     if (!isNaN(freq) && freq > 0) window._initFreq = freq;
     const disp = sp.get('disp');
     if (disp === 'wave' || disp === 'scope') window._initDisp = disp;
+    const dalphaStr = sp.get('dalpha');
+    if (dalphaStr) {
+      const v = parseFloat(dalphaStr);
+      if (!isNaN(v) && v > 0) window._initDalpha = v;
+    }
+    if (sp.get('interactive') === '0') window._initInteractive = false;
+    const win = sp.get('win');
+    if (win === 'hann' || win === 'rect') window._initWin = win;
   })();
 </script>
 <style>
@@ -128,11 +136,27 @@ button:active:not(:disabled) { filter: brightness(0.85); }
 .tab:last-child  { border-radius: 0 3px 3px 0; }
 .tab.active { background: var(--accent-lo); color: var(--accent); border-color: var(--accent); }
 
-/* ── Detail view ─────────────────────────────────────────── */
+/* ── Params bar (static mode) ────────────────────────────── */
+#paramsBar {
+  flex-shrink: 0;
+  display: none;
+  align-items: center;
+  gap: 0.6em;
+  flex-wrap: wrap;
+  padding: 0.3em 0.8em;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+.st-item { display:flex; align-items:baseline; gap:0.25em; white-space:nowrap; }
+.st-key  { font-size:0.68em; font-weight:700; letter-spacing:0.05em; color:var(--muted); }
+.st-val  { font-size:0.78em; font-weight:700; color:var(--text); }
+.st-val.accent { color:var(--accent); }
+.st-sep  { color:var(--border2); font-size:0.7em; user-select:none; }
 </style>
 </head>
 <body>
 <div id="topBar">
+  <span id="recomputeControls" style="display:contents">
   <label>Wave</label>
   <select id="waveSel">
     <option value="sine" selected>Sine</option>
@@ -149,6 +173,7 @@ button:active:not(:disabled) { filter: brightness(0.85); }
     <option value="hann" selected>Hann</option>
     <option value="rect">Rectangular</option>
   </select>
+  </span>
   <div class="tab-group" style="margin-left:0.4em">
     <button class="tab active" id="tabWave">Waveform</button>
     <button class="tab" id="tabSpec">Spectrogram</button>
@@ -159,14 +184,20 @@ button:active:not(:disabled) { filter: brightness(0.85); }
 <div id="main">
   <canvas id="bgCanvas"></canvas>
 </div>
+<div id="paramsBar"></div>
 <script>
 'use strict';
 
 // ── Constants ────────────────────────────────────────────────────────────────
-const ALPHA_LIST = Array.from({length: 12}, (_, i) => i / 3);
-const NUM_ALPHA  = ALPHA_LIST.length;
-const CARD_IDX   = [0, 3, 6, 9];
-const CARD_NAMES = ['Time Domain', 'FFT', 'Inv. Time', 'iFFT'];
+const DELTA_ALPHA = (window._initDalpha != null) ? window._initDalpha : (1 / 3);
+const NUM_ALPHA   = Math.round(4 / DELTA_ALPHA);
+// Use i*4/NUM_ALPHA instead of i*DELTA_ALPHA to avoid floating-point drift
+// (e.g. 3*(1/3) = 0.9999... vs 3*4/12 = 1.0 exactly)
+const ALPHA_LIST  = Array.from({length: NUM_ALPHA}, (_, i) => i * 4 / NUM_ALPHA);
+const CARD_IDX    = ALPHA_LIST.reduce((arr, a, i) => {
+  if (Number.isInteger(a) && a <= 3) arr.push(i);
+  return arr;
+}, []);
 const N_SAMPLES  = 88200;   // 2 seconds at 44100 Hz
 // Layout fractions (of min(mainW, mainH))
 const CIR_R_F    = 0.155;  // circle radius
@@ -175,8 +206,11 @@ const PANEL_W_F  = 0.185;  // panel width  (landscape: x-sep binds at −60°/�
 const PANEL_H_F  = 0.140;  // panel height (y-sep binds at −30°/−60°)
 
 function alphaFrac(idx) {
-  if (idx % 3 === 0) return String(idx / 3);
-  return idx + '/3';
+  // idx * 4 / NUM_ALPHA in lowest terms; integer multiples → whole number label
+  const d = NUM_ALPHA / 4;           // denominator (e.g. 3 for delta=1/3)
+  const n = idx;                     // numerator before simplification
+  if (n % d === 0) return String(n / d);
+  return n + '/' + d;
 }
 
 // ── State ────────────────────────────────────────────────────────────────────
@@ -220,12 +254,37 @@ function setView(v) {
 if (window._initWave) waveSel.value = window._initWave;
 if (window._initFreq) freqNum.value = String(window._initFreq);
 if (window._initDisp) activeView = window._initDisp;
+if (window._initWin)  winSel.value = window._initWin;
 freqNum.disabled = waveSel.value === 'sweep';
+
+const INTERACTIVE = window._initInteractive !== false;
+if (!INTERACTIVE) {
+  document.getElementById('recomputeControls').style.display = 'none';
+
+  const pb = document.getElementById('paramsBar');
+  pb.style.display = 'flex';
+  const wave = waveSel.value;
+  const freq = parseFloat(freqNum.value);
+  const win  = winSel.value === 'hann' ? 'Hann' : 'Rectangular';
+  const items = [
+    { key: 'Wave',   val: wave.charAt(0).toUpperCase() + wave.slice(1) },
+    ...(wave !== 'sweep' ? [{ key: 'Freq', val: freq + ' Hz', accent: true }] : []),
+    { key: 'Window', val: win },
+  ];
+  items.forEach((item, i) => {
+    if (i > 0) { const s = document.createElement('span'); s.className = 'st-sep'; s.textContent = '·'; pb.appendChild(s); }
+    const el = document.createElement('span');
+    el.className = 'st-item';
+    el.innerHTML = `<span class="st-key">${item.key}</span><span class="st-val${item.accent ? ' accent' : ''}">${item.val}</span>`;
+    pb.appendChild(el);
+  });
+}
 
 // ── Create panels ─────────────────────────────────────────────────────────────
 const panels = ALPHA_LIST.map((alpha, idx) => {
-  const cardPos = CARD_IDX.indexOf(idx);
-  const isCard  = cardPos >= 0;
+  const isCard  = CARD_IDX.includes(idx);
+  // cardPos: 0=Time Signal, 1=FFT, 2=Time Reversed, 3=Inverse FFT
+  const cardPos = isCard ? Math.round(alpha) : -1;
 
   const div = document.createElement('div');
   div.className = 'panel computing';
@@ -254,9 +313,15 @@ tabWave.classList.toggle('active', activeView === 'wave');
 tabSpec.classList.toggle('active', activeView === 'scope');
 
 // ── Layout ────────────────────────────────────────────────────────────────────
+// For delta=2, panels are only on the horizontal axis — use width as size
+// so panel dimensions stay consistent regardless of the (shorter) height.
+function layoutSize(mW, mH) {
+  return DELTA_ALPHA >= 2 ? mW : Math.min(mW, mH);
+}
+
 function panelPos(mW, mH, alpha, idx) {
   const angle = -Math.PI / 2 * alpha;
-  const size  = Math.min(mW, mH);
+  const size  = layoutSize(mW, mH);
   const D  = PANEL_D * size;
   const pw = PANEL_W_F * size;
   const ph = PANEL_H_F * size;
@@ -318,7 +383,7 @@ function drawBg() {
   ctx.save();
   ctx.scale(dpr, dpr);
 
-  const size = Math.min(mW, mH);
+  const size = layoutSize(mW, mH);
   const cx = mW / 2, cy = mH / 2;
   const R  = CIR_R_F * size;
 

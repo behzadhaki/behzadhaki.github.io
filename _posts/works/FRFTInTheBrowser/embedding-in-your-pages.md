@@ -183,8 +183,6 @@ Shows the FRFT output at 16 fractional orders simultaneously — four large pane
 <div class="fe-controls">
   <label>Width</label>
   <input type="number" id="fe5-w" value="600" min="200" step="10">
-  <label>Height</label>
-  <input type="number" id="fe5-h" value="620" min="200" step="10">
   <label>Waveform</label>
   <select id="fe5-wave">
     <option value="sine" selected>Sine</option>
@@ -195,16 +193,34 @@ Shows the FRFT output at 16 fractional orders simultaneously — four large pane
   </select>
   <label id="fe5-freq-lbl">Freq (Hz)</label>
   <input type="number" id="fe5-freq" value="440" min="20" max="20000">
+  <label>Win</label>
+  <select id="fe5-win">
+    <option value="hann" selected>Hann</option>
+    <option value="rect">Rectangular</option>
+  </select>
   <label>View</label>
   <select id="fe5-disp">
     <option value="wave" selected>Waveform</option>
     <option value="scope">Spectrogram</option>
   </select>
+  <label>Δα</label>
+  <select id="fe5-dalpha">
+    <option value="0.333">1/3</option>
+    <option value="0.25">1/4</option>
+    <option value="0.5">1/2</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+  </select>
+  <label>Mode</label>
+  <select id="fe5-interactive">
+    <option value="1" selected>Interactive</option>
+    <option value="0">Static</option>
+  </select>
   <button onclick="feApply5()">Apply</button>
 </div>
 <div class="fe-bottom-row">
 <div class="fe-frame-wrap">
-  <iframe id="fe5-frame" class="reframe-off" width="600" height="620"></iframe>
+  <iframe id="fe5-frame" class="reframe-off" width="600" height="600"></iframe>
 </div>
 <div class="fe-code-wrap">
   <pre id="fe5-code"></pre>
@@ -470,19 +486,31 @@ Shows how block-processing artefacts change with different block sizes and overl
   /* ── 5. Rotation diagram ────────────────────────────────── */
   window.feApply5 = function () {
     const w = Math.max(200, parseInt(g('fe5-w').value) || 600);
-    const h = Math.max(200, parseInt(g('fe5-h').value) || 620);
-    g('fe5-w').value = w; g('fe5-h').value = h;
+    g('fe5-w').value = w;
+    const dalpha     = g('fe5-dalpha').value;
+    const interactive = g('fe5-interactive').value;
+    const isStatic   = interactive === '0';
+    // Auto-height: delta=2 → only left/right panels, crop empty top/bottom bands
+    // Widget uses width as size reference for delta=2, so vertical extent ≈ 0.42w
+    const ratio = parseFloat(dalpha) >= 2 ? 0.42 : 1.0;
+    const h = Math.round(w * ratio) + (isStatic ? 30 : 0);
     const wave = g('fe5-wave').value;
     const hasFreq = wave !== 'sweep';
+    g('fe5-wave').disabled = false;
     g('fe5-freq').disabled = !hasFreq;
     g('fe5-freq-lbl').style.opacity = hasFreq ? '1' : '0.4';
-    const p = new URLSearchParams({ w, h, wave, disp: g('fe5-disp').value });
+    const p = new URLSearchParams({ w, h, wave, disp: g('fe5-disp').value,
+                                    dalpha, win: g('fe5-win').value });
     if (hasFreq) p.set('freq', g('fe5-freq').value);
+    if (isStatic) p.set('interactive', '0');
     g('fe5-code').textContent = buildCode('embed_frft_rotation.html', p.toString(), w, h);
     loadFrame('fe5-frame', 'embed_frft_rotation.html', p.toString(), w, h);
   };
   g('fe5-wave').addEventListener('change', feApply5);
+  g('fe5-win').addEventListener('change', feApply5);
   g('fe5-disp').addEventListener('change', feApply5);
+  g('fe5-dalpha').addEventListener('change', feApply5);
+  g('fe5-interactive').addEventListener('change', feApply5);
   feApply5();
 
   /* ── 1. Interactive ──────────────────────────────────────── */
