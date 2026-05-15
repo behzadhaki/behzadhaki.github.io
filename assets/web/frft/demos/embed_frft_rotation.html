@@ -106,23 +106,7 @@ html, body {
 
 .pcv { flex: 1; width: 100%; min-height: 0; display: block; image-rendering: auto; }
 
-.pbar {
-  display: flex; align-items: center; padding: 0 0.3em; gap: 0.25em;
-  flex-shrink: 0; height: 14px;
-  background: var(--surface); border-top: 1px solid var(--border);
-}
-.plbl {
-  flex: 1; font-size: 0.60em; color: var(--muted);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
-}
-.pbtn {
-  flex-shrink: 0; height: 10px; width: 10px; padding: 0;
-  background: var(--accent-lo); color: var(--accent); border: 1px solid var(--accent-lo);
-  border-radius: 2px; font-size: 0.50em; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; line-height: 1;
-}
-.pbtn:disabled { opacity: 0.3; cursor: default; }
-.pbtn.playing  { background: var(--accent); color: var(--bg); }
+.panel.computing { cursor: wait; }
 button:hover:not(:disabled) { filter: brightness(1.15); }
 button:active:not(:disabled) { filter: brightness(0.85); }
 
@@ -162,8 +146,6 @@ const NUM_ALPHA  = ALPHA_LIST.length;
 const CARD_IDX   = [0, 4, 8, 12];
 const CARD_NAMES = ['Time Domain', 'FFT', 'Inv. Time', 'iFFT'];
 const N_SAMPLES  = 88200;   // 2 seconds at 44100 Hz
-const PBAR_H     = 14;
-
 // Layout fractions (of min(mainW, mainH))
 const CIR_R_F    = 0.155;  // inner circle radius
 const PANEL_D    = 0.410;  // single-ring radius for all panel centers
@@ -171,11 +153,14 @@ const PANEL_W_F  = 0.125;  // panel width
 const PANEL_H_F  = 0.130;  // panel height
 
 // ── State ────────────────────────────────────────────────────────────────────
-let sampleRate  = 44100;
-let dryBuf      = null;
-let wetBufs     = new Array(NUM_ALPHA).fill(null);
-let specCache   = new Map();
-let computeDone = false;
+let sampleRate       = 44100;
+let dryBuf           = null;
+let wetBufs          = new Array(NUM_ALPHA).fill(null);
+let specCache        = new Map();
+let computeDone      = false;
+let playStartCtxTime = 0;
+let playDuration     = 0;
+let playheadRaf      = 0;
 let arrowAlpha  = -1;
 let activeIdx   = -1;
 let audioCtx    = null;
@@ -206,29 +191,16 @@ const panels = ALPHA_LIST.map((alpha, idx) => {
   const isCard  = cardPos >= 0;
 
   const div = document.createElement('div');
-  div.className = 'panel';
+  div.className = 'panel computing';
+  div.addEventListener('click', () => togglePlay(idx));
 
   const cv = document.createElement('canvas');
   cv.className = 'pcv';
 
-  const bar = document.createElement('div');
-  bar.className = 'pbar';
-
-  const lbl = document.createElement('span');
-  lbl.className = 'plbl';
-  lbl.textContent = isCard ? CARD_NAMES[cardPos] : '';
-
-  const btn = document.createElement('button');
-  btn.className = 'pbtn';
-  btn.textContent = '▶';
-  btn.disabled = true;
-  btn.addEventListener('click', e => { e.stopPropagation(); togglePlay(idx); });
-
-  bar.append(lbl, btn);
-  div.append(cv, bar);
+  div.append(cv);
   mainEl.appendChild(div);
 
-  return { div, cv, btn, lbl, alpha, isCard, cardPos };
+  return { div, cv, alpha, isCard, cardPos };
 });
 
 // ── Layout ────────────────────────────────────────────────────────────────────
@@ -261,9 +233,8 @@ function layoutAll() {
       width:  Math.round(p.width)  + 'px',
       height: Math.round(p.height) + 'px',
     });
-    const cvH = Math.max(1, Math.round(p.height) - PBAR_H);
     cv.width  = Math.round(p.width * dpr);
-    cv.height = Math.round(cvH * dpr);
+    cv.height = Math.round(p.height * dpr);
     renderPanel(idx);
   });
 
@@ -374,7 +345,7 @@ function startPrecompute() {
   computeDone = false;
   wetBufs.fill(null);
   specCache.clear();
-  panels.forEach((_, i) => { panels[i].btn.disabled = true; renderPanel(i); });
+  panels.forEach((_, i) => { panels[i].div.classList.add('computing'); renderPanel(i); });
 
   const freq = Math.max(20, Math.min(20000, parseFloat(freqNum.value) || 440));
   dryBuf = generateSignal(freq, N_SAMPLES, sampleRate, waveSel.value);
@@ -407,7 +378,7 @@ function handleResult(jobId, output) {
   } else {
     computeDone = true;
     setStatus('');
-    panels.forEach(p => { p.btn.disabled = false; });
+    panels.forEach(p => { p.div.classList.remove('computing'); });
     drawBg();
   }
 }
@@ -424,11 +395,19 @@ function renderPanel(idx) {
   if (!buf) return;
   if (dispSel.value === 'scope') renderSpectrogram(ctx, buf, W, H);
   else                           renderWaveform(ctx, buf, W, H);
+  // Playhead
+  if (idx === activeIdx && audioCtx) {
+    const frac = Math.min(1, (audioCtx.currentTime - playStartCtxTime) / playDuration);
+    const px = Math.round(frac * W);
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+    ctx.lineWidth   = 1.5;
+    ctx.beginPath(); ctx.moveTo(px, 0); ctx.lineTo(px, H); ctx.stroke();
+  }
 }
 
 function renderWaveform(ctx, buf, W, H) {
-  const start = Math.floor(buf.length * 0.25);
-  const end   = Math.floor(buf.length * 0.75);
+  const start = 0;
+  const end   = buf.length;
   const n     = end - start;
   ctx.strokeStyle = 'rgba(255,255,255,0.06)';
   ctx.lineWidth   = 0.5;
@@ -547,26 +526,38 @@ function startPlay(idx) {
   activeSrc = audioCtx.createBufferSource();
   activeSrc.buffer = ab;
   activeSrc.connect(gain);
+  activeSrc.onended = () => stopPlayback();
   activeSrc.start();
+  playStartCtxTime = audioCtx.currentTime;
+  playDuration     = buf.length / sampleRate;
   activeIdx  = idx;
   arrowAlpha = ALPHA_LIST[idx];
-  panels[idx].btn.textContent = '■';
-  panels[idx].btn.classList.add('playing');
   panels[idx].div.classList.add('active');
   drawBg();
+  startPlayheadLoop();
 }
 
 function stopPlayback() {
+  cancelAnimationFrame(playheadRaf);
   if (activeSrc) { try { activeSrc.stop(); } catch {} activeSrc = null; }
   if (audioCtx)  { audioCtx.close(); audioCtx = null; }
   if (activeIdx >= 0) {
-    panels[activeIdx].btn.textContent = '▶';
-    panels[activeIdx].btn.classList.remove('playing');
     panels[activeIdx].div.classList.remove('active');
+    renderPanel(activeIdx);
   }
   activeIdx  = -1;
   arrowAlpha = -1;
   drawBg();
+}
+
+function startPlayheadLoop() {
+  cancelAnimationFrame(playheadRaf);
+  function tick() {
+    if (activeIdx < 0) return;
+    renderPanel(activeIdx);
+    playheadRaf = requestAnimationFrame(tick);
+  }
+  playheadRaf = requestAnimationFrame(tick);
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
