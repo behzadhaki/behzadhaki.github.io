@@ -13,20 +13,20 @@ The concept for the performance was to us a setup in which Raul Refree would per
 
 The idea was to explore whether and how we could use our prior generative system, which were mainly focused on rhythm, to generate harmonic content for the organ. As such, we developed the system shown below, in which GrooveTransformer is used to generate rhythmic content and a Markov-model is used to generate the harmonic content.
 
-<img src="/assets/works/MarkovAccompaniment/AccompDemo.png" alt="Thumbnail" width="70%">
+<img src="/assets/works/MarkovAccompaniment/AccompDemo.png" alt="Thumbnail" style="max-width:600px; width:100%">
 
 While the system was originally designed to work with the pipe organ, it can be adapted to work with any pitched instrument, digital or acoustic, that can be controlled via MIDI.
 
 ## Snippets of the Organ performance
 
-<video width="90%" controls>
+<video style="max-width:600px; width:100%" controls>
   <source src="https://nime2025organperformance.github.io/assets/Vid0.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
 ## A demo with an early version of the patch
 
-<video width="90%" controls>
+<video style="max-width:600px; width:100%" controls>
   <source src="/assets/works/MarkovAccompaniment/markov_shortest.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>

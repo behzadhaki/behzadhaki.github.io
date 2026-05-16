@@ -4,7 +4,7 @@
 
 This is a simple sampler that allows users to make a query to Freesound and build a sampler based on the first 16 results. Sounds are automatically mapped in the full MIDI note range.
 
-<img src="/assets/works/FreesoundSimpleSampler/FreesoundSimpleSampler.png" alt="Thumbnail" width="70%">
+<img src="/assets/works/FreesoundSimpleSampler/FreesoundSimpleSampler.png" alt="Thumbnail" style="max-width:600px; width:100%">
 
 <br>
 
