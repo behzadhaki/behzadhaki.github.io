@@ -38,6 +38,8 @@ html[data-theme='light'] {
     color: #1a1827;
     &:hover { color: $brand-color; }
   }
+  .logo__first { color: rgba(0,0,0,0.45); }
+  .logo__last  { color: rgba(0,0,0,0.22); }
 
   .nav-buttons { color: #1a1827; }
 

@@ -17,12 +17,6 @@ layout: default
         <div class="post-head__box">
           <div class="post__meta">
             <span class="post__minutes">
-              {% assign words = page.content | number_of_words %}
-              {% if words < 360 %}
-                1 min read
-              {% else %}
-                {{ words | divided_by:180 }} min read
-              {% endif %}
               <time class="post__date"
                 datetime="{{ page.date | date_to_xmlschema }}">{% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}{{ page.date | date: date_format }}</time>
             </span>
