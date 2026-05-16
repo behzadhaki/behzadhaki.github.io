@@ -86,8 +86,41 @@ document.addEventListener("DOMContentLoaded", function() {
 
   if (lightense) {
     Lightense(".page img:not(.no-lightense), .post img:not(.no-lightense)", {
-    padding: 60,
-    offset: 30
+      padding: 60,
+      offset: 30,
+      beforeShow: function() {
+        // Walk up ancestors and temporarily neutralise anything that would trap
+        // the lightense-wrap: stacking contexts (pos+z-index) and overflow:hidden.
+        var saved = [];
+        var el = this.target && this.target.parentElement;
+        while (el && el !== document.body) {
+          var cs = window.getComputedStyle(el);
+          var entry = { el: el };
+          var changed = false;
+          if (cs.position !== 'static' && cs.zIndex !== 'auto') {
+            entry.zIndex = el.style.zIndex;
+            el.style.zIndex = 'auto';
+            changed = true;
+          }
+          if (cs.overflow === 'hidden' || cs.overflowX === 'hidden' || cs.overflowY === 'hidden') {
+            entry.overflow = el.style.overflow;
+            el.style.overflow = 'visible';
+            changed = true;
+          }
+          if (changed) saved.push(entry);
+          el = el.parentElement;
+        }
+        this._saved = saved;
+      },
+      afterHide: function() {
+        if (this._saved) {
+          this._saved.forEach(function(item) {
+            if ('zIndex' in item) item.el.style.zIndex = item.zIndex;
+            if ('overflow' in item) item.el.style.overflow = item.overflow;
+          });
+          this._saved = null;
+        }
+      }
     });
   };
 
