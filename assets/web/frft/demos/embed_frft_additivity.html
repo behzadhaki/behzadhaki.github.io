@@ -10,8 +10,8 @@
     const sp = new URLSearchParams(location.search);
     const w = sp.get('w'), h = sp.get('h');
     const s = document.documentElement.style;
-    if (w) s.width  = Math.max(200, +w) + 'px';
-    if (h) s.height = Math.max(200, +h) + 'px';
+    s.width  = Math.max(200, +(w || 600)) + 'px';
+    s.height = Math.max(200, +(h || 400)) + 'px';
     const wave = sp.get('wave');
     if (['sine','triangle','sawtooth','square','sweep'].includes(wave)) window._initWave = wave;
     const freq = parseFloat(sp.get('freq'));
@@ -54,6 +54,12 @@ html, body {
   flex-direction: column;
 }
 
+body {
+  padding: 0.5em;
+  gap: 0.4em;
+  box-sizing: border-box;
+}
+
 #topBar {
   flex-shrink: 0;
   display: flex;
@@ -61,7 +67,8 @@ html, body {
   gap: 0.5em;
   padding: 0.25em 0.6em;
   background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  border: 1px solid var(--border);
+  border-radius: 10px;
   height: 2.4em;
 }
 #topBar label { font-size: 0.78em; color: var(--muted); white-space: nowrap; }
@@ -99,7 +106,12 @@ html, body {
 }
 #infoBtn:hover { color: var(--text); }
 
-#main { flex: 1; position: relative; overflow: hidden; background: var(--bg); }
+#main {
+  flex: 1; position: relative; overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
 
 #viewBar {
   position: absolute;
@@ -112,7 +124,7 @@ html, body {
   position: absolute;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 3px;
+  border-radius: 8px;
   display: flex; flex-direction: column;
   overflow: hidden;
   box-shadow: 0 1px 4px rgba(0,0,0,0.5);
@@ -167,12 +179,12 @@ html, body {
 .alpha-overlay input:focus { border-color: var(--accent); outline: none; }
 .alpha-overlay input:disabled { opacity: 0.55; cursor: default; }
 
-.tab-group { display: flex; flex-shrink: 0; height: 1.8em; }
+.tab-group { display: flex; flex-shrink: 0; height: 1.4em; }
 .tab {
-  padding: 0 0.7em; height: 100%;
+  padding: 0 0.55em; height: 100%;
   background: var(--surface); color: var(--muted);
   border: 1px solid var(--border2); border-radius: 0;
-  font-size: 0.80em; font-weight: 600; cursor: pointer;
+  font-size: 0.60em; font-weight: 600; cursor: pointer;
 }
 .tab:first-child { border-radius: 3px 0 0 3px; }
 .tab:last-child  { border-radius: 0 3px 3px 0; }
@@ -187,7 +199,8 @@ html, body {
   flex-wrap: wrap;
   padding: 0.3em 0.8em;
   background: var(--surface);
-  border-top: 1px solid var(--border);
+  border: 1px solid var(--border);
+  border-radius: 10px;
 }
 .st-item { display:flex; align-items:baseline; gap:0.25em; white-space:nowrap; }
 .st-key  { font-size:0.68em; font-weight:700; letter-spacing:0.05em; color:var(--muted); }
