@@ -609,9 +609,12 @@ async function autoProcess() {
     const alpha            = parseFloat(alphaNum.value);
     const overlap          = parseInt(overlapSel.value);
     const isAll            = bufSizeSel.value === 'all' || bufSizeSel.value === 'all-nowin';
-    const noWindow         = bufSizeSel.value === 'all-nowin';
     const bufSize          = isAll ? dryBuf.length : parseInt(bufSizeSel.value);
     const effectiveOverlap = isAll ? 1 : overlap;
+    // With overlapFactor=1 the synthesis Hann window corrupts the FRFT output
+    // (multiplying a frequency-domain result by a time-domain window distorts it).
+    // Always use rectangular window when there is no overlap.
+    const noWindow         = bufSizeSel.value === 'all-nowin' || effectiveOverlap === 1;
     const halfSpectrum = modeSel.value === 'half';
     setStatus('Processing…', 'busy');
     frftWorker.postMessage({

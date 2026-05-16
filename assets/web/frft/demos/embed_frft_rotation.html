@@ -198,7 +198,7 @@ const CARD_IDX    = ALPHA_LIST.reduce((arr, a, i) => {
   if (Number.isInteger(a) && a <= 3) arr.push(i);
   return arr;
 }, []);
-const N_SAMPLES  = 88200;   // 2 seconds at 44100 Hz
+const N_SAMPLES  = 131072;  // 2^17 samples (~2.97 s at 44100 Hz)
 // Layout fractions (of min(mainW, mainH))
 const CIR_R_F    = 0.155;  // circle radius
 const PANEL_D    = 0.400;  // single-ring radius for all panel centers
@@ -216,6 +216,7 @@ function alphaFrac(idx) {
 // ── State ────────────────────────────────────────────────────────────────────
 let sampleRate       = 44100;
 let dryBuf           = null;
+let windowedBuf      = null;
 let wetBufs          = new Array(NUM_ALPHA).fill(null);
 let specCache        = new Map();
 let computeDone      = false;
@@ -468,6 +469,19 @@ function generateSignal(freq, n, sr, wave) {
   return buf;
 }
 
+// ── Analysis window ───────────────────────────────────────────────────────────
+function applyWindow(buf, type) {
+  const N   = buf.length;
+  const out = new Float32Array(N);
+  if (type === 'hann') {
+    for (let i = 0; i < N; i++)
+      out[i] = buf[i] * (0.5 - 0.5 * Math.cos(2 * Math.PI * i / (N - 1)));
+  } else {
+    out.set(buf); // rectangular — no tapering
+  }
+  return out;
+}
+
 // ── Precompute ────────────────────────────────────────────────────────────────
 function startPrecompute() {
   if (!workerReady) return;
@@ -478,7 +492,8 @@ function startPrecompute() {
   panels.forEach((_, i) => { panels[i].div.classList.add('computing'); renderPanel(i); });
 
   const freq = Math.max(20, Math.min(20000, parseFloat(freqNum.value) || 440));
-  dryBuf = generateSignal(freq, N_SAMPLES, sampleRate, waveSel.value);
+  dryBuf     = generateSignal(freq, N_SAMPLES, sampleRate, waveSel.value);
+  windowedBuf = applyWindow(dryBuf, winSel.value);
 
   queuePid++;
   queuePos = 0;
@@ -489,8 +504,9 @@ function startPrecompute() {
 function sendNextJob() {
   if (queuePos >= NUM_ALPHA) return;
   frftWorker.postMessage({
-    type: 'process', samples: dryBuf, alpha: ALPHA_LIST[queuePos],
-    bufSize: N_SAMPLES, overlapFactor: 1, noWindow: winSel.value === 'rect', halfSpectrum: false,
+    type: 'process', samples: windowedBuf, alpha: ALPHA_LIST[queuePos],
+    bufSize: N_SAMPLES, overlapFactor: 1, halfSpectrum: false,
+    noWindow: true,  // analysis window already applied on main thread; no synthesis window
     jobId: queuePid * 100 + queuePos,
   });
   queuePos++;
@@ -523,8 +539,17 @@ function renderPanel(idx) {
   ctx.fillRect(0, 0, W, H);
   const buf = wetBufs[idx];
   if (!buf) return;
-  if (activeView === 'scope') renderSpectrogram(ctx, buf, W, H, panels[idx].isCard);
-  else                        renderWaveform(ctx, buf, W, H);
+  if (activeView === 'scope') {
+    // FFT (cardPos=1) and IFFT (cardPos=3) have sparse impulse-train content;
+    // use a narrower dB window so harmonic amplitudes spread across more colours.
+    const cp = panels[idx].cardPos;
+    const dbRange = (cp === 1 || cp === 3) ? 40 : 60;
+    renderSpectrogram(ctx, buf, W, H, panels[idx].isCard, dbRange);
+  } else {
+    const cp = panels[idx].cardPos;
+    if ((cp === 1 || cp === 3) && isSparse(buf)) renderSpikeWaveform(ctx, buf, W, H);
+    else                                          renderWaveform(ctx, buf, W, H);
+  }
   // Playhead
   if (idx === activeIdx && audioCtx) {
     const frac = Math.min(1, (audioCtx.currentTime - playStartCtxTime) / playDuration);
@@ -556,10 +581,66 @@ function renderWaveform(ctx, buf, W, H) {
   ctx.stroke();
 }
 
-function renderSpectrogram(ctx, buf, W, H, dynamic = false) {
+// Returns true when >85 % of samples are within 5 % of the peak —
+// i.e. the buffer is a sparse impulse train rather than a continuous signal.
+function isSparse(buf) {
+  const n = buf.length;
+  let peak = 0;
+  for (let i = 0; i < n; i++) { const a = Math.abs(buf[i]); if (a > peak) peak = a; }
+  if (peak < 1e-10) return false;
+  const thr = peak * 0.05;
+  let zeros = 0;
+  for (let i = 0; i < n; i++) { if (Math.abs(buf[i]) < thr) zeros++; }
+  return zeros / n > 0.85;
+}
+
+// Stem / envelope renderer for sparse spike signals (FFT / IFFT panels).
+// For each output pixel, takes the max absolute value across all samples
+// that map to that pixel, then draws a symmetric vertical bar from the
+// centre — so no spike can be missed by point-sampling.
+function renderSpikeWaveform(ctx, buf, W, H) {
+  const n = buf.length;
+
+  // Find global peak for normalisation
+  let peak = 0;
+  for (let i = 0; i < n; i++) { const a = Math.abs(buf[i]); if (a > peak) peak = a; }
+  if (peak < 1e-10) return;
+
+  // Midline
+  const midY = H / 2;
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth   = 0.5;
+  ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(W, midY); ctx.stroke();
+
+  // Per-pixel max-abs envelope → stems
+  ctx.strokeStyle = '#c8902a';
+  ctx.lineWidth   = Math.max(1, W / 400);
+  ctx.beginPath();
+  for (let x = 0; x < W; x++) {
+    const i0 = Math.floor(x / W * n);
+    const i1 = Math.min(n - 1, Math.floor((x + 1) / W * n));
+    let maxAbs = 0;
+    for (let i = i0; i <= i1; i++) {
+      const a = Math.abs(buf[i]);
+      if (a > maxAbs) maxAbs = a;
+    }
+    if (maxAbs < 1e-10) continue;
+    const halfLen = (maxAbs / peak) * midY;
+    ctx.moveTo(x + 0.5, midY - halfLen);
+    ctx.lineTo(x + 0.5, midY + halfLen);
+  }
+  ctx.stroke();
+}
+
+function renderSpectrogram(ctx, buf, W, H, dynamic = false, dbRange = 60) {
   const stft = computeSTFT(buf);
   if (!stft) return;
-  const { magDB, numFrames, NUM_BINS, renderMin, renderMax, topBin } = stft;
+  const { magDB, numFrames, NUM_BINS, dBmax, topBin } = stft;
+  // For narrow-range panels (FFT/IFFT) anchor to actual peak so sparse
+  // impulse-train content isn't pushed below the render floor.
+  // For wide-range panels keep the −20 dB floor so noise-only buffers stay dark.
+  const renderMax = dbRange < 60 ? dBmax : Math.max(dBmax, -20);
+  const renderMin = renderMax - dbRange;
   const maxBin = dynamic ? topBin : NUM_BINS - 1;
   const img = ctx.createImageData(W, H);
   const px4 = img.data;
@@ -717,9 +798,9 @@ freqNum.addEventListener('input',  () => {
   clearTimeout(freqNum._t);
   freqNum._t = setTimeout(() => { stopPlayback(); startPrecompute(); }, 500);
 });
+winSel.addEventListener('change', () => { stopPlayback(); startPrecompute(); });
 tabWave.addEventListener('click', () => setView('wave'));
 tabSpec.addEventListener('click', () => setView('scope'));
-winSel.addEventListener('change', () => { stopPlayback(); startPrecompute(); });
 infoBtn.addEventListener('click', () => {
   window.open('https://behzadhaki.com/works/frft-in-the-browser/#frft-rotation-diagram', '_blank');
 });
