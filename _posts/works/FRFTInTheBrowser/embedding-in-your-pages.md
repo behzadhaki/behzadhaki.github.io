@@ -59,8 +59,15 @@
 .frft-embeds .fe-bottom-row {
   display:flex; gap:1rem; align-items:stretch; margin-top:0.5rem;
 }
-.frft-embeds .fe-bottom-row .fe-frame-wrap { flex-shrink:0; margin-top:0; }
-.frft-embeds .fe-bottom-row .fe-code-wrap  { flex:1; min-width:0; margin-top:0; overflow-y:auto; }
+.frft-embeds .fe-bottom-row .fe-frame-wrap { flex-shrink:0; margin-top:0; order:1; }
+.frft-embeds .fe-bottom-row .fe-code-wrap  { flex:1; min-width:0; margin-top:0; overflow-y:auto; order:2; }
+
+/* ── Mobile: stack code above widget ─────────────────────── */
+@media (max-width: 700px) {
+  .frft-embeds .fe-bottom-row { flex-direction:column; }
+  .frft-embeds .fe-bottom-row .fe-code-wrap  { order:1; }
+  .frft-embeds .fe-bottom-row .fe-frame-wrap { order:2; overflow:hidden; }
+}
 
 /* ── Live preview frame ───────────────────────────────────── */
 .frft-embeds .fe-frame-wrap {
@@ -526,7 +533,32 @@ Shows how block-processing artefacts change with different block sizes and overl
     const fr = g(frameId);
     fr.width = w; fr.height = h;
     fr.src = DEMO_BASE + file + '?' + liveParams + '&v=' + Date.now();
+    rescaleFrames();
   }
+
+  function rescaleFrames() {
+    document.querySelectorAll('.frft-embeds .fe-frame-wrap').forEach(function(wrap) {
+      const iframe = wrap.querySelector('iframe');
+      if (!iframe) return;
+      const embed = wrap.closest('.frft-embeds');
+      const controls = embed && embed.querySelector('.fe-controls');
+      const available = controls ? controls.offsetWidth : (embed ? embed.clientWidth : 0);
+      const iw = parseInt(iframe.getAttribute('width')) || 600;
+      const ih = parseInt(iframe.getAttribute('height')) || 300;
+      if (available > 0 && available < iw) {
+        const scale = available / iw;
+        iframe.style.transform = 'scale(' + scale + ')';
+        iframe.style.transformOrigin = 'top left';
+        wrap.style.width  = Math.round(iw  * scale) + 'px';
+        wrap.style.height = Math.round(ih  * scale) + 'px';
+      } else {
+        iframe.style.transform = '';
+        wrap.style.width  = '';
+        wrap.style.height = '';
+      }
+    });
+  }
+  window.addEventListener('resize', rescaleFrames);
 
   window.feCopy = function(codeId, btn) {
     navigator.clipboard.writeText(g(codeId).textContent).then(() => {
