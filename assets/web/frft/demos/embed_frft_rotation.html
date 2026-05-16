@@ -120,7 +120,7 @@ button:active:not(:disabled) { filter: brightness(0.85); }
 
 .panel-label {
   position: absolute; pointer-events: none;
-  font-size: 0.70em; font-weight: 500; white-space: nowrap;
+  font-size: 0.90em; font-weight: 600; white-space: nowrap;
   color: rgba(200,200,200,0.70);
   transform: translateX(-50%);
 }
@@ -215,6 +215,8 @@ function alphaFrac(idx) {
 
 // ── State ────────────────────────────────────────────────────────────────────
 let sampleRate       = 44100;
+let layoutW          = 0;   // cached layout dimensions — kept in sync by layoutAll
+let layoutH          = 0;   // drawBg always reads these, never mainEl directly
 let dryBuf           = null;
 let windowedBuf      = null;
 let wetBufs          = new Array(NUM_ALPHA).fill(null);
@@ -334,6 +336,7 @@ function panelPos(mW, mH, alpha, idx) {
 function layoutAll() {
   const mW = mainEl.clientWidth, mH = mainEl.clientHeight;
   if (mW < 10 || mH < 10) return;
+  layoutW = mW; layoutH = mH;
   const dpr = window.devicePixelRatio || 1;
 
   bgCanvas.width  = Math.round(mW * dpr);
@@ -372,11 +375,20 @@ function layoutAll() {
   drawBg();
 }
 
-new ResizeObserver(layoutAll).observe(mainEl);
+// Use window 'resize' instead of ResizeObserver — the latter fires on any
+// internal browser reflow (e.g. AudioContext creation), whereas 'resize'
+// only fires on genuine window / page-zoom changes.
+let _layoutDebounce = null;
+window.addEventListener('resize', () => {
+  clearTimeout(_layoutDebounce);
+  _layoutDebounce = setTimeout(layoutAll, 60);
+});
+// Bootstrap: ResizeObserver used to fire immediately on observe; do it explicitly.
+layoutAll();
 
 // ── Background canvas ─────────────────────────────────────────────────────────
 function drawBg() {
-  const mW = mainEl.clientWidth, mH = mainEl.clientHeight;
+  const mW = layoutW, mH = layoutH;
   if (mW < 10 || mH < 10) return;
   const dpr = window.devicePixelRatio || 1;
   const ctx = bgCanvas.getContext('2d');
