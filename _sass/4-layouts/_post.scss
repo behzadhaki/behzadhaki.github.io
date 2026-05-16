@@ -45,8 +45,12 @@
   overflow: hidden;
   box-shadow: 0 5px 10px rgba(0,0,0,0.15);
   background-color: $dark;
-  padding: 0;              // ← remove aspect-ratio forcing
-  min-height: auto;        // ← let height be defined by image
+  padding: 0;
+  min-height: auto;
+
+  @media (max-width: $tablet) {
+    margin-bottom: 40px;
+  }
 }
 
 .post-image {
@@ -58,8 +62,7 @@
 
 
   @media (max-width: $tablet) {
-    padding-top: 65%;
-    margin-bottom: 40px;
+    /* margin lives on .image-box, not here, to avoid overflow:hidden eating it */
   }
 }
 
