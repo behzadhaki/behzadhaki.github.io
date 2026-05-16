@@ -236,7 +236,7 @@ Demonstrates that FRFT(α₂) ∘ FRFT(α₁) = FRFT(α₁+α₂). The widget sh
 <div class="frft-embeds">
 <div class="fe-controls">
   <label>Width</label>
-  <input type="number" id="fe6-w" value="750" min="200" step="10">
+  <input type="number" id="fe6-w" value="600" min="200" step="10">
   <label>Height</label>
   <input type="number" id="fe6-h" value="400" min="200" step="10">
   <label>Waveform</label>
@@ -272,7 +272,7 @@ Demonstrates that FRFT(α₂) ∘ FRFT(α₁) = FRFT(α₁+α₂). The widget sh
 </div>
 <div class="fe-bottom-row">
 <div class="fe-frame-wrap">
-  <iframe id="fe6-frame" class="reframe-off" width="750" height="400"></iframe>
+  <iframe id="fe6-frame" class="reframe-off" width="600" height="400"></iframe>
 </div>
 <div class="fe-code-wrap">
   <pre id="fe6-code"></pre>
