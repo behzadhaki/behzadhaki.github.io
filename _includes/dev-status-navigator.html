@@ -1,66 +1,71 @@
-<div class="dev-status-navigator" data-level="{{ include.level | default: 1 }}" style="width: 300px; font-family: sans-serif; margin: 2rem 0;">
-  <div style="background: rgba(113,113,113,0.3); border-radius: 10px; height: 20px; overflow: hidden; position: relative;">
-
-    <!-- Label now floats over the entire bar -->
-    <span class="status-label" style="
-      position: absolute;
-      left: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.7rem;
-      color: white;
-      font-weight: normal;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: calc(100% - 16px);
-      z-index: 2;
-    ">Loading...</span>
-
-    <div class="progress-fill" style="
-      height: 100%;
-      width: 0%;
-      background-color: rgba(76, 175, 80, 0.3);
-      transition: width 0.4s ease;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-    "></div>
-  </div>
+<div class="dev-status-circle" data-level="{{ include.level | default: 1 }}">
+  <svg class="dsc-svg" viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+    <g class="dsc-dots"></g>
+    <foreignObject x="25" y="25" width="70" height="70">
+      <div xmlns="http://www.w3.org/1999/xhtml" class="dsc-inner-label"></div>
+    </foreignObject>
+  </svg>
 </div>
 
+<style>
+.dev-status-circle {
+  display: none;
+}
+.dsc-svg { overflow: visible; }
+.dsc-dot-on  { fill: #777; }
+.dsc-dot-off { fill: rgba(120,120,120,0.22); }
+.dsc-inner-label {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 9.5px;
+  line-height: 1.35;
+  color: #999;
+  word-break: break-word;
+  hyphens: auto;
+}
+html[data-theme='light'] .dsc-dot-on  { fill: #555; }
+html[data-theme='light'] .dsc-dot-off { fill: rgba(0,0,0,0.1); }
+html[data-theme='light'] .dsc-inner-label { color: #666; }
+</style>
+
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll('.dev-status-navigator').forEach(function (statusEl) {
-      const fillEl = statusEl.querySelector('.progress-fill');
-      const labelEl = statusEl.querySelector('.status-label');
-
-      const statusMap = {
-        1: { label: "Early Stages", color: "rgba(244,67,54,0.3)" },
-        2: { label: "Actively Ongoing", color: "rgba(255,152,0,0.3)" },
-        3: { label: "Late Stages", color: "rgba(33,150,243,0.3)" },
-        4: { label: "Finished, under maintenance", color: "rgba(76,175,80,0.3)" },
-        5: { label: "Finished, no active maintenance", color: "rgba(76,175,80,0.5)" }
+(function () {
+  function buildCircles() {
+    document.querySelectorAll('.dev-status-circle:not([data-dsc-built])').forEach(function (el) {
+      el.setAttribute('data-dsc-built', '1');
+      var level = parseInt(el.getAttribute('data-level'), 10);
+      var statusMap = {
+        1: { label: 'Early Stages',      pct: 20  },
+        2: { label: 'Actively Ongoing',  pct: 45  },
+        3: { label: 'Late Stages',       pct: 70  },
+        4: { label: 'Under Maintenance', pct: 90  },
+        5: { label: 'Finished',          pct: 100 }
       };
-
-      const level = parseInt(statusEl.dataset.level, 10);
-      const status = statusMap[level] || { label: "Unknown", color: "rgba(200,200,200,0.3)" };
-
-      // Adjusted progress logic: 1–3 → 5–80%, 4–5 → 90–100%
-      let percent = 0;
-      if (level >= 1 && level <= 3) {
-        percent = 5 + ((level - 1) / 2) * 75; // level 1: 5%, level 2: ~42.5%, level 3: 80%
-      } else if (level === 4) {
-        percent = 90;
-      } else if (level === 5) {
-        percent = 100;
+      var s = statusMap[level] || { label: 'Unknown', pct: 0 };
+      var TOTAL = 24, cx = 60, cy = 60, R = 44, dr = 4.6;
+      var filled = Math.round(s.pct / 100 * TOTAL);
+      var ns = 'http://www.w3.org/2000/svg';
+      var g = el.querySelector('.dsc-dots');
+      for (var i = 0; i < TOTAL; i++) {
+        var a = (i / TOTAL) * 2 * Math.PI - Math.PI / 2;
+        var c = document.createElementNS(ns, 'circle');
+        c.setAttribute('cx', (cx + R * Math.cos(a)).toFixed(2));
+        c.setAttribute('cy', (cy + R * Math.sin(a)).toFixed(2));
+        c.setAttribute('r', dr);
+        c.setAttribute('class', i < filled ? 'dsc-dot-on' : 'dsc-dot-off');
+        g.appendChild(c);
       }
-
-      fillEl.style.width = percent + "%";
-      fillEl.style.backgroundColor = status.color;
-      labelEl.textContent = "Development Status: " + status.label;
-      labelEl.title = labelEl.textContent;
+      el.querySelector('.dsc-inner-label').textContent = s.label;
     });
-  });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', buildCircles);
+  } else {
+    buildCircles();
+  }
+})();
 </script>
