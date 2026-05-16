@@ -96,9 +96,14 @@ html[data-theme='light'] {
   .post__date { color: #666; }
 
   .post-tags .post__tag {
-    border-color: rgba(0,0,0,0.15);
-    color: #555;
-    &:hover { color: #1a1827; border-color: $brand-color; }
+    background: rgba(0,0,0,0.04);
+    color: rgba(0,0,0,0.25);
+    &::before { color: rgba(0,0,0,0.25); }
+    &:hover {
+      background: rgba(0,0,0,0.08);
+      color: #1a1827;
+      &::before { color: rgba(0,0,0,0.6); }
+    }
   }
 
   // ── Post content (non-section body) ──────────────────────────
