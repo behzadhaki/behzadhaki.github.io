@@ -141,12 +141,13 @@ document.addEventListener('keydown', function(e) {
       if (parentSection) {
         parentSection.classList.remove("is-collapsed");
       }
-      var navEl = document.getElementById("post-navbar");
-      var offset = navEl ? navEl.offsetHeight + 24 : 24;
-      setTimeout(function () {
-        var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
-        window.scrollTo({ top: top, behavior: "instant" });
-      }, 50);
+      // Wait two frames so the layout settles after expanding any collapsed section,
+      // then reuse scrollToEl which correctly accounts for the sticky section header.
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          scrollToEl(target);
+        });
+      });
     }
 
     // STEP 3: Section-level anchor clicks
@@ -411,7 +412,8 @@ document.addEventListener('keydown', function(e) {
         activeSection = sectionNode.id;
         highlightRow(row1, sectionNode.id);
         renderRow2(sectionNode);
-        scrollToEl(sectionNode.el);
+        var top = sectionNode.el.getBoundingClientRect().top + window.pageYOffset - navbar.offsetHeight;
+        window.scrollTo({ top: top, behavior: "instant" });
         isPreviewing = false;
       });
       a.addEventListener("mouseenter", function () {
