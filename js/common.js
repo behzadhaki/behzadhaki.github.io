@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
   const body = document.querySelector("body"),
   menuOpenIcon = document.querySelector(".nav__icon-menu"),
-  menuCloseIcon = document.querySelector(".nav__icon-close"),
   menuList = document.querySelector(".menu-overlay"),
   searchOpenIcon = document.querySelector(".search-button"),
   searchCloseIcon = document.querySelector(".search__close"),
@@ -16,11 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // Menu and Search
   ======================= */
   menuOpenIcon.addEventListener("click", () => {
-    menuOpen();
-  });
-
-  menuCloseIcon.addEventListener("click", () => {
-    menuClose();
+    menuList.classList.contains("is-open") ? menuClose() : menuOpen();
   });
 
   searchOpenIcon.addEventListener("click", () => {
@@ -33,10 +28,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function menuOpen() {
     menuList.classList.add("is-open");
+    menuOpenIcon.classList.remove("fa-bars");
+    menuOpenIcon.classList.add("fa-xmark");
   }
 
   function menuClose() {
     menuList.classList.remove("is-open");
+    menuOpenIcon.classList.remove("fa-xmark");
+    menuOpenIcon.classList.add("fa-bars");
   }
 
   function searchOpen() {

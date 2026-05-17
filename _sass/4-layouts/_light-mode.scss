@@ -81,15 +81,7 @@ html[data-theme='light'] {
   }
 
   .menu-overlay {
-    background-color: #ebebeb;
-    @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
-      background-color: rgba(#ebebeb, 0.94);
-    }
-  }
-
-  .nav-grid__title {
-    color: #505065;
-    &::after { background-color: #505065; }
+    background-color: #f4f4f4;
   }
 
   .mobile-nav .nav__link { color: #505065; }

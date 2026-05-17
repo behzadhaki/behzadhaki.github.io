@@ -18,24 +18,6 @@
         </a>
       </div>
 
-      <div class="menu-overlay">
-        <nav class="main-nav">
-          <div class="main-nav__box">
-            <div class="nav__icon-close">
-              <i class="fa-solid fa-xmark"></i>
-            </div>
-            <div class="nav-grid">
-              <div class="nav-grid__item">
-                <h2 class="nav-grid__title">{{ site.data.settings.title }}</h2>
-                <div class="mobile-nav">
-                  {% include navigation.html %}
-                </div>
-              </div>
-            </div>
-          </div>
-        </nav>
-      </div>
-
       <div class="navigation">
         <div class="top-nav">
           {% include navigation.html %}
@@ -59,5 +41,19 @@
   </div>
 </header>
 <!-- end header -->
+
+<div class="menu-overlay">
+  <nav class="main-nav">
+    <div class="main-nav__box">
+      <div class="nav-grid">
+        <div class="nav-grid__item">
+          <div class="mobile-nav">
+            {% include navigation.html %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
 
 {% include search.html %}
