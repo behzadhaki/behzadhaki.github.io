@@ -1003,28 +1003,9 @@
 }
 .finder-list-item--no-link { pointer-events: none; }
 
-// Cards rendered inside the detail column — match exact card dimensions from the pages
+// Detail column — hosts post detail panels, pub cards, and CV lists
 .finder-col--detail {
   padding: 0;
-
-  // Work card wrapper — centers the fixed-width card horizontally
-  .finder-work-card-wrap {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-  }
-
-  .work-card {
-    width: 220px;
-    min-width: 180px;
-    flex-shrink: 0;
-    border-radius: 14px;
-    margin: 0;
-
-    &:hover { transform: none; box-shadow: none; }
-    &--hidden { display: flex !important; }
-  }
 
   .pub-card {
     width: 100%;
@@ -1034,9 +1015,90 @@
     &:hover { transform: none; box-shadow: none; }
   }
 
-  // bibliography <ol> wrapper from jekyll-scholar
   ol.bibliography { list-style: none; padding: 0; margin: 0; width: 100%; }
-
-  // CV list rendered directly into col3
   .finder-items-list { width: 100%; }
+}
+
+// Lightbox overlay for finder detail panel images
+.finder-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.88);
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+
+  &.is-open { display: flex; }
+
+  img {
+    max-width: 92vw;
+    max-height: 92vh;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    pointer-events: none;
+  }
+}
+
+// Scoped overrides for post-head when rendered inside the finder detail column.
+// Uses the exact same HTML/classes as the real post head — only scales dimensions down.
+.finder-post-head {
+  margin-bottom: 0;
+  padding: 0.65rem 0.75rem 0.75rem;
+  width: 100%;
+
+  .post-head__box {
+    margin-left: 0;
+  }
+
+  &__float-img {
+    float: right;
+    width: 28%;
+    margin: 0 0 0.5rem 0.75rem;
+  }
+
+  .post__meta .post__date,
+  .post__meta .post__minutes {
+    font-size: 11px;
+  }
+
+  .post__title {
+    font-size: 18px;
+    margin: 6px 0 8px;
+    line-height: 1.25;
+  }
+
+  .post__description {
+    font-size: 11.5px;
+    margin: -4px 0 10px;
+  }
+
+  .image-box {
+    border-radius: 0;
+    box-shadow: none;
+    @media (max-width: $tablet) { margin-bottom: 0; }
+  }
+
+  .post-image {
+    border-radius: 0;
+  }
+
+  .proj-note {
+    font-size: 11px;
+    margin-top: 0.4rem;
+  }
+
+  &__view-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.62rem;
+    color: rgba($gray, 0.55);
+    text-decoration: none;
+    margin-top: 0.4rem;
+
+    &:hover { color: $light-gray; text-decoration: none; }
+  }
 }

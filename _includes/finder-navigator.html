@@ -63,9 +63,13 @@
 
 <!-- Pre-rendered cards for col-3 detail view (hidden, using same templates as the pages) -->
 <div id="finder-pub-cards" style="display:none" aria-hidden="true">{% bibliography --query @*[hide!=true] %}</div>
-<div id="finder-work-cards" style="display:none" aria-hidden="true">{% for post in works_posts %}<div data-url="{{ post.url | relative_url }}">{% include display_post_card.html doc=post %}</div>{% endfor %}</div>
-<div id="finder-tutorial-cards" style="display:none" aria-hidden="true">{% for post in tutorial_posts %}<div data-url="{{ post.url | relative_url }}">{% include display_post_card.html doc=post %}</div>{% endfor %}</div>
-<div id="finder-install-cards" style="display:none" aria-hidden="true">{% for post in installs_posts %}<div data-url="{{ post.url | relative_url }}">{% include display_post_card.html doc=post %}</div>{% endfor %}</div>
+<div id="finder-work-details" style="display:none" aria-hidden="true">{% for post in works_posts %}<div data-url="{{ post.url | relative_url }}">{% include finder-post-detail.html doc=post %}</div>{% endfor %}</div>
+<div id="finder-tutorial-details" style="display:none" aria-hidden="true">{% for post in tutorial_posts %}<div data-url="{{ post.url | relative_url }}">{% include finder-post-detail.html doc=post %}</div>{% endfor %}</div>
+<div id="finder-install-details" style="display:none" aria-hidden="true">{% for post in installs_posts %}<div data-url="{{ post.url | relative_url }}">{% include finder-post-detail.html doc=post %}</div>{% endfor %}</div>
+
+<div id="finder-lightbox" class="finder-lightbox" aria-modal="true" role="dialog" aria-label="Image viewer">
+  <img id="finder-lightbox-img" src="" alt="">
+</div>
 
 <section class="finder-nav-section">
   <div class="container">
@@ -119,6 +123,22 @@
 
   var data = JSON.parse(document.getElementById('finder-nav-data').textContent);
   var browser = document.getElementById('finder-browser');
+
+  // ── Lightbox ───────────────────────────────────────────────────────────────
+  var lightbox    = document.getElementById('finder-lightbox');
+  var lightboxImg = document.getElementById('finder-lightbox-img');
+  function openLightbox(src, alt) {
+    lightboxImg.src = src;
+    lightboxImg.alt = alt || '';
+    lightbox.classList.add('is-open');
+    document.addEventListener('keydown', onLightboxKey);
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('is-open');
+    document.removeEventListener('keydown', onLightboxKey);
+  }
+  function onLightboxKey(e) { if (e.key === 'Escape') closeLightbox(); }
+  lightbox.addEventListener('click', closeLightbox);
   var col0 = document.getElementById('finder-col-0');
   var col1 = document.getElementById('finder-col-1');
   var col2 = document.getElementById('finder-col-2');
@@ -135,10 +155,10 @@
   }
 
   // Pre-rendered card containers
-  var pubCardContainer     = document.getElementById('finder-pub-cards');
-  var workCardContainer    = document.getElementById('finder-work-cards');
-  var tutorialCardContainer= document.getElementById('finder-tutorial-cards');
-  var installCardContainer = document.getElementById('finder-install-cards');
+  var pubCardContainer      = document.getElementById('finder-pub-cards');
+  var workDetailContainer   = document.getElementById('finder-work-details');
+  var tutorialDetailContainer = document.getElementById('finder-tutorial-details');
+  var installDetailContainer  = document.getElementById('finder-install-details');
 
   // Parse publications from jekyll-scholar BibTeX output (<ol><li>…</li></ol> wrapper)
   (function () {
@@ -151,6 +171,16 @@
       if (src) { try { pubs.push(JSON.parse(src)); } catch (e) {} }
     });
     data.publications = pubs;
+  }());
+
+  // Sort works/tutorials/installations newest-first (concat order doesn't preserve date)
+  // Publications are left unsorted — jekyll-scholar already outputs year-desc
+  // and index-based pub card matching depends on that fixed order.
+  (function () {
+    function byYearDesc(a, b) { return parseInt(b.year, 10) - parseInt(a.year, 10); }
+    data.works.sort(byYearDesc);
+    data.tutorials.sort(byYearDesc);
+    data.installations.sort(byYearDesc);
   }());
 
   // ── Static CV data ─────────────────────────────────────────────────────────
@@ -269,24 +299,27 @@
 
   // ── Col-3 detail: use pre-rendered cards ──────────────────────────────────
 
-  // Clone a post card (work / tutorial / installation) from hidden container
-  function showPostCard(container, url) {
+  // Clone a post detail panel (work / tutorial / installation) from hidden container
+  function showPostDetail(container, url) {
     var slot = container.querySelector('[data-url="' + url + '"]');
     if (!slot) return;
-    var card = slot.querySelector('.work-card');
-    if (!card) return;
-    var clone = card.cloneNode(true);
-    // Activate lazy-loaded images (IntersectionObserver won't fire on hidden clones)
-    clone.querySelectorAll('img').forEach(function (img) {
-      var src = img.getAttribute('data-src') || img.getAttribute('src');
-      if (src) { img.src = src; }
+    var panel = slot.querySelector('.finder-post-head');
+    if (!panel) return;
+    var clone = panel.cloneNode(true);
+    // Activate lazy-loaded images and wire lightbox
+    clone.querySelectorAll('img[data-src]').forEach(function (img) {
+      img.src = img.getAttribute('data-src');
       img.removeAttribute('data-src');
       img.classList.remove('lazy');
     });
-    var wrap = document.createElement('div');
-    wrap.className = 'finder-work-card-wrap';
-    wrap.appendChild(clone);
-    col3.appendChild(wrap);
+    clone.querySelectorAll('.image-box img').forEach(function (img) {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openLightbox(img.src, img.alt);
+      });
+    });
+    col3.appendChild(clone);
   }
 
   // Clone a pub card from hidden bibliography container (matched by index)
@@ -432,7 +465,7 @@
         var items = el.dataset.subKey === 'all' ? data.works : worksForType(el.dataset.subKey);
         col2.innerHTML = renderImageList(items);
         col3.innerHTML = '';
-        wireCol2(items, function (item) { showPostCard(workCardContainer, item.url); });
+        wireCol2(items, function (item) { showPostDetail(workDetailContainer, item.url); });
       });
 
     } else if (sectionKey === 'tutorials') {
@@ -442,7 +475,7 @@
         redirectArrow('/tutorials/', 'Go to Tutorials page') +
         '</div>';
       col2.innerHTML = renderImageList(data.tutorials);
-      wireCol2(data.tutorials, function (item) { showPostCard(tutorialCardContainer, item.url); });
+      wireCol2(data.tutorials, function (item) { showPostDetail(tutorialDetailContainer, item.url); });
 
     } else if (sectionKey === 'installations') {
       col1.innerHTML =
@@ -451,7 +484,7 @@
         redirectArrow('/installations-performances/', 'Go to Installations page') +
         '</div>';
       col2.innerHTML = renderImageList(data.installations);
-      wireCol2(data.installations, function (item) { showPostCard(installCardContainer, item.url); });
+      wireCol2(data.installations, function (item) { showPostDetail(installDetailContainer, item.url); });
 
     } else if (sectionKey === 'publications') {
       col1.innerHTML = renderPubCol1();
@@ -485,7 +518,7 @@
     firstEl.classList.add('is-active');
     var firstItems = firstEl.dataset.subKey === 'all' ? data.works : worksForType(firstEl.dataset.subKey);
     col2.innerHTML = renderImageList(firstItems);
-    wireCol2(firstItems, function (item) { showPostCard(workCardContainer, item.url); });
+    wireCol2(firstItems, function (item) { showPostDetail(workDetailContainer, item.url); });
   }
   fitHeight();
   window.addEventListener('resize', fitHeight);
