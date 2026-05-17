@@ -1,71 +1,42 @@
-<div class="dev-status-circle" data-level="{{ include.level | default: 1 }}">
-  <svg class="dsc-svg" viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
-    <g class="dsc-dots"></g>
-    <foreignObject x="25" y="25" width="70" height="70">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="dsc-inner-label"></div>
-    </foreignObject>
-  </svg>
+{% assign dsn_level = include.level | default: 1 | plus: 0 %}
+{% assign dsn_idx = dsn_level | minus: 1 %}
+{% assign dsn_labels = "Early Stages|Actively Ongoing|Late Stages|Finished, under maintenance|Finished, no active maintenance" | split: "|" %}
+
+<div class="dev-status">
+  <div class="dev-status__dots">
+    {% for i in (1..5) %}
+      <span class="dev-status__dot{% if i <= dsn_level %} dev-status__dot--on{% else %} dev-status__dot--off{% endif %}"></span>
+    {% endfor %}
+  </div>
+  <span class="dev-status__label">Status: {{ dsn_labels[dsn_idx] }}</span>
 </div>
 
 <style>
-.dev-status-circle {
-  display: none;
+.dev-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
-.dsc-svg { overflow: visible; }
-.dsc-dot-on  { fill: #777; }
-.dsc-dot-off { fill: rgba(120,120,120,0.22); }
-.dsc-inner-label {
-  width: 100%;
-  height: 100%;
+.dev-status__dots {
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-size: 9.5px;
-  line-height: 1.35;
-  color: #999;
-  word-break: break-word;
-  hyphens: auto;
+  gap: 5px;
 }
-html[data-theme='light'] .dsc-dot-on  { fill: #555; }
-html[data-theme='light'] .dsc-dot-off { fill: rgba(0,0,0,0.1); }
-html[data-theme='light'] .dsc-inner-label { color: #666; }
+.dev-status__dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.dev-status__dot--on  { background: #777; }
+.dev-status__dot--off { background: rgba(120,120,120,0.22); }
+.dev-status__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: #999;
+}
+html[data-theme='light'] .dev-status__dot--on  { background: #555; }
+html[data-theme='light'] .dev-status__dot--off { background: rgba(0,0,0,0.12); }
+html[data-theme='light'] .dev-status__label    { color: #777; }
 </style>
-
-<script>
-(function () {
-  function buildCircles() {
-    document.querySelectorAll('.dev-status-circle:not([data-dsc-built])').forEach(function (el) {
-      el.setAttribute('data-dsc-built', '1');
-      var level = parseInt(el.getAttribute('data-level'), 10);
-      var statusMap = {
-        1: { label: 'Early Stages',      pct: 20  },
-        2: { label: 'Actively Ongoing',  pct: 45  },
-        3: { label: 'Late Stages',       pct: 70  },
-        4: { label: 'Under Maintenance', pct: 90  },
-        5: { label: 'Finished',          pct: 100 }
-      };
-      var s = statusMap[level] || { label: 'Unknown', pct: 0 };
-      var TOTAL = 24, cx = 60, cy = 60, R = 44, dr = 4.6;
-      var filled = Math.round(s.pct / 100 * TOTAL);
-      var ns = 'http://www.w3.org/2000/svg';
-      var g = el.querySelector('.dsc-dots');
-      for (var i = 0; i < TOTAL; i++) {
-        var a = (i / TOTAL) * 2 * Math.PI - Math.PI / 2;
-        var c = document.createElementNS(ns, 'circle');
-        c.setAttribute('cx', (cx + R * Math.cos(a)).toFixed(2));
-        c.setAttribute('cy', (cy + R * Math.sin(a)).toFixed(2));
-        c.setAttribute('r', dr);
-        c.setAttribute('class', i < filled ? 'dsc-dot-on' : 'dsc-dot-off');
-        g.appendChild(c);
-      }
-      el.querySelector('.dsc-inner-label').textContent = s.label;
-    });
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', buildCircles);
-  } else {
-    buildCircles();
-  }
-})();
-</script>

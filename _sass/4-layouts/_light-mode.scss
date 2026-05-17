@@ -467,4 +467,79 @@ html[data-theme='light'] {
     background: rgba(72, 52, 88, 0.55);
     color: #fff;
   }
+
+  // ── Finder Navigator ─────────────────────────────────────────────────────
+  .finder-nav-section {
+    border-bottom-color: rgba(0,0,0,0.08);
+  }
+
+  .finder-browser {
+    border-color: rgba(0,0,0,0.1);
+    background: #f0f0f0;
+  }
+
+  .finder-col {
+    border-right-color: rgba(0,0,0,0.08);
+
+    &--root { background: rgba(0,0,0,0.04); }
+
+    &::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); }
+  }
+
+  .finder-item {
+    color: #666;
+
+    &:hover {
+      background: rgba(0,0,0,0.05);
+      color: #333;
+    }
+
+    &.is-active {
+      background: rgba(0,0,0,0.1);
+      color: #1a1a2e;
+    }
+
+    &__count {
+      background: rgba(0,0,0,0.07);
+      color: #888;
+    }
+  }
+
+  .finder-placeholder { color: rgba(0,0,0,0.25); }
+
+  .finder-list-item {
+    color: #666;
+
+    &:hover {
+      background: rgba(0,0,0,0.04);
+      color: #222;
+      text-decoration: none;
+    }
+
+    &.is-active {
+      background: rgba(0,0,0,0.09);
+      color: #111;
+    }
+
+    &__thumb { background: rgba(0,0,0,0.05); }
+
+    &__title { color: #333; }
+    &__desc  { color: #888; }
+  }
+
+  .finder-preview__image { background: rgba(0,0,0,0.04); }
+  .finder-preview__title { color: #333; }
+  .finder-preview__meta  { color: #888; }
+  .finder-preview__desc  { color: #666; }
+  .finder-preview__abstract { color: rgba(0,0,0,0.5); }
+
+  .finder-preview__tag {
+    border-color: rgba(0,0,0,0.12);
+    color: rgba(0,0,0,0.4);
+  }
+
+  .finder-preview__link {
+    color: rgba(0,0,0,0.65);
+    &:hover { color: rgba(0,0,0,0.9); }
+  }
 }

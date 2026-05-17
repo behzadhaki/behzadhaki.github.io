@@ -1,0 +1,494 @@
+{% comment %} Finder-style 4-column navigator for homepage {% endcomment %}
+{% assign _wmax  = site.posts | where_exp: "p", "p.project_types contains 'max'"         | where_exp: "p", "p.hidden != true" %}
+{% assign _wpd   = site.posts | where_exp: "p", "p.project_types contains 'pd'"          | where_exp: "p", "p.hidden != true" %}
+{% assign _wplug = site.posts | where_exp: "p", "p.project_types contains 'plugins'"     | where_exp: "p", "p.hidden != true" %}
+{% assign _wweb  = site.posts | where_exp: "p", "p.project_types contains 'web'"         | where_exp: "p", "p.hidden != true" %}
+{% assign _whw   = site.posts | where_exp: "p", "p.project_types contains 'hardware'"    | where_exp: "p", "p.hidden != true" %}
+{% assign _wds   = site.posts | where_exp: "p", "p.project_types contains 'datasets'"    | where_exp: "p", "p.hidden != true" %}
+{% assign _wfw   = site.posts | where_exp: "p", "p.project_types contains 'frameworks'"  | where_exp: "p", "p.hidden != true" %}
+{% assign _wtmpl = site.posts | where_exp: "p", "p.project_types contains 'templates'"   | where_exp: "p", "p.hidden != true" %}
+{% assign _wwdg  = site.posts | where_exp: "p", "p.project_types contains 'web-widgets'" | where_exp: "p", "p.hidden != true" %}
+{% assign works_posts    = "" | split: "" | concat: _wmax | concat: _wpd | concat: _wplug | concat: _wweb | concat: _whw | concat: _wds | concat: _wfw | concat: _wtmpl | concat: _wwdg | uniq %}
+{% assign tutorial_posts = site.posts | where_exp: "p", "p.project_types contains 'tutorials'"                  | where_exp: "p", "p.hidden != true" %}
+{% assign installs_posts = site.posts | where_exp: "p", "p.project_types contains 'installations-performances'" | where_exp: "p", "p.hidden != true" %}
+
+<!-- JSON metadata for col-1/col-2 lists -->
+<script id="finder-nav-data" type="application/json">{
+  "works": [
+    {% for post in works_posts %}{
+      "title": {{ post.title | jsonify }},
+      "description": {% if post.description %}{{ post.description | jsonify }}{% else %}null{% endif %},
+      "image": {% if post.image %}{{ post.image | relative_url | jsonify }}{% else %}null{% endif %},
+      "url": {{ post.url | relative_url | jsonify }},
+      "types": {{ post.project_types | jsonify }},
+      "tags": {{ post.tags | jsonify }},
+      "year": {{ post.date | date: "%Y" | jsonify }}
+    }{% unless forloop.last %},{% endunless %}{% endfor %}
+  ],
+  "tutorials": [
+    {% for post in tutorial_posts %}{
+      "title": {{ post.title | jsonify }},
+      "description": {% if post.description %}{{ post.description | jsonify }}{% else %}null{% endif %},
+      "image": {% if post.image %}{{ post.image | relative_url | jsonify }}{% else %}null{% endif %},
+      "url": {{ post.url | relative_url | jsonify }},
+      "tags": {{ post.tags | jsonify }},
+      "year": {{ post.date | date: "%Y" | jsonify }}
+    }{% unless forloop.last %},{% endunless %}{% endfor %}
+  ],
+  "installations": [
+    {% for post in installs_posts %}{
+      "title": {{ post.title | jsonify }},
+      "description": {% if post.description %}{{ post.description | jsonify }}{% else %}null{% endif %},
+      "image": {% if post.image %}{{ post.image | relative_url | jsonify }}{% else %}null{% endif %},
+      "url": {{ post.url | relative_url | jsonify }},
+      "tags": {{ post.tags | jsonify }},
+      "year": {{ post.date | date: "%Y" | jsonify }}
+    }{% unless forloop.last %},{% endunless %}{% endfor %}
+  ],
+  "workTypes": [
+    { "key": "max",         "label": "MAX / M4L"    },
+    { "key": "pd",          "label": "Pure Data"    },
+    { "key": "plugins",     "label": "VST Plugins"  },
+    { "key": "web",         "label": "Web Apps"     },
+    { "key": "hardware",    "label": "Hardware"     },
+    { "key": "datasets",    "label": "Datasets"     },
+    { "key": "frameworks",  "label": "Frameworks"   },
+    { "key": "templates",   "label": "Templates"    },
+    { "key": "web-widgets", "label": "Web Widgets"  }
+  ]
+}</script>
+
+<!-- Publications JSON from BibTeX (all except hide=true) -->
+<script id="finder-pubs-raw" type="text/plain">{% bibliography --query @*[hide!=true] --template bib_json_item %}</script>
+
+<!-- Pre-rendered cards for col-3 detail view (hidden, using same templates as the pages) -->
+<div id="finder-pub-cards" style="display:none" aria-hidden="true">{% bibliography --query @*[hide!=true] %}</div>
+<div id="finder-work-cards" style="display:none" aria-hidden="true">{% for post in works_posts %}<div data-url="{{ post.url | relative_url }}">{% include display_post_card.html doc=post %}</div>{% endfor %}</div>
+<div id="finder-tutorial-cards" style="display:none" aria-hidden="true">{% for post in tutorial_posts %}<div data-url="{{ post.url | relative_url }}">{% include display_post_card.html doc=post %}</div>{% endfor %}</div>
+<div id="finder-install-cards" style="display:none" aria-hidden="true">{% for post in installs_posts %}<div data-url="{{ post.url | relative_url }}">{% include display_post_card.html doc=post %}</div>{% endfor %}</div>
+
+<section class="finder-nav-section">
+  <div class="container">
+    <div class="finder-browser" id="finder-browser" role="navigation" aria-label="Site content browser">
+
+      <!-- Column 0: root categories (static) -->
+      <div class="finder-col finder-col--root" id="finder-col-0">
+        <div class="finder-item" data-section="publications" role="button" tabindex="0">
+          <span class="finder-item__label"><i class="fa-solid fa-book fa-fw finder-item__icon" aria-hidden="true"></i>Publications</span>
+          <i class="fa-solid fa-chevron-right finder-item__chevron" aria-hidden="true"></i>
+        </div>
+        <div class="finder-item" data-section="works" role="button" tabindex="0">
+          <span class="finder-item__label"><i class="fa-solid fa-code fa-fw finder-item__icon" aria-hidden="true"></i>Works</span>
+          <i class="fa-solid fa-chevron-right finder-item__chevron" aria-hidden="true"></i>
+        </div>
+        <div class="finder-item" data-section="tutorials" role="button" tabindex="0">
+          <span class="finder-item__label"><i class="fa-solid fa-graduation-cap fa-fw finder-item__icon" aria-hidden="true"></i>Tutorials</span>
+          <i class="fa-solid fa-chevron-right finder-item__chevron" aria-hidden="true"></i>
+        </div>
+        <div class="finder-item" data-section="installations" role="button" tabindex="0">
+          <span class="finder-item__label"><i class="fa-solid fa-star fa-fw finder-item__icon" aria-hidden="true"></i>Installations &amp; Performances</span>
+          <i class="fa-solid fa-chevron-right finder-item__chevron" aria-hidden="true"></i>
+        </div>
+        <div class="finder-item" data-section="cv" role="button" tabindex="0">
+          <span class="finder-item__label"><i class="fa-solid fa-file-lines fa-fw finder-item__icon" aria-hidden="true"></i>CV</span>
+          <i class="fa-solid fa-chevron-right finder-item__chevron" aria-hidden="true"></i>
+        </div>
+      </div>
+
+      <!-- Column 1: sub-categories (JS-populated) -->
+      <div class="finder-col finder-col--sub" id="finder-col-1">
+        <div class="finder-placeholder">
+          <i class="fa-solid fa-hand-pointer" aria-hidden="true"></i>
+          <span>Select a section</span>
+        </div>
+      </div>
+
+      <!-- Column 2: item list (JS-populated) -->
+      <div class="finder-col finder-col--list" id="finder-col-2"></div>
+
+      <!-- Column 3: detail card (JS-populated on item click) -->
+      <div class="finder-col finder-col--detail" id="finder-col-3"></div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  'use strict';
+
+  var data = JSON.parse(document.getElementById('finder-nav-data').textContent);
+  var col0 = document.getElementById('finder-col-0');
+  var col1 = document.getElementById('finder-col-1');
+  var col2 = document.getElementById('finder-col-2');
+  var col3 = document.getElementById('finder-col-3');
+
+  // Pre-rendered card containers
+  var pubCardContainer     = document.getElementById('finder-pub-cards');
+  var workCardContainer    = document.getElementById('finder-work-cards');
+  var tutorialCardContainer= document.getElementById('finder-tutorial-cards');
+  var installCardContainer = document.getElementById('finder-install-cards');
+
+  // Parse publications from jekyll-scholar BibTeX output (<ol><li>…</li></ol> wrapper)
+  (function () {
+    var rawEl = document.getElementById('finder-pubs-raw');
+    var tmp = document.createElement('div');
+    tmp.innerHTML = rawEl.textContent;
+    var pubs = [];
+    tmp.querySelectorAll('li').forEach(function (li) {
+      var src = li.textContent.trim().replace(/,\s*$/, '');
+      if (src) { try { pubs.push(JSON.parse(src)); } catch (e) {} }
+    });
+    data.publications = pubs;
+  }());
+
+  // ── Static CV data ─────────────────────────────────────────────────────────
+  var CV_SECTIONS = [
+    'Education', 'Work Experience', 'Teaching Experience', 'Publications',
+    'Supervisions', 'Conference Reviewer', 'Datasets', 'Open-Source Projects',
+    'Workshops', 'Artist Collaborations', 'Showcases', 'Skills', 'Languages'
+  ];
+
+  var CV_DATA = {
+    'Education': [
+      { title: 'PhD in Sound and Music Computing',   sub: 'Universitat Pompeu Fabra · 2020–2024' },
+      { title: 'Master in Sound and Music Computing', sub: 'Universitat Pompeu Fabra · 2017–2018' },
+      { title: 'BASc in Electrical Engineering',     sub: 'University of British Columbia · 2008–2013' }
+    ],
+    'Work Experience': [
+      { title: 'Research Engineer',              sub: 'Universitat Pompeu Fabra · 2024–2025' },
+      { title: 'Acoustic Engineer / Consultant', sub: 'BAP Acoustics, Vancouver · 2014–2019' }
+    ],
+    'Teaching Experience': [
+      { title: 'Computational Music Creativity (Masters)',   sub: 'UPF · Winter 2021, 2022, 2023' },
+      { title: 'Computer Organization (1st Year Eng.)',      sub: 'UPF · Winter 2021, 2022, 2023' },
+      { title: 'Electronic Music Production Lab (4th Year)', sub: 'UPF · Winter 2020' },
+      { title: 'Introduction to Programming (1st Year)',     sub: 'UPF · Fall 2019' }
+    ],
+    'Publications': [
+      { title: 'See full publication list', sub: 'behzadhaki.github.io/publications', url: '/publications/' }
+    ],
+    'Supervisions': [
+      { title: '3 Masters · 1 PhD Candidate', sub: 'UPF DTIC · 2024–25' },
+      { title: '3 Masters · 2 Undergrads',    sub: 'UPF DTIC · 2022–23' },
+      { title: '3 Masters',                   sub: 'UPF DTIC · 2020–21' },
+      { title: '3 Masters · 1 Undergrad',     sub: 'UPF DTIC · 2019–20' }
+    ],
+    'Conference Reviewer': [
+      { title: 'ISMIR', sub: '2025' },
+      { title: 'ICMC',  sub: '2025' },
+      { title: 'NIME',  sub: '2020, 2024, 2025' },
+      { title: 'AIMC',  sub: '2023, 2025' }
+    ],
+    'Datasets': [
+      { title: 'El Bongosero', sub: 'Crowd-sourced percussion dataset · 2023–24', url: 'https://elbongosero.github.io/' },
+      { title: 'TapTamDrum',  sub: 'Dualized drum patterns dataset · 2023–24',   url: 'https://taptamdrum.github.io/' }
+    ],
+    'Open-Source Projects': [
+      { title: 'NeuralMidiFx',              sub: 'VST3 wrapper for neural networks · 2023',    url: 'https://neuralmidifx.github.io/' },
+      { title: 'GrooveTransformer Suite',   sub: 'Generative drum models · 2020–24',           url: 'https://github.com/behzadhaki/GrooveTransformer' },
+      { title: 'GrooveTransformer Eurorack',sub: 'Hardware module · 2023',                     url: 'https://groovetransformer.github.io' },
+      { title: 'Groove2Drum VST',           sub: 'Real-time drum accompaniment plugin · 2022', url: 'https://github.com/behzadhaki/Groove2DrumVST' },
+      { title: 'MonotonicGrooveTransformer',sub: 'Live accompaniment model · 2020–22',         url: 'https://github.com/behzadhaki/MonotonicGrooveTransformer' },
+      { title: 'TransformerGrooveInfilling',sub: 'Audio loop completion VST · 2020–22',        url: 'https://transformergrooveinfilling.github.io/' }
+    ],
+    'Workshops': [
+      { title: 'NeuralMidiFx Workshop at AIMC 2023', sub: 'University of Sussex, UK · 2023' }
+    ],
+    'Artist Collaborations': [
+      { title: 'Raül Refree',              sub: 'Participatory design & live performances · 2022–2024' },
+      { title: 'Desert (Checa & Caballé)', sub: 'Studio evaluation session · 2023' }
+    ],
+    'Showcases': [
+      { title: '+RAIN Film Festival',    sub: 'Barcelona · June 2025' },
+      { title: 'Palau Güell Live Show',  sub: 'Barcelona · Nov 2024' },
+      { title: 'CCCB Live Show',         sub: 'Barcelona · Feb 2024' },
+      { title: 'CCCB: El Bongosero',    sub: 'Interactive installation · 2023–24', url: 'https://elbongosero.github.io/' },
+      { title: 'Sonar+D Music Festival', sub: 'Barcelona · 2023' },
+      { title: '+RAIN Film Festival',    sub: 'Barcelona · 2023' }
+    ],
+    'Skills': [
+      { title: 'Programming',  sub: 'Python · C/C++ · JUCE · PyTorch · Max/MSP · Docker' },
+      { title: 'Hardware',     sub: 'PCB Design · Circuit Design · Eurorack Module Dev.' },
+      { title: 'Data Science', sub: 'Deep Learning · NLP · Dataset Collection & Analysis' },
+      { title: 'Acoustics',    sub: 'EASE · CadnaA · ARTA · Loudspeaker Design' }
+    ],
+    'Languages': [
+      { title: 'English', sub: 'Fluent' },
+      { title: 'Farsi',   sub: 'Fluent' }
+    ]
+  };
+
+  // ── Utilities ──────────────────────────────────────────────────────────────
+  function esc(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function typeLabel(key) {
+    var t = data.workTypes.find(function (x) { return x.key === key; });
+    return t ? t.label : key;
+  }
+
+  // Works for a type — posts with that type appear here regardless of other types.
+  // (matches the Works page: max_posts includes any post that has 'max' in project_types)
+  function worksForType(typeKey) {
+    return data.works.filter(function (w) {
+      return Array.isArray(w.types) && w.types.indexOf(typeKey) !== -1;
+    });
+  }
+
+  function uniqueWorkTypes() {
+    var seen = {}, keys = [];
+    data.works.forEach(function (w) {
+      (w.types || []).forEach(function (t) {
+        // Don't list installations-performances as a Works sub-category
+        if (!seen[t] && t !== 'installations-performances') { seen[t] = true; keys.push(t); }
+      });
+    });
+    keys.sort(function (a, b) {
+      var ai = data.workTypes.findIndex(function (x) { return x.key === a; });
+      var bi = data.workTypes.findIndex(function (x) { return x.key === b; });
+      return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi);
+    });
+    return keys;
+  }
+
+  // ── Col-3 detail: use pre-rendered cards ──────────────────────────────────
+
+  // Clone a post card (work / tutorial / installation) from hidden container
+  function showPostCard(container, url) {
+    var slot = container.querySelector('[data-url="' + url + '"]');
+    if (!slot) return;
+    var card = slot.querySelector('.work-card');
+    if (!card) return;
+    var clone = card.cloneNode(true);
+    // Activate lazy-loaded images (IntersectionObserver won't fire on hidden clones)
+    clone.querySelectorAll('img').forEach(function (img) {
+      var src = img.getAttribute('data-src') || img.getAttribute('src');
+      if (src) { img.src = src; }
+      img.removeAttribute('data-src');
+      img.classList.remove('lazy');
+    });
+    var wrap = document.createElement('div');
+    wrap.className = 'finder-work-card-wrap';
+    wrap.appendChild(clone);
+    col3.appendChild(wrap);
+  }
+
+  // Clone a pub card from hidden bibliography container (matched by index)
+  function showPubCard(idx) {
+    var li = pubCardContainer.querySelectorAll('.bibliography > li')[idx];
+    if (!li) return;
+    var card = li.querySelector('.pub-card');
+    if (!card) return;
+    col3.appendChild(card.cloneNode(true));
+  }
+
+  // ── Col-2 item list ────────────────────────────────────────────────────────
+  function renderImageList(items) {
+    if (!items || !items.length) {
+      return '<div class="finder-placeholder"><span>No items</span></div>';
+    }
+    return '<div class="finder-items-list">' + items.map(function (item, idx) {
+      var imgSrc = item.image || item.preview || null;
+      var thumb = imgSrc
+        ? '<img src="' + esc(imgSrc) + '" alt="" loading="lazy">'
+        : '<i class="fa-solid fa-cube" aria-hidden="true"></i>';
+      var thumbCls = imgSrc ? '' : ' finder-list-item__thumb--empty';
+      return '<div class="finder-list-item" data-idx="' + idx + '" role="button" tabindex="0">' +
+        '<div class="finder-list-item__thumb' + thumbCls + '">' + thumb + '</div>' +
+        '<div class="finder-list-item__info">' +
+          '<div class="finder-list-item__title">' + esc(item.title) + '</div>' +
+        '</div>' +
+        (item.url
+          ? '<a href="' + esc(item.url) + '" target="_blank" rel="noopener"' +
+            ' class="finder-list-item__arrow" tabindex="-1" aria-label="Open">' +
+            '<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>'
+          : '') +
+        '</div>';
+    }).join('') + '</div>';
+  }
+
+  // CV text-row list
+  function renderCvList(entries) {
+    if (!entries || !entries.length) {
+      return '<div class="finder-placeholder"><span>No entries</span></div>';
+    }
+    return '<div class="finder-items-list">' + entries.map(function (e) {
+      var inner = '<div class="finder-list-item__info">' +
+        '<div class="finder-list-item__title">' + esc(e.title) + '</div>' +
+        (e.sub ? '<div class="finder-list-item__desc">' + esc(e.sub) + '</div>' : '') +
+        '</div>';
+      if (e.url) {
+        return '<a href="' + esc(e.url) + '" class="finder-list-item finder-list-item--text"' +
+          ' target="_blank" rel="noopener">' + inner +
+          '<i class="fa-solid fa-arrow-up-right-from-square finder-list-item__arrow" aria-hidden="true"></i>' +
+          '</a>';
+      }
+      return '<div class="finder-list-item finder-list-item--text finder-list-item--no-link">' + inner + '</div>';
+    }).join('') + '</div>';
+  }
+
+  function redirectArrow(href, label) {
+    return '<a href="' + esc(href) + '" class="finder-item__arrow" aria-label="' + esc(label) + '"' +
+      ' onclick="event.stopPropagation()">' +
+      '<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>';
+  }
+
+  // ── Col-1 renderers ────────────────────────────────────────────────────────
+  function renderWorksTypes() {
+    var allItem = '<div class="finder-item" data-sub-key="all" role="button" tabindex="0">' +
+      '<span class="finder-item__label">All Works</span>' +
+      redirectArrow('/works/', 'Go to Works page') +
+      '</div>';
+    var typeItems = uniqueWorkTypes().map(function (k) {
+      return '<div class="finder-item" data-sub-key="' + esc(k) + '" role="button" tabindex="0">' +
+        '<span class="finder-item__label">' + esc(typeLabel(k)) + '</span>' +
+        redirectArrow('/works/', 'Go to Works page') +
+        '</div>';
+    }).join('');
+    return allItem + typeItems;
+  }
+
+  function renderPubCol1() {
+    return '<div class="finder-item is-active" data-sub-key="all" role="button" tabindex="0">' +
+      '<span class="finder-item__label">All Papers</span>' +
+      '<a href="/publications/" class="finder-item__arrow" aria-label="Go to Publications page"' +
+      ' onclick="event.stopPropagation()">' +
+      '<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>' +
+      '</div>';
+  }
+
+  function renderCvSections() {
+    return CV_SECTIONS.map(function (s) {
+      return '<div class="finder-item" data-sub-key="' + esc(s) + '" role="button" tabindex="0">' +
+        '<span class="finder-item__label">' + esc(s) + '</span>' +
+        '<i class="fa-solid fa-chevron-right finder-item__chevron" aria-hidden="true"></i>' +
+        '</div>';
+    }).join('');
+  }
+
+  // ── Interaction helpers ────────────────────────────────────────────────────
+  function setActive(col, key, attr) {
+    col.querySelectorAll('.finder-item').forEach(function (el) {
+      el.classList.toggle('is-active', el.dataset[attr] === key);
+    });
+  }
+
+  function wireCol1(handler) {
+    col1.querySelectorAll('.finder-item').forEach(function (el) {
+      el.addEventListener('click', function () { handler(el); });
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(el); }
+      });
+    });
+  }
+
+  // Wire col2 items: click body → detail in col3, click arrow icon → navigate directly
+  function wireCol2(items, detailFn) {
+    col2.querySelectorAll('.finder-list-item[data-idx]').forEach(function (el) {
+      var idx = parseInt(el.dataset.idx, 10);
+      var item = items[idx];
+      function select() {
+        col2.querySelectorAll('.finder-list-item').forEach(function (x) { x.classList.remove('is-active'); });
+        el.classList.add('is-active');
+        col3.innerHTML = '';
+        detailFn(item, idx);
+      }
+      el.addEventListener('click', function (e) {
+        if (e.target.closest('.finder-list-item__arrow')) return;
+        select();
+      });
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(); }
+      });
+    });
+  }
+
+  // ── Main section dispatcher ────────────────────────────────────────────────
+  function onSectionClick(sectionKey) {
+    setActive(col0, sectionKey, 'section');
+    col2.innerHTML = '';
+    col3.innerHTML = '';
+
+    if (sectionKey === 'works') {
+      col1.innerHTML = renderWorksTypes();
+      wireCol1(function (el) {
+        setActive(col1, el.dataset.subKey, 'subKey');
+        var items = el.dataset.subKey === 'all' ? data.works : worksForType(el.dataset.subKey);
+        col2.innerHTML = renderImageList(items);
+        col3.innerHTML = '';
+        wireCol2(items, function (item) { showPostCard(workCardContainer, item.url); });
+      });
+
+    } else if (sectionKey === 'tutorials') {
+      col1.innerHTML =
+        '<div class="finder-item is-active" data-sub-key="all" role="button" tabindex="0">' +
+        '<span class="finder-item__label">All Tutorials</span>' +
+        redirectArrow('/tutorials/', 'Go to Tutorials page') +
+        '</div>';
+      col2.innerHTML = renderImageList(data.tutorials);
+      wireCol2(data.tutorials, function (item) { showPostCard(tutorialCardContainer, item.url); });
+
+    } else if (sectionKey === 'installations') {
+      col1.innerHTML =
+        '<div class="finder-item is-active" data-sub-key="all" role="button" tabindex="0">' +
+        '<span class="finder-item__label">All Installations &amp; Performances</span>' +
+        redirectArrow('/installations-performances/', 'Go to Installations page') +
+        '</div>';
+      col2.innerHTML = renderImageList(data.installations);
+      wireCol2(data.installations, function (item) { showPostCard(installCardContainer, item.url); });
+
+    } else if (sectionKey === 'publications') {
+      col1.innerHTML = renderPubCol1();
+      col2.innerHTML = renderImageList(data.publications);
+      wireCol2(data.publications, function (item, idx) { showPubCard(idx); });
+
+    } else if (sectionKey === 'cv') {
+      col1.innerHTML = renderCvSections();
+      col2.innerHTML = '';
+      col3.innerHTML = '';
+      wireCol1(function (el) {
+        setActive(col1, el.dataset.subKey, 'subKey');
+        col2.innerHTML = '';
+        col3.innerHTML = renderCvList(CV_DATA[el.dataset.subKey] || []);
+      });
+    }
+  }
+
+  // ── Bootstrap ─────────────────────────────────────────────────────────────
+  col0.querySelectorAll('.finder-item').forEach(function (el) {
+    el.addEventListener('click', function () { onSectionClick(el.dataset.section); });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSectionClick(el.dataset.section); }
+    });
+  });
+
+  // Auto-open Works → "All Works" on load
+  onSectionClick('works');
+  var firstEl = col1.querySelector('.finder-item');
+  if (firstEl) {
+    firstEl.classList.add('is-active');
+    var firstItems = firstEl.dataset.subKey === 'all' ? data.works : worksForType(firstEl.dataset.subKey);
+    col2.innerHTML = renderImageList(firstItems);
+    wireCol2(firstItems, function (item) { showPostCard(workCardContainer, item.url); });
+  }
+
+}());
+
+// Size browser to exactly fit the root column's items (sum natural heights, not stretched)
+(function () {
+  var browser = document.getElementById('finder-browser');
+  var col0 = document.getElementById('finder-col-0');
+  function fitHeight() {
+    var h = 0;
+    col0.querySelectorAll('.finder-item').forEach(function (el) { h += el.offsetHeight; });
+    browser.style.height = h + 'px';
+  }
+  fitHeight();
+  window.addEventListener('resize', fitHeight);
+}());
+</script>
