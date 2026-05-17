@@ -118,10 +118,21 @@
   'use strict';
 
   var data = JSON.parse(document.getElementById('finder-nav-data').textContent);
+  var browser = document.getElementById('finder-browser');
   var col0 = document.getElementById('finder-col-0');
   var col1 = document.getElementById('finder-col-1');
   var col2 = document.getElementById('finder-col-2');
   var col3 = document.getElementById('finder-col-3');
+
+  // Size browser so col-0 is flush and col-1 never scrolls.
+  // Sum item offsetHeights (not scrollHeight) to get natural content height,
+  // avoiding the flex-stretch inflation from col-2's long list.
+  function fitHeight() {
+    var h0 = 0, h1 = 0;
+    col0.querySelectorAll('.finder-item').forEach(function (el) { h0 += el.offsetHeight; });
+    col1.querySelectorAll('.finder-item').forEach(function (el) { h1 += el.offsetHeight; });
+    browser.style.height = Math.max(h0, h1) + 'px';
+  }
 
   // Pre-rendered card containers
   var pubCardContainer     = document.getElementById('finder-pub-cards');
@@ -476,19 +487,8 @@
     col2.innerHTML = renderImageList(firstItems);
     wireCol2(firstItems, function (item) { showPostCard(workCardContainer, item.url); });
   }
-
-}());
-
-// Size browser to exactly fit the root column's items (sum natural heights, not stretched)
-(function () {
-  var browser = document.getElementById('finder-browser');
-  var col0 = document.getElementById('finder-col-0');
-  function fitHeight() {
-    var h = 0;
-    col0.querySelectorAll('.finder-item').forEach(function (el) { h += el.offsetHeight; });
-    browser.style.height = h + 'px';
-  }
   fitHeight();
   window.addEventListener('resize', fitHeight);
+
 }());
 </script>
