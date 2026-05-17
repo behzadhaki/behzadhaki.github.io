@@ -213,7 +213,7 @@ const CARD_IDX    = ALPHA_LIST.reduce((arr, a, i) => {
   if (Number.isInteger(a) && a <= 3) arr.push(i);
   return arr;
 }, []);
-const N_SAMPLES  = 131072;  // 2^17 samples (~2.97 s at 44100 Hz)
+const N_SAMPLES  = 65536;  // 2^16 samples (~1.49 s at 44100 Hz)
 // Layout fractions (of min(mainW, mainH))
 const CIR_R_F    = 0.155;  // circle radius
 const PANEL_D    = 0.400;  // single-ring radius for all panel centers
