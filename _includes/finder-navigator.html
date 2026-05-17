@@ -85,6 +85,15 @@
   <div class="container">
     <div class="finder-browser" id="finder-browser" role="navigation" aria-label="Site content browser">
 
+      <!-- Mobile drill-down nav bar (back button + breadcrumb title) -->
+      <div class="finder-mobile-nav" id="finder-mobile-nav">
+        <button class="finder-mobile-back" id="finder-mobile-back" type="button" aria-label="Back">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          <span>Back</span>
+        </button>
+        <span class="finder-mobile-title" id="finder-mobile-title"></span>
+      </div>
+
       <!-- Column 0: root categories (static) -->
       <div class="finder-col finder-col--root" id="finder-col-0">
         <div class="finder-item" data-section="news" role="button" tabindex="0">
@@ -162,11 +171,38 @@
   // Sum item offsetHeights (not scrollHeight) to get natural content height,
   // avoiding the flex-stretch inflation from col-2's long list.
   function fitHeight() {
+    if (window.innerWidth <= 576) { browser.style.height = ''; return; }
     var h0 = 0, h1 = 0;
     col0.querySelectorAll('.finder-item').forEach(function (el) { h0 += el.offsetHeight; });
     col1.querySelectorAll('.finder-item').forEach(function (el) { h1 += el.offsetHeight; });
     browser.style.height = Math.max(h0, h1) * 1.5 + 'px';
   }
+
+  // ── Mobile drill-down ─────────────────────────────────────────────────────
+  function isMobile() { return window.innerWidth <= 576; }
+
+  var mobileDepth = 0;
+  var mobileTitles = ['', '', '', ''];
+
+  function mobileGo(depth, title) {
+    var cols = [col0, col1, col2, col3];
+    cols.forEach(function (c) { c.classList.remove('is-mobile-active'); });
+    if (cols[depth]) cols[depth].classList.add('is-mobile-active');
+    mobileTitles[depth] = title || '';
+    mobileDepth = depth;
+    var nav = document.getElementById('finder-mobile-nav');
+    var titleEl = document.getElementById('finder-mobile-title');
+    if (depth > 0) {
+      nav.classList.add('is-visible');
+      titleEl.textContent = title || '';
+    } else {
+      nav.classList.remove('is-visible');
+    }
+  }
+
+  document.getElementById('finder-mobile-back').addEventListener('click', function () {
+    if (mobileDepth > 0) mobileGo(mobileDepth - 1, mobileTitles[mobileDepth - 1] || '');
+  });
 
   // Pre-rendered card containers
   var workDetailContainer     = document.getElementById('finder-work-details');
@@ -570,7 +606,13 @@
 
   function wireCol1(handler) {
     col1.querySelectorAll('.finder-item').forEach(function (el) {
-      el.addEventListener('click', function () { handler(el); });
+      el.addEventListener('click', function () {
+        handler(el);
+        if (isMobile()) {
+          var lbl = el.querySelector('.finder-item__label');
+          mobileGo(2, lbl ? lbl.textContent.trim() : '');
+        }
+      });
       el.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(el); }
       });
@@ -587,6 +629,10 @@
         el.classList.add('is-active');
         col3.innerHTML = '';
         detailFn(item, idx);
+        if (isMobile()) {
+          var titleEl = el.querySelector('.finder-list-item__title');
+          mobileGo(3, titleEl ? titleEl.textContent.trim() : '');
+        }
       }
       el.addEventListener('click', function (e) {
         if (e.target.closest('.finder-list-item__arrow')) return;
@@ -682,7 +728,13 @@
 
   // ── Bootstrap ─────────────────────────────────────────────────────────────
   col0.querySelectorAll('.finder-item').forEach(function (el) {
-    el.addEventListener('click', function () { onSectionClick(el.dataset.section); });
+    el.addEventListener('click', function () {
+      onSectionClick(el.dataset.section);
+      if (isMobile()) {
+        var lbl = el.querySelector('.finder-item__label');
+        mobileGo(1, lbl ? lbl.textContent.trim() : el.dataset.section);
+      }
+    });
     el.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSectionClick(el.dataset.section); }
     });
@@ -690,8 +742,21 @@
 
   // Auto-open News on load
   onSectionClick('news');
-  fitHeight();
-  window.addEventListener('resize', fitHeight);
+  if (isMobile()) {
+    mobileGo(0, '');
+  } else {
+    fitHeight();
+  }
+  window.addEventListener('resize', function () {
+    if (isMobile()) {
+      browser.style.height = '';
+      mobileGo(mobileDepth, mobileTitles[mobileDepth] || '');
+    } else {
+      [col0, col1, col2, col3].forEach(function (c) { c.classList.remove('is-mobile-active'); });
+      document.getElementById('finder-mobile-nav').classList.remove('is-visible');
+      fitHeight();
+    }
+  });
 
   // ── Keyboard navigation ────────────────────────────────────────────────────
   var kbActive = false;
@@ -757,7 +822,7 @@
 
   // Arrow key / Enter / Escape handler
   document.addEventListener('keydown', function (e) {
-    if (!kbActive) return;
+    if (!kbActive || isMobile()) return;
 
     if (e.key === 'Escape') {
       e.preventDefault();

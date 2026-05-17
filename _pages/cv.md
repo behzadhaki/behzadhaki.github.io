@@ -2,6 +2,7 @@
 layout: page
 title: CV
 permalink: /cv/
+hide_title: true
 description: Curriculum Vitae
 ---
 
