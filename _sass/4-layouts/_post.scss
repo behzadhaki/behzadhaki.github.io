@@ -500,6 +500,8 @@
   align-items: center;
   gap: 0;
   padding: 0 0.72em 0 0;
+  -webkit-appearance: none;
+  appearance: none;
   border-radius: 4px;
   overflow: hidden;
   font-size: 0.66rem;
@@ -531,7 +533,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.55em 0.65em;
+    padding: 0.38em 0.55em;
     margin-right: 0.6em;
     background: rgba(0,0,0,0.28);
     font-size: 1em;
@@ -586,6 +588,60 @@
 .proj-btn--paper {
   background: rgba(56, 64, 96, 0.6);
   color: #98a8c8;
+}
+
+// ── Share — muted violet ─────────────────────────────────────────────────────
+.proj-btn--share {
+  background: rgba(72, 52, 88, 0.6);
+  color: #c0a0d8;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+// ── Share dropdown ───────────────────────────────────────────────────────────
+.share-btn-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.share-dropdown {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  z-index: 200;
+  min-width: 160px;
+  background: #1e2430;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+
+  &[hidden] { display: none; }
+}
+
+.share-dropdown__item {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.55em 0.9em;
+  font-size: 0.78rem;
+  color: #c0cce0;
+  text-decoration: none !important;
+  border-bottom: none !important;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.12s;
+
+  i { width: 1.1em; text-align: center; }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #e0eaf8;
+  }
 }
 
 // Buttons
