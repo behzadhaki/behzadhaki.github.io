@@ -231,7 +231,10 @@ html[data-theme='light'] {
     p { color: rgba(#2d2b3d,0.75); }
   }
 
-  .pub-card__bibtex { background: rgba(#f4f4f4,0.9); }
+  .pub-card__bibtex {
+    background: rgba(#f4f4f4,0.9);
+    .highlight, pre, code { background: transparent !important; margin: 0; }
+  }
 
   .pub-card__contrib-note { color: #666; }
 
