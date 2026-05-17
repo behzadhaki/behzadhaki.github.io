@@ -83,8 +83,8 @@
         <em>{{ entry.journal }}</em>
       {%- elsif entry.type == "inproceedings" or entry.type == "incollection" -%}
         <em>{{ entry.booktitle }}</em>
-      {%- elsif entry.type == "phdthesis" or entry.type == "mastersthesis" -%}
-        <em>PhD Thesis</em>
+      {%- elsif entry.type == "phdthesis" or entry.type == "mastersthesis" or entry.type contains "thesis" or entry.type contains "Thesis" -%}
+        <em>PhD Thesis</em>{%- if entry.school -%}&nbsp;·&nbsp;{{ entry.school }}{%- endif -%}
       {%- elsif entry.type == "misc" and entry.howpublished -%}
         <em>{{ entry.howpublished }}</em>
       {%- endif -%}
