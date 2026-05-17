@@ -11,6 +11,7 @@
 {% assign works_posts    = "" | split: "" | concat: _wmax | concat: _wpd | concat: _wplug | concat: _wweb | concat: _whw | concat: _wds | concat: _wfw | concat: _wtmpl | concat: _wwdg | uniq %}
 {% assign tutorial_posts = site.posts | where_exp: "p", "p.project_types contains 'tutorials'"                  | where_exp: "p", "p.hidden != true" %}
 {% assign installs_posts = site.posts | where_exp: "p", "p.project_types contains 'installations-performances'" | where_exp: "p", "p.hidden != true" %}
+{% assign news_items = site.news | sort: "date" | reverse %}
 
 <!-- JSON metadata for col-1/col-2 lists -->
 <script id="finder-nav-data" type="application/json">{
@@ -45,6 +46,14 @@
       "year": {{ post.date | date: "%Y" | jsonify }}
     }{% unless forloop.last %},{% endunless %}{% endfor %}
   ],
+  "news": [
+    {% for item in news_items %}{
+      "title": {{ item.title | jsonify }},
+      "dateStr": {{ item.date | date: "%b %-d, %Y" | jsonify }},
+      "dateIso": {{ item.date | date_to_xmlschema | jsonify }},
+      "idx": {{ forloop.index0 }}
+    }{% unless forloop.last %},{% endunless %}{% endfor %}
+  ],
   "workTypes": [
     { "key": "max",         "label": "MAX / M4L"    },
     { "key": "pd",          "label": "Pure Data"    },
@@ -66,6 +75,8 @@
 <div id="finder-tutorial-details" style="display:none" aria-hidden="true">{% for post in tutorial_posts %}<div data-url="{{ post.url | relative_url }}">{% include finder-post-detail.html doc=post %}</div>{% endfor %}</div>
 <div id="finder-install-details" style="display:none" aria-hidden="true">{% for post in installs_posts %}<div data-url="{{ post.url | relative_url }}">{% include finder-post-detail.html doc=post %}</div>{% endfor %}</div>
 
+<div id="finder-news-details" style="display:none" aria-hidden="true">{% for item in news_items %}<div data-idx="{{ forloop.index0 }}">{{ item.content }}</div>{% endfor %}</div>
+
 <div id="finder-lightbox" class="finder-lightbox" aria-modal="true" role="dialog" aria-label="Image viewer">
   <img id="finder-lightbox-img" src="" alt="">
 </div>
@@ -76,6 +87,10 @@
 
       <!-- Column 0: root categories (static) -->
       <div class="finder-col finder-col--root" id="finder-col-0">
+        <div class="finder-item" data-section="news" role="button" tabindex="0">
+          <span class="finder-item__label"><i class="fa-solid fa-newspaper fa-fw finder-item__icon" aria-hidden="true"></i>News</span>
+          <i class="fa-solid fa-chevron-right finder-item__chevron" aria-hidden="true"></i>
+        </div>
         <div class="finder-item" data-section="publications" role="button" tabindex="0">
           <span class="finder-item__label"><i class="fa-solid fa-book fa-fw finder-item__icon" aria-hidden="true"></i>Publications</span>
           <i class="fa-solid fa-chevron-right finder-item__chevron" aria-hidden="true"></i>
@@ -154,9 +169,10 @@
   }
 
   // Pre-rendered card containers
-  var workDetailContainer   = document.getElementById('finder-work-details');
+  var workDetailContainer     = document.getElementById('finder-work-details');
   var tutorialDetailContainer = document.getElementById('finder-tutorial-details');
   var installDetailContainer  = document.getElementById('finder-install-details');
+  var newsDetailContainer     = document.getElementById('finder-news-details');
 
   // Parse publications from jekyll-scholar BibTeX output (<ol><li>…</li></ol> wrapper)
   (function () {
@@ -390,6 +406,33 @@
     col3.appendChild(panel);
   }
 
+  // Build a news detail panel from pre-rendered content
+  function showNewsDetail(item) {
+    var slot = newsDetailContainer.querySelector('[data-idx="' + item.idx + '"]');
+    var panel = document.createElement('div');
+    panel.className = 'post-head finder-post-head finder-news-detail';
+    var box = document.createElement('div');
+    box.className = 'post-head__box';
+    box.innerHTML =
+      '<div class="post__meta"><span class="post__minutes"><time class="post__date" datetime="' + esc(item.dateIso) + '">' + esc(item.dateStr) + '</time></span></div>' +
+      '<h2 class="post__title">' + esc(item.title) + '</h2>';
+    if (slot) {
+      var body = document.createElement('div');
+      body.className = 'finder-news-detail__body';
+      body.innerHTML = slot.innerHTML;
+      // Activate lazy images
+      // Activate lazy images
+      body.querySelectorAll('img[data-src]').forEach(function (img) {
+        img.src = img.getAttribute('data-src');
+        img.removeAttribute('data-src');
+        img.classList.remove('lazy');
+      });
+      box.appendChild(body);
+    }
+    panel.appendChild(box);
+    col3.appendChild(panel);
+  }
+
   // ── Col-2 item list ────────────────────────────────────────────────────────
   function renderImageList(items) {
     if (!items || !items.length) {
@@ -432,6 +475,20 @@
           '</a>';
       }
       return '<div class="finder-list-item finder-list-item--text finder-list-item--no-link">' + inner + '</div>';
+    }).join('') + '</div>';
+  }
+
+  function renderNewsList(items) {
+    if (!items || !items.length) {
+      return '<div class="finder-placeholder"><span>No news</span></div>';
+    }
+    return '<div class="finder-items-list">' + items.map(function (item, idx) {
+      return '<div class="finder-list-item" data-idx="' + idx + '" role="button" tabindex="0">' +
+        '<div class="finder-list-item__info">' +
+          '<div class="finder-list-item__title">' + esc(item.title) + '</div>' +
+          '<div class="finder-list-item__desc">' + esc(item.dateStr) + '</div>' +
+        '</div>' +
+        '</div>';
     }).join('') + '</div>';
   }
 
@@ -517,7 +574,16 @@
     col2.innerHTML = '';
     col3.innerHTML = '';
 
-    if (sectionKey === 'works') {
+    if (sectionKey === 'news') {
+      col1.innerHTML =
+        '<div class="finder-item is-active" data-sub-key="all" role="button" tabindex="0">' +
+        '<span class="finder-item__label">All News</span>' +
+        redirectArrow('/news/', 'Go to News page') +
+        '</div>';
+      col2.innerHTML = renderNewsList(data.news);
+      wireCol2(data.news, function (item) { showNewsDetail(item); });
+
+    } else if (sectionKey === 'works') {
       col1.innerHTML = renderWorksTypes();
       wireCol1(function (el) {
         setActive(col1, el.dataset.subKey, 'subKey');

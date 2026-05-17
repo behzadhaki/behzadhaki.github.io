@@ -1042,6 +1042,17 @@
   }
 }
 
+.finder-news-detail__body {
+  font-size: 11px;
+  line-height: 1.65;
+  color: rgba($light-gray, 0.65);
+  margin-top: 0.6rem;
+
+  p { margin: 0 0 0.5em; }
+  a { color: rgba($light-gray, 0.8); &:hover { color: $light-gray; } }
+
+}
+
 // Scoped overrides for post-head when rendered inside the finder detail column.
 // Uses the exact same HTML/classes as the real post head — only scales dimensions down.
 .finder-post-head {
