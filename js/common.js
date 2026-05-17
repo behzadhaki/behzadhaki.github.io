@@ -89,10 +89,34 @@ document.addEventListener("DOMContentLoaded", function() {
       padding: 60,
       offset: 30,
       beforeShow: function() {
+        // If the image is absolutely positioned (e.g. pub-card__preview), it will
+        // collapse to 0×0 inside Lightense's unsized .lightense-wrap. Convert it
+        // to static flow with explicit pixel dimensions so Lightense can measure
+        // and scale it correctly.
+        var img = this.target;
+        var imgCs = window.getComputedStyle(img);
+        if (imgCs.position === 'absolute') {
+          var r = img.getBoundingClientRect();
+          this._imgSaved = {
+            position: img.style.position,
+            inset: img.style.inset,
+            width: img.style.width,
+            height: img.style.height,
+            display: img.style.display,
+            margin: img.style.margin
+          };
+          img.style.position = 'static';
+          img.style.inset = '';
+          img.style.width = r.width + 'px';
+          img.style.height = r.height + 'px';
+          img.style.display = 'block';
+          img.style.margin = '0';
+        }
+
         // Walk up ancestors and temporarily neutralise anything that would trap
-        // the lightense-wrap: stacking contexts (pos+z-index) and overflow:hidden.
+        // the lightense-wrap: stacking contexts (pos+z-index, transform) and overflow:hidden.
         var saved = [];
-        var el = this.target && this.target.parentElement;
+        var el = img && img.parentElement;
         while (el && el !== document.body) {
           var cs = window.getComputedStyle(el);
           var entry = { el: el };
@@ -107,16 +131,34 @@ document.addEventListener("DOMContentLoaded", function() {
             el.style.overflow = 'visible';
             changed = true;
           }
+          // transform creates a stacking context (e.g. .pub-card:hover translateY(-2px))
+          // that traps the wrap's z-index and hides the image behind the backdrop.
+          if (cs.transform && cs.transform !== 'none') {
+            entry.transform = el.style.transform;
+            el.style.transform = 'none';
+            changed = true;
+          }
           if (changed) saved.push(entry);
           el = el.parentElement;
         }
         this._saved = saved;
       },
       afterHide: function() {
+        if (this._imgSaved) {
+          var img = this.target;
+          img.style.position = this._imgSaved.position;
+          img.style.inset = this._imgSaved.inset;
+          img.style.width = this._imgSaved.width;
+          img.style.height = this._imgSaved.height;
+          img.style.display = this._imgSaved.display;
+          img.style.margin = this._imgSaved.margin;
+          this._imgSaved = null;
+        }
         if (this._saved) {
           this._saved.forEach(function(item) {
             if ('zIndex' in item) item.el.style.zIndex = item.zIndex;
             if ('overflow' in item) item.el.style.overflow = item.overflow;
+            if ('transform' in item) item.el.style.transform = item.transform;
           });
           this._saved = null;
         }
