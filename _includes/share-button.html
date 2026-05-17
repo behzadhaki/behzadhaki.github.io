@@ -1,26 +1,23 @@
-<div class="share-btn-wrap" id="share-btn-wrap">
-  <button class="proj-btn proj-btn--share" id="share-btn" type="button" aria-label="Share">
-    <span class="proj-btn__badge"><i class="fa-solid fa-share-nodes"></i></span>
-    <span class="proj-btn__label">Share</span>
+<button class="proj-btn proj-btn--share" id="share-btn" type="button" aria-label="Share">
+  <span class="proj-btn__badge"><i class="fa-solid fa-share-nodes"></i></span>
+  <span class="proj-btn__label">Share</span>
+</button>
+<div class="share-dropdown" id="share-dropdown" hidden>
+  <a class="share-dropdown__item" href="https://wa.me/?text={{ page.title | url_encode }}%20{{ page.url | absolute_url | url_encode }}" target="_blank" rel="noopener noreferrer">
+    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+  </a>
+  <a class="share-dropdown__item" href="https://twitter.com/intent/tweet?text={{ page.title | url_encode }}&url={{ page.url | absolute_url | url_encode }}" target="_blank" rel="noopener noreferrer">
+    <i class="fa-brands fa-x-twitter"></i> X / Twitter
+  </a>
+  <a class="share-dropdown__item" href="https://www.linkedin.com/sharing/share-offsite/?url={{ page.url | absolute_url | url_encode }}" target="_blank" rel="noopener noreferrer">
+    <i class="fa-brands fa-linkedin-in"></i> LinkedIn
+  </a>
+  <button class="share-dropdown__item" id="share-copy-link" type="button">
+    <i class="fa-solid fa-link"></i> Copy link
   </button>
-  <div class="share-dropdown" id="share-dropdown" hidden>
-    <a class="share-dropdown__item" href="https://wa.me/?text={{ page.title | url_encode }}%20{{ page.url | absolute_url | url_encode }}" target="_blank" rel="noopener noreferrer">
-      <i class="fa-brands fa-whatsapp"></i> WhatsApp
-    </a>
-    <a class="share-dropdown__item" href="https://twitter.com/intent/tweet?text={{ page.title | url_encode }}&url={{ page.url | absolute_url | url_encode }}" target="_blank" rel="noopener noreferrer">
-      <i class="fa-brands fa-x-twitter"></i> X / Twitter
-    </a>
-    <a class="share-dropdown__item" href="https://www.linkedin.com/sharing/share-offsite/?url={{ page.url | absolute_url | url_encode }}" target="_blank" rel="noopener noreferrer">
-      <i class="fa-brands fa-linkedin-in"></i> LinkedIn
-    </a>
-    <button class="share-dropdown__item" id="share-copy-link" type="button">
-      <i class="fa-solid fa-link"></i> Copy link
-    </button>
-  </div>
 </div>
 <script>
 (function () {
-  var wrap     = document.getElementById('share-btn-wrap');
   var btn      = document.getElementById('share-btn');
   var dropdown = document.getElementById('share-dropdown');
   var copyBtn  = document.getElementById('share-copy-link');
@@ -28,8 +25,21 @@
   var pageTitle = {{ page.title | jsonify }};
   var pageDesc  = {{ page.description | default: page.title | jsonify }};
 
+  function positionDropdown() {
+    var row = btn.closest('.proj-btn-row');
+    var btnRect = btn.getBoundingClientRect();
+    var rowRect = row.getBoundingClientRect();
+    dropdown.style.left = (btnRect.left - rowRect.left) + 'px';
+    dropdown.style.top  = (btnRect.bottom - rowRect.top + 4) + 'px';
+  }
+
   btn.addEventListener('click', function () {
-    dropdown.hidden = !dropdown.hidden;
+    if (!dropdown.hidden) {
+      dropdown.hidden = true;
+    } else {
+      positionDropdown();
+      dropdown.hidden = false;
+    }
   });
 
   copyBtn.addEventListener('click', function () {
@@ -44,7 +54,9 @@
   });
 
   document.addEventListener('click', function (e) {
-    if (!wrap.contains(e.target)) dropdown.hidden = true;
+    if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.hidden = true;
+    }
   });
 })();
 </script>
