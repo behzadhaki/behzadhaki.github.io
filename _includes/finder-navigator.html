@@ -425,6 +425,38 @@
         img.removeAttribute('data-src');
         img.classList.remove('lazy');
       });
+      // Replace embedded work cards with a divider + finder-post-head panel
+      body.querySelectorAll('.work-card').forEach(function (card) {
+        var link = card.querySelector('.work-card__link');
+        var url = link ? link.getAttribute('href') : null;
+        var replacement = document.createDocumentFragment();
+        if (url) {
+          var slot = workDetailContainer.querySelector('[data-url="' + url + '"]');
+          if (slot) {
+            var detailPanel = slot.querySelector('.finder-post-head');
+            if (detailPanel) {
+              var clone = detailPanel.cloneNode(true);
+              clone.querySelectorAll('img[data-src]').forEach(function (img) {
+                img.src = img.getAttribute('data-src');
+                img.removeAttribute('data-src');
+                img.classList.remove('lazy');
+              });
+              clone.querySelectorAll('.image-box img').forEach(function (img) {
+                img.style.cursor = 'zoom-in';
+                img.addEventListener('click', function (e) {
+                  e.stopPropagation();
+                  openLightbox(img.src, img.alt);
+                });
+              });
+              var canvas = document.createElement('div');
+              canvas.className = 'finder-news-detail__work-canvas';
+              canvas.appendChild(clone);
+              replacement.appendChild(canvas);
+            }
+          }
+        }
+        card.parentNode.replaceChild(replacement, card);
+      });
       box.appendChild(body);
     }
     panel.appendChild(box);

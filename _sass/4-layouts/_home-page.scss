@@ -1069,6 +1069,18 @@
   }
 }
 
+.finder-news-detail__work-canvas {
+  margin-top: 0.6rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  overflow: hidden;
+
+  .finder-post-head {
+    padding: 0.5rem 0.65rem;
+    .post-head__box { margin-left: 0; }
+  }
+}
+
 // Scoped overrides for post-head when rendered inside the finder detail column.
 // Uses the exact same HTML/classes as the real post head — only scales dimensions down.
 .finder-post-head {
@@ -1076,7 +1088,7 @@
   padding: 0.65rem 0.75rem 0.75rem;
   width: 100%;
 
-  .post-head__box {
+  &.post-head .post-head__box {
     margin-left: 0;
   }
 
