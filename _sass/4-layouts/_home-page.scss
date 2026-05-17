@@ -5,8 +5,7 @@
 // Bio Section
 // ========================
 .bio-section {
-  padding: 11rem 0 3rem;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 11rem 0 1.5rem;
 }
 
 .bio-inner {
@@ -682,8 +681,7 @@
 // Finder Navigator
 // ========================
 .finder-nav-section {
-  padding: 2.5rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 1rem 0 2.5rem;
 }
 
 .finder-browser {
@@ -691,7 +689,7 @@
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,0.09);
-  background: $dark;
+  background: #1c1919;
   font-size: 0.82rem;
 
   @media (max-width: $mobile) {

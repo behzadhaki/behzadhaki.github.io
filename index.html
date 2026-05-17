@@ -10,34 +10,3 @@ description: PhD Candidate · Music Technology Group · UPF · Barcelona
 <!-- Finder-style content navigator -->
 {% include finder-navigator.html %}
 
-<!-- Section Cards -->
-<section class="sections-overview">
-  <div class="container">
-    <div class="widget__head" style="margin: 2rem 0 1.5rem 0;">
-<!--      <h3 class="widget__title">Explore</h3>-->
-    </div>
-    <div class="row">
-      {% for section in site.data.settings.sections %}
-      <div class="col col-3 col-t-6 col-m-12">
-        <a href="{{ section.url | relative_url }}" class="section-card">
-          <div class="section-card__inner">
-            {% if section.image %}
-            <div class="section-card__image">
-              <img src="{{ section.image | relative_url }}" alt="{{ section.title }}" loading="lazy">
-            </div>
-            {% endif %}
-            <div class="section-card__content">
-              <h2 class="section-card__title">{{ section.title }}</h2>
-              <p class="section-card__excerpt">{{ section.description }}</p>
-            </div>
-          </div>
-        </a>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-
-
-<!-- News -->
-{% include news.html %}

@@ -165,7 +165,7 @@
     var h0 = 0, h1 = 0;
     col0.querySelectorAll('.finder-item').forEach(function (el) { h0 += el.offsetHeight; });
     col1.querySelectorAll('.finder-item').forEach(function (el) { h1 += el.offsetHeight; });
-    browser.style.height = Math.max(h0, h1) + 'px';
+    browser.style.height = Math.max(h0, h1) * 1.5 + 'px';
   }
 
   // Pre-rendered card containers
