@@ -62,7 +62,6 @@
 <script id="finder-pubs-raw" type="text/plain">{% bibliography --query @*[hide!=true] --template bib_json_item %}</script>
 
 <!-- Pre-rendered cards for col-3 detail view (hidden, using same templates as the pages) -->
-<div id="finder-pub-cards" style="display:none" aria-hidden="true">{% bibliography --query @*[hide!=true] %}</div>
 <div id="finder-work-details" style="display:none" aria-hidden="true">{% for post in works_posts %}<div data-url="{{ post.url | relative_url }}">{% include finder-post-detail.html doc=post %}</div>{% endfor %}</div>
 <div id="finder-tutorial-details" style="display:none" aria-hidden="true">{% for post in tutorial_posts %}<div data-url="{{ post.url | relative_url }}">{% include finder-post-detail.html doc=post %}</div>{% endfor %}</div>
 <div id="finder-install-details" style="display:none" aria-hidden="true">{% for post in installs_posts %}<div data-url="{{ post.url | relative_url }}">{% include finder-post-detail.html doc=post %}</div>{% endfor %}</div>
@@ -155,7 +154,6 @@
   }
 
   // Pre-rendered card containers
-  var pubCardContainer      = document.getElementById('finder-pub-cards');
   var workDetailContainer   = document.getElementById('finder-work-details');
   var tutorialDetailContainer = document.getElementById('finder-tutorial-details');
   var installDetailContainer  = document.getElementById('finder-install-details');
@@ -322,13 +320,74 @@
     col3.appendChild(clone);
   }
 
-  // Clone a pub card from hidden bibliography container (matched by index)
-  function showPubCard(idx) {
-    var li = pubCardContainer.querySelectorAll('.bibliography > li')[idx];
-    if (!li) return;
-    var card = li.querySelector('.pub-card');
-    if (!card) return;
-    col3.appendChild(card.cloneNode(true));
+  // Build a publication detail panel (same structure as finder-post-head) from JSON data
+  function showPubDetail(item) {
+    var h = '<div class="post-head finder-post-head">';
+    if (item.preview) {
+      h += '<div class="image-box finder-post-head__float-img">' +
+           '<img class="post-image" src="' + esc(item.preview) + '" alt="' + esc(item.title) + '">' +
+           '</div>';
+    }
+    h += '<div class="post-head__box">';
+    if (item.authors) {
+      h += '<div class="post__meta"><span class="post__minutes">' +
+           '<time class="post__date">' + esc(item.authors) + '</time>' +
+           '</span></div>';
+    }
+    h += '<h2 class="post__title">' + esc(item.title) + '</h2>';
+    var venueYear = [item.venue, item.year].filter(Boolean).join(' · ');
+    if (venueYear) {
+      h += '<p class="post__description">' + esc(venueYear) + '</p>';
+    }
+    var btns = [];
+    if (item.pdf)    btns.push({ type: 'paper',  label: 'PDF',        url: item.pdf });
+    if (item.code)   btns.push({ type: 'github', label: 'Code',       url: item.code });
+    if (item.slides) btns.push({ type: 'docs',   label: 'Slides',     url: item.slides });
+    if (item.url)    btns.push({ type: 'web',    label: 'Project Page', url: item.url });
+    if (btns.length || item.bibtex) {
+      h += '<div class="proj-btn-row proj-btn-row--header">';
+      btns.forEach(function (b) {
+        var icon = b.type === 'paper'  ? '<i class="fa-solid fa-file-lines"></i>'
+                 : b.type === 'github' ? '<i class="fa-brands fa-github"></i>'
+                 : b.type === 'docs'   ? '<i class="fa-solid fa-book"></i>'
+                 :                       '<i class="fa-solid fa-globe"></i>';
+        h += '<a class="proj-btn proj-btn--' + b.type + '" href="' + esc(b.url) + '" target="_blank" rel="noopener">' +
+             '<span class="proj-btn__badge">' + icon + '</span>' +
+             '<span class="proj-btn__label">' + esc(b.label) + '</span>' +
+             '</a>';
+      });
+      if (item.bibtex) {
+        h += '<button class="finder-post-head__copy-btn" data-bibtex="' + esc(item.bibtex) + '">' +
+             '<i class="fa-regular fa-copy"></i> Copy BibTeX</button>';
+      }
+      h += '</div>';
+    }
+    if (item.abstract) {
+      h += '<p class="finder-post-head__abstract">' + esc(item.abstract) + '</p>';
+    }
+    h += '</div><div style="clear:both"></div></div>';
+
+    var wrap = document.createElement('div');
+    wrap.innerHTML = h;
+    var panel = wrap.firstChild;
+    panel.querySelectorAll('.image-box img').forEach(function (img) {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openLightbox(img.src, img.alt);
+      });
+    });
+    var copyBtn = panel.querySelector('.finder-post-head__copy-btn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        navigator.clipboard.writeText(copyBtn.getAttribute('data-bibtex')).then(function () {
+          var orig = copyBtn.innerHTML;
+          copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+          setTimeout(function () { copyBtn.innerHTML = orig; }, 1800);
+        });
+      });
+    }
+    col3.appendChild(panel);
   }
 
   // ── Col-2 item list ────────────────────────────────────────────────────────
@@ -489,7 +548,7 @@
     } else if (sectionKey === 'publications') {
       col1.innerHTML = renderPubCol1();
       col2.innerHTML = renderImageList(data.publications);
-      wireCol2(data.publications, function (item, idx) { showPubCard(idx); });
+      wireCol2(data.publications, function (item) { showPubDetail(item); });
 
     } else if (sectionKey === 'cv') {
       col1.innerHTML = renderCvSections();

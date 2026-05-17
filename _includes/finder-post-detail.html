@@ -1,0 +1,64 @@
+{% assign _doc = include.doc %}
+<div class="post-head finder-post-head">
+  {% if _doc.image %}
+  <div class="image-box finder-post-head__float-img">
+    <img class="post-image lazy" data-src="{{ _doc.image | relative_url }}" alt="{{ _doc.title }}">
+  </div>
+  {% endif %}
+  <div class="post-head__box">
+    <div class="post__meta">
+      <span class="post__minutes">
+        <time class="post__date" datetime="{{ _doc.date | date_to_xmlschema }}">{{ _doc.date | date: "%b %-d, %Y" }}</time>
+      </span>
+    </div>
+
+    <h2 class="post__title">{{ _doc.title }}</h2>
+
+    {% if _doc.description %}
+    <p class="post__description">{{ _doc.description }}</p>
+    {% endif %}
+
+    <div class="post__bottom">
+      <div class="post__bottom-meta">
+        {% if _doc.tags.size >= 1 %}
+        <span class="post-tags">
+          {% for tag in _doc.tags %}<span class="post__tag">{{ tag }}</span>{% endfor %}
+        </span>
+        {% endif %}
+        {% if _doc.development_status %}
+        {% include dev-status-navigator.html level=_doc.development_status %}
+        {% endif %}
+      </div>
+    </div>
+
+    {% if _doc.links %}
+    <div class="proj-btn-row proj-btn-row--header">
+      {% for link in _doc.links %}{% unless link.disabled or link.url == nil or link.url == "" %}{% assign _t = link.type %}{% unless _t == "issues" or _t == "email" %}
+      <a class="proj-btn proj-btn--{{ _t }}" href="{{ link.url }}" target="_blank" rel="noopener">
+        <span class="proj-btn__badge">
+          {% if _t == "mac-arm" or _t == "mac-intel" %}<i class="fa-brands fa-apple"></i>
+          {% elsif _t == "win" %}<i class="fa-brands fa-windows"></i>
+          {% elsif _t == "linux" %}<i class="fa-brands fa-linux"></i>
+          {% elsif _t == "github" %}<i class="fa-brands fa-github"></i>
+          {% elsif _t == "docs" %}<i class="fa-solid fa-book"></i>
+          {% elsif _t == "paper" %}<i class="fa-solid fa-file-lines"></i>
+          {% elsif _t == "web" %}<i class="fa-solid fa-globe"></i>
+          {% else %}<i class="fa-solid fa-download"></i>
+          {% endif %}
+        </span>
+        <span class="proj-btn__label">{{ link.label }}</span>
+      </a>
+      {% endunless %}{% endunless %}{% endfor %}
+    </div>
+    {% endif %}
+
+    {% if _doc.note %}
+    <div class="proj-note">{{ _doc.note | markdownify }}</div>
+    {% endif %}
+
+    <a href="{{ _doc.url | relative_url }}" class="finder-post-head__view-link">
+      View Full Page&nbsp;<i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i>
+    </a>
+  </div>
+  <div style="clear:both"></div>
+</div>
