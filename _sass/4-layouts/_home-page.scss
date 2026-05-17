@@ -1051,6 +1051,22 @@
   p { margin: 0 0 0.5em; }
   a { color: rgba($light-gray, 0.8); &:hover { color: $light-gray; } }
 
+  .work-card { max-width: 220px; }
+
+  // Restore default pub-card appearance (overrides .finder-col--detail .pub-card stripping)
+  .publications { width: 100%; }
+  .pub-card { zoom: 0.72; }
+  .publications ol.bibliography { display: block; li { width: 100%; display: block; } }
+  .pub-card {
+    width: 100%;
+    margin-bottom: 0.75rem;
+    border-radius: 12px;
+    box-shadow: initial;
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+  }
 }
 
 // Scoped overrides for post-head when rendered inside the finder detail column.

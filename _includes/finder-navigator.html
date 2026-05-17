@@ -420,8 +420,6 @@
       var body = document.createElement('div');
       body.className = 'finder-news-detail__body';
       body.innerHTML = slot.innerHTML;
-      // Activate lazy images
-      // Activate lazy images
       body.querySelectorAll('img[data-src]').forEach(function (img) {
         img.src = img.getAttribute('data-src');
         img.removeAttribute('data-src');
