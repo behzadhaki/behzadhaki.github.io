@@ -122,6 +122,8 @@
         text-transform: uppercase;
         text-decoration: none;
         color: $text-color;
+        background-color: transparent; // stabilize compositing so text rendering
+        -webkit-font-smoothing: antialiased; // doesn't shift when active bg is applied
         &:hover {
           color: $brand-color;
         }
