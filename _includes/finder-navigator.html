@@ -606,12 +606,16 @@
 
     if (sectionKey === 'news') {
       col1.innerHTML =
-        '<div class="finder-item is-active" data-sub-key="all" role="button" tabindex="0">' +
+        '<div class="finder-item" data-sub-key="all" role="button" tabindex="0">' +
         '<span class="finder-item__label">All News</span>' +
         redirectArrow('/news/', 'Go to News page') +
         '</div>';
-      col2.innerHTML = renderNewsList(data.news);
-      wireCol2(data.news, function (item) { showNewsDetail(item); });
+      wireCol1(function () {
+        setActive(col1, 'all', 'subKey');
+        col2.innerHTML = renderNewsList(data.news);
+        col3.innerHTML = '';
+        wireCol2(data.news, function (item) { showNewsDetail(item); });
+      });
 
     } else if (sectionKey === 'works') {
       col1.innerHTML = renderWorksTypes();
@@ -625,26 +629,44 @@
 
     } else if (sectionKey === 'tutorials') {
       col1.innerHTML =
-        '<div class="finder-item is-active" data-sub-key="all" role="button" tabindex="0">' +
+        '<div class="finder-item" data-sub-key="all" role="button" tabindex="0">' +
         '<span class="finder-item__label">All Tutorials</span>' +
         redirectArrow('/tutorials/', 'Go to Tutorials page') +
         '</div>';
-      col2.innerHTML = renderImageList(data.tutorials);
-      wireCol2(data.tutorials, function (item) { showPostDetail(tutorialDetailContainer, item.url); });
+      wireCol1(function () {
+        setActive(col1, 'all', 'subKey');
+        col2.innerHTML = renderImageList(data.tutorials);
+        col3.innerHTML = '';
+        wireCol2(data.tutorials, function (item) { showPostDetail(tutorialDetailContainer, item.url); });
+      });
 
     } else if (sectionKey === 'installations') {
       col1.innerHTML =
-        '<div class="finder-item is-active" data-sub-key="all" role="button" tabindex="0">' +
+        '<div class="finder-item" data-sub-key="all" role="button" tabindex="0">' +
         '<span class="finder-item__label">All Installations &amp; Performances</span>' +
         redirectArrow('/installations-performances/', 'Go to Installations page') +
         '</div>';
-      col2.innerHTML = renderImageList(data.installations);
-      wireCol2(data.installations, function (item) { showPostDetail(installDetailContainer, item.url); });
+      wireCol1(function () {
+        setActive(col1, 'all', 'subKey');
+        col2.innerHTML = renderImageList(data.installations);
+        col3.innerHTML = '';
+        wireCol2(data.installations, function (item) { showPostDetail(installDetailContainer, item.url); });
+      });
 
     } else if (sectionKey === 'publications') {
-      col1.innerHTML = renderPubCol1();
-      col2.innerHTML = renderImageList(data.publications);
-      wireCol2(data.publications, function (item) { showPubDetail(item); });
+      col1.innerHTML =
+        '<div class="finder-item" data-sub-key="all" role="button" tabindex="0">' +
+        '<span class="finder-item__label">All Papers</span>' +
+        '<a href="/publications/" class="finder-item__arrow" aria-label="Go to Publications page"' +
+        ' onclick="event.stopPropagation()">' +
+        '<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>' +
+        '</div>';
+      wireCol1(function () {
+        setActive(col1, 'all', 'subKey');
+        col2.innerHTML = renderImageList(data.publications);
+        col3.innerHTML = '';
+        wireCol2(data.publications, function (item) { showPubDetail(item); });
+      });
 
     } else if (sectionKey === 'cv') {
       col1.innerHTML = renderCvSections();
@@ -666,17 +688,118 @@
     });
   });
 
-  // Auto-open Works → "All Works" on load
-  onSectionClick('works');
-  var firstEl = col1.querySelector('.finder-item');
-  if (firstEl) {
-    firstEl.classList.add('is-active');
-    var firstItems = firstEl.dataset.subKey === 'all' ? data.works : worksForType(firstEl.dataset.subKey);
-    col2.innerHTML = renderImageList(firstItems);
-    wireCol2(firstItems, function (item) { showPostDetail(workDetailContainer, item.url); });
-  }
+  // Auto-open News on load
+  onSectionClick('news');
   fitHeight();
   window.addEventListener('resize', fitHeight);
+
+  // ── Keyboard navigation ────────────────────────────────────────────────────
+  var kbActive = false;
+  var kbCol = 0;
+  var kbIdx = 0;
+  var kbTriggered = false;
+
+  function kbItems(colIdx) {
+    if (colIdx === 0) return Array.from(col0.querySelectorAll('.finder-item'));
+    if (colIdx === 1) return Array.from(col1.querySelectorAll('.finder-item'));
+    if (colIdx === 2) return Array.from(col2.querySelectorAll('.finder-list-item[data-idx]'));
+    return [];
+  }
+
+  // Move is-active within a column without triggering any side effects on downstream cols
+  function moveHighlight(colIdx, idx) {
+    var items = kbItems(colIdx);
+    if (!items.length) return;
+    kbCol = colIdx;
+    kbIdx = ((idx % items.length) + items.length) % items.length;
+    items.forEach(function (el) { el.classList.remove('is-active'); });
+    items[kbIdx].classList.add('is-active');
+    items[kbIdx].scrollIntoView({ block: 'nearest' });
+    col2.innerHTML = '';
+    col3.innerHTML = '';
+  }
+
+  // Click an item (moving its is-active highlight) and update kb position
+  function selectItem(colIdx, idx) {
+    var items = kbItems(colIdx);
+    if (!items.length) return;
+    kbCol = colIdx;
+    kbIdx = ((idx % items.length) + items.length) % items.length;
+    kbTriggered = true;
+    items[kbIdx].click();
+    kbTriggered = false;
+    items[kbIdx].scrollIntoView({ block: 'nearest' });
+  }
+
+  function deactivateKb() {
+    kbActive = false;
+    browser.classList.remove('is-kb-active');
+  }
+
+  // Activate on click inside the widget; track which item was clicked
+  browser.addEventListener('click', function (e) {
+    if (kbTriggered) return;
+    if (e.target.closest('.finder-item__arrow, .finder-list-item__arrow')) return;
+    var item = e.target.closest('.finder-item, .finder-list-item[data-idx]');
+    kbActive = true;
+    browser.classList.add('is-kb-active');
+    if (item) {
+      if (col0.contains(item)) { kbCol = 0; kbIdx = Math.max(0, kbItems(0).indexOf(item)); }
+      else if (col1.contains(item)) { kbCol = 1; kbIdx = Math.max(0, kbItems(1).indexOf(item)); }
+      else if (col2.contains(item)) { kbCol = 2; kbIdx = Math.max(0, kbItems(2).indexOf(item)); }
+    }
+  });
+
+  // Deactivate when clicking outside the widget
+  document.addEventListener('click', function (e) {
+    if (kbActive && !browser.contains(e.target)) deactivateKb();
+  });
+
+  // Arrow key / Enter / Escape handler
+  document.addEventListener('keydown', function (e) {
+    if (!kbActive) return;
+
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      deactivateKb();
+
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      selectItem(kbCol, kbIdx - 1);
+
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      selectItem(kbCol, kbIdx + 1);
+
+    } else if (e.key === 'ArrowRight' || e.key === 'Enter') {
+      e.preventDefault();
+      var items = kbItems(kbCol);
+      if (items[kbIdx]) {
+        kbTriggered = true;
+        items[kbIdx].click();
+        kbTriggered = false;
+      }
+      if (kbCol < 2) {
+        var nextItems = kbItems(kbCol + 1);
+        if (nextItems.length) {
+          var activeIdx = nextItems.findIndex(function (el) { return el.classList.contains('is-active'); });
+          selectItem(kbCol + 1, activeIdx >= 0 ? activeIdx : 0);
+        }
+      }
+
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      if (kbCol > 0) {
+        // Remove is-active from the column we're leaving so the focus change is visible
+        kbItems(kbCol).forEach(function (el) { el.classList.remove('is-active'); });
+        var prevItems = kbItems(kbCol - 1);
+        var prevActive = prevItems.findIndex(function (el) { return el.classList.contains('is-active'); });
+        kbCol -= 1;
+        kbIdx = prevActive >= 0 ? prevActive : 0;
+        if (prevItems[kbIdx]) prevItems[kbIdx].scrollIntoView({ block: 'nearest' });
+      }
+    }
+  });
 
 }());
 </script>
