@@ -23,6 +23,12 @@
     </div>
 
     <!-- Authors -->
+    {%- assign _ec_has_star = false -%}
+    {%- assign _ec_has_dagger = false -%}
+    {%- for _a in entry.author_array -%}
+      {%- if _a.last contains "*" -%}{%- assign _ec_has_star = true -%}{%- endif -%}
+      {%- if _a.last contains "†" -%}{%- assign _ec_has_dagger = true -%}{%- endif -%}
+    {%- endfor -%}
     <div class="pub-card__authors">
       {%- assign author_array_size = entry.author_array | size -%}
       {%- assign author_array_limit = author_array_size -%}
@@ -46,13 +52,16 @@
             {%- endif -%}
           {%- endfor -%}
         {%- endif -%}
+        {%- assign _marker = "" -%}
+        {%- if author.last contains "*" -%}{%- assign _marker = "*" -%}{%- endif -%}
+        {%- if author.last contains "†" -%}{%- assign _marker = "†" -%}{%- endif -%}
         {%- if forloop.first == false -%},&nbsp;{%- endif -%}
         {%- if author_is_self -%}
-          <strong><em>{{ author.first }} {{ author.last }}</em></strong>
+          <strong><em>{{ author.first }} {{ author_last_name }}</em></strong>{%- if _marker != "" -%}<sup>{{ _marker }}</sup>{%- endif -%}
         {%- elsif coauthor_url -%}
-          <a href="{{ coauthor_url }}">{{ author.first }} {{ author.last }}</a>
+          <a href="{{ coauthor_url }}">{{ author.first }} {{ author_last_name }}</a>{%- if _marker != "" -%}<sup>{{ _marker }}</sup>{%- endif -%}
         {%- else -%}
-          {{ author.first }} {{ author.last }}
+          {{ author.first }} {{ author_last_name }}{%- if _marker != "" -%}<sup>{{ _marker }}</sup>{%- endif -%}
         {%- endif -%}
       {%- endfor -%}
       {%- assign more_authors = author_array_size | minus: author_array_limit -%}
@@ -60,6 +69,13 @@
         , and {{ more_authors }} more
       {%- endif -%}
     </div>
+    {%- if _ec_has_star or _ec_has_dagger -%}
+    <p class="pub-card__contrib-note">
+      {%- if _ec_has_star -%}<sup>*</sup>&thinsp;Equal contribution{%- endif -%}
+      {%- if _ec_has_star and _ec_has_dagger -%}&ensp;{%- endif -%}
+      {%- if _ec_has_dagger -%}<sup>†</sup>&thinsp;Co-senior authors{%- endif -%}
+    </p>
+    {%- endif -%}
 
     <!-- Venue + year -->
     <div class="pub-card__venue">

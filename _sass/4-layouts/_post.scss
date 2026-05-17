@@ -1198,6 +1198,13 @@ hr {
   }
 }
 
+.pub-card__contrib-note {
+  margin: 0.15rem 0 0.3rem;
+  font-size: 0.72rem;
+  color: rgba($gray, 0.75);
+  sup { font-size: 0.65em; }
+}
+
 .pub-card__venue {
   font-size: 0.8rem;
   color: $gray;

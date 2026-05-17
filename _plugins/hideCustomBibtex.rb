@@ -1,3 +1,4 @@
+# encoding: utf-8
  module Jekyll
   module HideCustomBibtex
     def hideCustomBibtex(input)
@@ -6,6 +7,9 @@
 	  keywords.each do |keyword|
 		input = input.gsub(/^.*#{keyword}.*$\n/, '')
 	  end
+
+      # Strip equal-contrib markers (* ^ and unicode dagger/pilcrow) from author names
+      input = input.gsub(/(\p{L})[*\^†¶]/, '\1')
 
       return input
     end
