@@ -171,7 +171,7 @@
   // Sum item offsetHeights (not scrollHeight) to get natural content height,
   // avoiding the flex-stretch inflation from col-2's long list.
   function fitHeight() {
-    if (window.innerWidth <= 576) { browser.style.height = ''; return; }
+    if (window.innerWidth <= 640) { browser.style.height = ''; return; }
     var h0 = 0, h1 = 0;
     col0.querySelectorAll('.finder-item').forEach(function (el) { h0 += el.offsetHeight; });
     col1.querySelectorAll('.finder-item').forEach(function (el) { h1 += el.offsetHeight; });
@@ -179,7 +179,7 @@
   }
 
   // ── Mobile drill-down ─────────────────────────────────────────────────────
-  function isMobile() { return window.innerWidth <= 576; }
+  function isMobile() { return window.innerWidth <= 640; }
 
   var mobileDepth = 0;
   var mobileTitles = ['', '', '', ''];

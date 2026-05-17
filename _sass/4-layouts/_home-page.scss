@@ -692,7 +692,7 @@
   background: #1c1919;
   font-size: 0.82rem;
 
-  @media (max-width: $mobile) {
+  @media (max-width: 640px) {
     flex-direction: column;
     height: auto !important;
     min-height: 300px;
@@ -704,7 +704,7 @@
   display: none;
   flex-shrink: 0;
 
-  @media (max-width: $mobile) {
+  @media (max-width: 640px) {
     &.is-visible {
       display: flex;
       align-items: center;
@@ -783,7 +783,7 @@
     border-radius: 2px;
   }
 
-  @media (max-width: $mobile) {
+  @media (max-width: 640px) {
     &--root, &--sub, &--list, &--detail {
       display: none;
       flex: none;
