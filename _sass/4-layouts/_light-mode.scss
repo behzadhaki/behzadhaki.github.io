@@ -295,6 +295,8 @@ html[data-theme='light'] {
   // ── Home page — Bio ──────────────────────────────────────────
   .bio-section { border-bottom: none; }
   .bio-photo   { border-color: rgba(0,0,0,0.12); }
+  .bio-panel { background: rgba(0,0,0,0.05); }
+  .bio-right { background: rgba(0,0,0,0.04); }
   .bio-subtitle { color: #555; }
   .bio-text p  { color: #2d2b3d; }
   .bio-text a  {
@@ -305,6 +307,29 @@ html[data-theme='light'] {
     &:hover { color: #505065; text-decoration-color: $brand-color; }
   }
   .bio-social a { color: #555; &:hover { color: #505065; } }
+
+  // ── Home page — Bio timeline ─────────────────────────────────
+  .bio-block__box {
+    border-color: rgba(0,0,0,0.12);
+  }
+  .bio-block__title { color: #505065; }
+  .bio-block__sub   { color: #666; }
+  .bio-block__tags {
+    border-left-color: rgba(0,0,0,0.12);
+    span {
+      color: #777;
+      &::before { background: rgba(0,0,0,0.18); }
+    }
+  }
+  .bio-timeline__row--positions .bio-block__box {
+    background: rgba(0,0,0,0.06);
+    border-color: rgba(0,0,0,0.15);
+  }
+  .bio-timeline__row--education .bio-block__box {
+    background: rgba(0,0,0,0.04);
+    border-color: rgba(0,0,0,0.10);
+  }
+  .bio-contact { color: #555; a { color: #555; &:hover { color: #505065; } } }
 
   // ── Home page — News cards ───────────────────────────────────
   .news-section { border-bottom: none; }

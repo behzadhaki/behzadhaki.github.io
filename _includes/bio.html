@@ -3,46 +3,72 @@
   <div class="container">
     <div class="bio-inner">
 
-      <div class="bio-photo">
-        <img src="{{ '/assets/img/prof_pic.jpg' | relative_url }}"
-             alt="{{ site.data.settings.author.name }}"
-             class="bio-photo__img">
-      </div>
-
-      <div class="bio-content">
-        <h2 class="bio-name">{{ site.data.settings.author.name }}</h2>
-        <p class="bio-subtitle">PhD · Researcher &amp; Developer · Music Technology · Barcelona</p>
-
-        <div class="bio-text">
-          <p>
-            I recently completed my PhD at the <a href="https://www.upf.edu/web/mtg" target="_blank" rel="noopener">Music Technology Group (MTG)</a>, Universitat Pompeu Fabra, where my research centered on interactive real-time generative systems for music.
-            Specifically, I worked on designing and training lightweight neural networks for real-time music generation, and on deploying them as practical digital instruments — ranging from VST plugins to embedded hardware systems.
-          </p>
-          <p>
-            Alongside my research, I have hands-on development experience building audio software and tools, including open-source VST/AUv2 plugins, Max4Live devices, and hardware prototypes.
-            My academic background spans signal processing, machine learning, music acoustics, and sound and music computing — through a BASc in Electrical Engineering (with a focus on DSP and acoustics) from the University of British Columbia and a Master's in Sound and Music Computing from UPF.
-          </p>
-          <p>
-            Beyond academia, I have also worked as an acoustic engineering consultant, applying my background in acoustics and signal processing to real-world projects.
-          </p>
-          <p>
-            📍 Barcelona, Spain<br>
-            ✉️ <a href="mailto:behzad.haki@upf.edu">behzad.haki@upf.edu</a>
-          </p>
+      <div class="bio-panel">
+        <div class="bio-photo">
+          <img src="{{ '/assets/img/prof_pic.jpg' | relative_url }}"
+               alt="{{ site.data.settings.author.name }}"
+               class="bio-photo__img">
         </div>
-
+        <div class="bio-id">
+          <h2 class="bio-name">{{ site.data.settings.author.name }}</h2>
+          <p class="bio-subtitle">PhD · Researcher &amp; Developer · Music Technology · Barcelona</p>
+        </div>
+        {% if site.data.settings.social %}
         <div class="bio-social">
-          {% if site.data.settings.social %}
-          <ul class="social__list list-reset" style="display:flex; gap:1rem; list-style:none; padding:0; margin:0;">
+          <ul class="social__list list-reset" style="display:flex; gap:0.75rem; list-style:none; padding:0; margin:0; flex-wrap:wrap; justify-content:center;">
+            <li>
+              <a class="social__link" href="mailto:behzad.haki@upf.edu" aria-label="Email" title="behzad.haki@upf.edu">
+                <i class="far fa-envelope" style="font-size: 1.1rem;"></i>
+              </a>
+            </li>
             {% for social in site.data.settings.social %}
             <li>
               <a class="social__link" href="{{ social.link }}" target="_blank" rel="noopener" aria-label="{{ social.name }} link" title="{{ social.name }}">
-                <i class="{{ social.icon }}" style="font-size: 1.4rem;"></i>
+                <i class="{{ social.icon }}" style="font-size: 1.1rem;"></i>
               </a>
             </li>
             {% endfor %}
           </ul>
-          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="bio-right">
+        <!-- Career timeline -->
+        <div class="bio-timeline-wrap">
+          <div class="bio-timeline" role="img" aria-label="Career and education timeline">
+
+            <!-- Education track (top) -->
+            <div class="bio-timeline__row bio-timeline__row--positions">
+              {% for item in site.data.bio.education %}
+              <div class="bio-block" style="left:{{ item.left }}%;width:{{ item.width }}%">
+                <div class="bio-block__tags">
+                  {% for tag in item.tags %}<span>{{ tag }}</span>{% endfor %}
+                </div>
+                <div class="bio-block__box">
+                  <div class="bio-block__title">{{ item.title }}</div>
+                  <div class="bio-block__sub">{{ item.org }}</div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+
+            <!-- Positions track (bottom) -->
+            <div class="bio-timeline__row bio-timeline__row--education">
+              {% for item in site.data.bio.positions %}
+              <div class="bio-block" style="left:{{ item.left }}%;width:{{ item.width }}%">
+                <div class="bio-block__box">
+                  <div class="bio-block__title">{{ item.title }}</div>
+                  <div class="bio-block__sub">{{ item.org }}</div>
+                </div>
+                <div class="bio-block__tags">
+                  {% for tag in item.tags %}<span>{{ tag }}</span>{% endfor %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+
+          </div>
         </div>
       </div>
 

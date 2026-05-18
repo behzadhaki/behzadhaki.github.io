@@ -10,20 +10,36 @@
 
 .bio-inner {
   display: flex;
-  gap: 2.5rem;
+  gap: 0.75rem;
   align-items: flex-start;
 
   @media (max-width: $tablet) {
     flex-direction: column;
     align-items: center;
-    text-align: center;
+  }
+}
+
+.bio-panel {
+  flex: 0 0 149px;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255,255,255,0.05);
+  border-radius: 14px;
+  padding: 0.85rem 0.75rem;
+  gap: 0.5rem;
+
+  @media (max-width: $tablet) {
+    flex: none;
+    width: auto;
+    align-self: auto;
   }
 }
 
 .bio-photo {
-  flex: 0 0 150px;
-  width: 150px;
-  height: 150px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
   overflow: hidden;
   border: 3px solid rgba(255,255,255,0.15);
@@ -36,28 +52,36 @@
     object-fit: cover;
     border-radius: 0;
   }
-
-  @media (max-width: $tablet) {
-    flex: 0 0 120px;
-    width: 120px;
-    height: 120px;
-  }
 }
 
-.bio-content {
+.bio-id {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  text-align: center;
+}
+
+.bio-right {
   flex: 1;
+  min-width: 0;
+  background: rgba(255,255,255,0.04);
+  border-radius: 14px;
+  padding: 0.85rem;
 }
 
 .bio-name {
-  font-size: $font-size-h2;
+  font-size: 0.85rem;
   font-weight: $heading-font-weight;
-  margin: 0 0 0.25rem;
+  margin: 0;
+  line-height: 1.3;
 }
 
 .bio-subtitle {
   color: $gray;
-  font-size: 1rem;
-  margin-bottom: 1rem;
+  font-size: 0.65rem;
+  margin: 0;
+  line-height: 1.4;
 }
 
 .bio-text {
@@ -69,8 +93,125 @@
   }
 }
 
+// Career timeline
+.bio-timeline-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0;
+  width: 100%;
+}
+
+.bio-timeline {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bio-timeline__row {
+  position: relative;
+  height: 128px;
+}
+
+.bio-block {
+  position: absolute;
+  top: 0;
+  height: 128px;
+  padding-right: 3px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &__box {
+    height: 58px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 0.3rem 0.55rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &__title {
+    font-size: 0.63rem;
+    font-weight: 600;
+    color: $light-gray;
+    white-space: normal;
+    line-height: 1.3;
+  }
+
+  &__sub {
+    font-size: 0.58rem;
+    color: $gray;
+    white-space: normal;
+    line-height: 1.3;
+    margin-top: 2px;
+  }
+
+  &__tags {
+    margin-top: 0;
+    padding-left: 10px;
+    border-left: 1px solid rgba(255,255,255,0.12);
+    display: flex;
+    flex-direction: column;
+
+    span {
+      font-size: 0.58rem;
+      color: rgba($gray, 0.8);
+      white-space: nowrap;
+      line-height: 1.65;
+      display: flex;
+      align-items: center;
+
+      &::before {
+        content: '';
+        display: inline-block;
+        width: 7px;
+        height: 1px;
+        background: rgba(255,255,255,0.18);
+        margin-right: 5px;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  &--narrow {
+    .bio-block__tags { display: none; }
+    .bio-block__box {
+      overflow: visible;
+      white-space: nowrap;
+    }
+    .bio-block__title,
+    .bio-block__sub { overflow: visible; }
+  }
+}
+
+.bio-timeline__row--positions .bio-block {
+  justify-content: flex-end;
+}
+
+.bio-timeline__row--positions .bio-block__box {
+  background: rgba(255,255,255,0.11);
+  border-color: rgba(255,255,255,0.22);
+}
+
+.bio-timeline__row--education .bio-block__box {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.12);
+}
+
+.bio-contact {
+  font-size: 0.82rem;
+  color: $gray;
+  margin: 0.5rem 0 0;
+
+  a { color: $gray; &:hover { color: $light-gray; } }
+}
+
 .bio-social {
-  margin-top: 1.25rem;
+  margin-top: auto;
   a {
     color: $gray;
     &:hover { color: $light-gray; }
