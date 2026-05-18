@@ -75,7 +75,7 @@
 }
 
 .bio-subtitle {
-  color: $gray;
+  color: rgba($gray, 0.85);
   font-size: 0.65rem;
   margin: 0;
   line-height: 1.4;
@@ -269,10 +269,25 @@
   }
 }
 
+.bio-summary-panel {
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.bio-summary-text {
+  font-size: 0.65rem;
+  color: rgba($gray, 0.85);
+  line-height: 1.5;
+  margin: 0;
+}
+
 // Skills panels
 .bio-skills {
   display: flex;
   gap: 0.6rem;
+  margin-top: 0.6rem;
 }
 
 .bio-skills__panel {

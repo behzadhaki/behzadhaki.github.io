@@ -34,25 +34,9 @@
       </div>
 
       <div class="bio-right">
-        <!-- Skills -->
-        <div class="bio-skills">
-          {% for section in site.data.bio.skills %}
-          <div class="bio-skills__panel">
-            <div class="bio-skills__label">{{ section.label }}</div>
-            <div class="bio-skills__sublabel">Focus Areas</div>
-            <div class="bio-skills__topics-tags bio-skills__tags">
-              {% for tag in section.topics %}
-              <span class="bio-skills__tag">{{ tag }}</span>
-              {% endfor %}
-            </div>
-            <div class="bio-skills__sublabel">Dev Tools</div>
-            <div class="bio-skills__tags">
-              {% for tag in section.software %}
-              <span class="bio-skills__tag bio-skills__tag--soft">{{ tag }}</span>
-              {% endfor %}
-            </div>
-          </div>
-          {% endfor %}
+        <!-- Bio summary -->
+        <div class="bio-summary-panel">
+          <p class="bio-summary-text">My background spans data science, music technology, electrical engineering, and acoustics. In the past few years I have been researching and building systems for making, performing, and understanding music.</p>
         </div>
 
         <!-- Career timeline -->
@@ -102,6 +86,27 @@
         <div class="bio-timeline__preview">
           <span class="bio-timeline__preview-hint">Hover over an entry to see details</span>
         </div>
+        </div>
+
+        <!-- Skills -->
+        <div class="bio-skills">
+          {% for section in site.data.bio.skills %}
+          <div class="bio-skills__panel">
+            <div class="bio-skills__label">{{ section.label }}</div>
+            <div class="bio-skills__sublabel">Focus Areas</div>
+            <div class="bio-skills__topics-tags bio-skills__tags">
+              {% for tag in section.topics %}
+              <span class="bio-skills__tag">{{ tag }}</span>
+              {% endfor %}
+            </div>
+            <div class="bio-skills__sublabel">Dev Tools</div>
+            <div class="bio-skills__tags">
+              {% for tag in section.software %}
+              <span class="bio-skills__tag bio-skills__tag--soft">{{ tag }}</span>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
         </div>
 
       </div>
