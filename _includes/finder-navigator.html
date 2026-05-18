@@ -857,6 +857,9 @@
       if (kbCol > 0) {
         // Remove is-active from the column we're leaving so the focus change is visible
         kbItems(kbCol).forEach(function (el) { el.classList.remove('is-active'); });
+        // Clear downstream columns
+        if (kbCol <= 2) col3.innerHTML = '';
+        if (kbCol <= 1) col2.innerHTML = '';
         var prevItems = kbItems(kbCol - 1);
         var prevActive = prevItems.findIndex(function (el) { return el.classList.contains('is-active'); });
         kbCol -= 1;
