@@ -24,31 +24,31 @@ menu-settings:
       url: /works/
       sub_menus:
         - title: MAX / M4L
-          url: /works/max/
+          url: /works/#max
           project_type: max
         - title: Pure Data
-          url: /works/pd/
+          url: /works/#pd
           project_type: pd
         - title: Plugins
-          url: /works/plugins/
+          url: /works/#plugins
           project_type: plugins
         - title: Web
-          url: /works/web/
+          url: /works/#web
           project_type: web
         - title: Hardware
-          url: /works/hardware/
+          url: /works/#hardware
           project_type: hardware
         - title: Datasets
-          url: /works/datasets/
+          url: /works/#datasets
           project_type: datasets
         - title: Frameworks
-          url: /works/frameworks/
+          url: /works/#frameworks
           project_type: frameworks
         - title: Templates
-          url: /works/templates/
+          url: /works/#templates
           project_type: templates
         - title: Web Widgets
-          url: /works/web-widgets/
+          url: /works/#web-widgets
           project_type: web-widgets
     - title: Tutorials
       url: /tutorials/

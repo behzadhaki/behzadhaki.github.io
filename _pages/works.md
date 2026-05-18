@@ -41,18 +41,31 @@ hide_title: true
 (function () {
   var btns  = Array.from(document.querySelectorAll("#works-filter .works-filter__btn"));
   var cards = Array.from(document.querySelectorAll("#works-grid .work-card"));
-  var active = "all";
+
+  function applyFilter(filter) {
+    btns.forEach(function (b) { b.classList.toggle("is-active", b.dataset.filter === filter); });
+    cards.forEach(function (card) {
+      var types = (card.dataset.types || "").split(" ");
+      var show  = filter === "all" || types.indexOf(filter) !== -1;
+      card.classList.toggle("work-card--hidden", !show);
+    });
+  }
 
   btns.forEach(function (btn) {
     btn.addEventListener("click", function () {
-      active = this.dataset.filter;
-      btns.forEach(function (b) { b.classList.toggle("is-active", b.dataset.filter === active); });
-      cards.forEach(function (card) {
-        var types = (card.dataset.types || "").split(" ");
-        var show  = active === "all" || types.indexOf(active) !== -1;
-        card.classList.toggle("work-card--hidden", !show);
-      });
+      var filter = this.dataset.filter;
+      history.replaceState(null, "", filter === "all" ? location.pathname : "#" + filter);
+      applyFilter(filter);
     });
   });
+
+  function applyFromHash() {
+    var hash = location.hash.slice(1);
+    var matched = btns.find(function (b) { return b.dataset.filter === hash; });
+    applyFilter(matched ? hash : "all");
+  }
+
+  window.addEventListener("hashchange", applyFromHash);
+  applyFromHash();
 })();
 </script>

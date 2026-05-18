@@ -560,7 +560,7 @@
 
   function redirectArrow(href, label) {
     return '<a href="' + esc(href) + '" class="finder-item__arrow" aria-label="' + esc(label) + '"' +
-      ' onclick="event.stopPropagation()">' +
+      ' target="_blank" rel="noopener" onclick="event.stopPropagation()">' +
       '<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>';
   }
 
@@ -573,7 +573,7 @@
     var typeItems = uniqueWorkTypes().map(function (k) {
       return '<div class="finder-item" data-sub-key="' + esc(k) + '" role="button" tabindex="0">' +
         '<span class="finder-item__label">' + esc(typeLabel(k)) + '</span>' +
-        redirectArrow('/works/', 'Go to Works page') +
+        redirectArrow('/works/#' + esc(k), 'Go to Works page') +
         '</div>';
     }).join('');
     return allItem + typeItems;
@@ -704,7 +704,7 @@
         '<div class="finder-item" data-sub-key="all" role="button" tabindex="0">' +
         '<span class="finder-item__label">All Papers</span>' +
         '<a href="/publications/" class="finder-item__arrow" aria-label="Go to Publications page"' +
-        ' onclick="event.stopPropagation()">' +
+        ' target="_blank" rel="noopener" onclick="event.stopPropagation()">' +
         '<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>' +
         '</div>';
       wireCol1(function () {
