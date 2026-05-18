@@ -34,6 +34,27 @@
       </div>
 
       <div class="bio-right">
+        <!-- Skills -->
+        <div class="bio-skills">
+          {% for section in site.data.bio.skills %}
+          <div class="bio-skills__panel">
+            <div class="bio-skills__label">{{ section.label }}</div>
+            <div class="bio-skills__sublabel">Focus Areas</div>
+            <div class="bio-skills__topics-tags bio-skills__tags">
+              {% for tag in section.topics %}
+              <span class="bio-skills__tag">{{ tag }}</span>
+              {% endfor %}
+            </div>
+            <div class="bio-skills__sublabel">Dev Tools</div>
+            <div class="bio-skills__tags">
+              {% for tag in section.software %}
+              <span class="bio-skills__tag bio-skills__tag--soft">{{ tag }}</span>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
         <!-- Career timeline -->
         <div class="bio-timeline-wrap">
           <div class="bio-timeline" role="img" aria-label="Career and education timeline">
@@ -70,26 +91,6 @@
               {% endfor %}
             </div>
 
-          </div>
-        </div>
-
-        <!-- Skills -->
-        <div class="bio-skills">
-          <div class="bio-skills__panel">
-            <div class="bio-skills__label">Research</div>
-            <div class="bio-skills__tags">
-              {% for tag in site.data.bio.skills.research %}
-              <span class="bio-skills__tag">{{ tag }}</span>
-              {% endfor %}
-            </div>
-          </div>
-          <div class="bio-skills__panel">
-            <div class="bio-skills__label">Software &amp; Tools</div>
-            <div class="bio-skills__tags">
-              {% for tag in site.data.bio.skills.software %}
-              <span class="bio-skills__tag">{{ tag }}</span>
-              {% endfor %}
-            </div>
           </div>
         </div>
 

@@ -5,7 +5,7 @@ positions:
     width: 32.78
     skills:
       research: [Architectural and Environmental Acoustics, Noise & Vibration Control, Acoustic Modeling, Specialized Hardware R&D, Software Development]
-      software: [EASE, CadnaA, AutoCAD, Signal Processing, LEAP EnclosureShop and CrossoverShop, ARTA, winMLS]
+      software: [EASE, CadnaA, Signal Processing, LEAP EnclosureShop and CrossoverShop, ARTA, winMLS]
 
   - title: Teaching
     org: UPF (MTG) · Barcelona
@@ -49,20 +49,62 @@ education:
       software: [PyTorch/Libtorch, ONNX/ORT, Python, C++, Plugin Dev, Embedded Systems, Hardware Prototyping]
 
 skills:
-  research:
-    - Generative AI
-    - Music Information Retrieval
-    - Real-Time Systems
-    - Neural Networks
-    - Signal Processing
-    - Room Acoustics
-    - Sound Synthesis
-  software:
-    - Python
-    - C++, JUCE
-    - VST3
-    - PyTorch
-    - Eurorack
-    - Max/MSP
-    - MATLAB
-    - Git
+  - label: Data Science
+    topics:
+      - Generative NN
+      - Autoregressive Models
+      - Transformers
+      - Real-Time Systems
+      - DL/ML Model Dev
+      - Dataset Creation
+      - Optimization & Deployment
+
+    software:
+      - Python
+      - PyTorch
+      - ONNX/ORT
+      - Docker
+
+  - label: Sound & Music Technology
+    topics:
+      - Real-time Interactive Systems
+      - Generative Music
+      - NIME
+      - HCI & Participatory Design
+      - Synthesis
+      - DSP
+      - MIR
+      - Rhythm Analysis & Generation
+
+    software:
+      - C/C++
+      - Plugin Dev
+      - Max/MSP
+      - Pure Data
+
+  - label: Hardware & Embedded Systems
+    topics:
+      - Embedded Systems
+      - PCB Design
+      - Prototyping
+      - Eurorack Modules
+
+    software:
+      - C/C++
+      - Arduino/RPi
+      - STM32 controllers
+      - Embedded Linux
+
+  - label: Acoustics
+    topics:
+      - Room Acoustics
+      - Architectural Acoustics
+      - Noise & Vibration Control
+      - Acoustic Modeling
+    software:
+      - MatLAB
+      - EASE
+      - CadnaA
+      - ARTA
+      - LEAP
+      - winMLS
