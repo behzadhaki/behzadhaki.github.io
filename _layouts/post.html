@@ -15,14 +15,7 @@ layout: default
 
       <div class="col col-8 col-t-12">
         <div class="post-head__box">
-          <div class="post__meta">
-            <span class="post__minutes">
-              <time class="post__date"
-                datetime="{{ page.date | date_to_xmlschema }}">{% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}{{ page.date | date: date_format }}</time>
-            </span>
-          </div>
-
-          <h2 class="post__title">{{ page.title }}</h2>
+          <h2 class="post__title">{{ page.title }}<time class="post__date" datetime="{{ page.date | date_to_xmlschema }}">{% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}{{ page.date | date: date_format }}</time></h2>
 
           {% if page.description %}
           <p class="post__description">{{ page.description }}</p>
