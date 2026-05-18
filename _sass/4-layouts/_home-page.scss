@@ -94,76 +94,150 @@
 }
 
 // Career timeline
+.bio-timeline-panel {
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+  margin-top: 0.6rem;
+
+  .bio-skills__label {
+    margin-bottom: 0.5rem;
+  }
+}
+
 .bio-timeline-wrap {
   overflow-x: auto;
+  overflow-y: visible;
   -webkit-overflow-scrolling: touch;
   margin: 0;
   width: 100%;
+  padding-left: 5px;
+  box-sizing: border-box;
 }
 
 .bio-timeline {
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 7px;
 }
 
 .bio-timeline__row {
   position: relative;
-  height: 128px;
+  height: 44px;
+}
+
+.bio-timeline__preview {
+  height: 2.6rem;
+  margin-top: 0.5rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.bio-timeline__preview-hint {
+  font-size: 0.5rem;
+  color: rgba($gray, 0.9);
+  font-style: italic;
 }
 
 .bio-block {
   position: absolute;
-  top: 0;
-  height: 128px;
-  padding-right: 3px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  overflow: visible;
+
+  // education: anchored at bottom, dot touches center line
+  &--edu {
+    bottom: 0;
+    align-items: flex-start;
+  }
+
+  // positions: anchored at top, dot touches center line
+  &--pos {
+    top: 0;
+    align-items: flex-start;
+  }
+
+  &__bar {
+    position: absolute;
+    left: 9px;
+    width: calc(100% - 19px);
+    height: 3px;
+    border-radius: 1.5px;
+    background: rgba(255,255,255,0.18);
+
+    .bio-block--edu & {
+      bottom: 0;
+      transform: translateY(-1.5px); // center bar on dot center
+    }
+    .bio-block--pos & {
+      top: 0;
+      transform: translateY(1.5px); // center bar on dot center
+    }
+  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.85);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+
+  &.is-active &__dot {
+    background: #fff;
+    transform: scale(1.6);
+  }
+
+  &.is-active &__title {
+    color: rgba($light-gray, 1);
+  }
+
+  &.is-active &__sub {
+    color: rgba($gray, 0.85);
+  }
+
+  &.is-active &__bar {
+    background: rgba(255,255,255,0.45);
+  }
 
   &__box {
-    height: 58px;
-    border-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 0.3rem 0.55rem;
-    overflow: hidden;
+    border: none;
+    background: none;
+    height: auto;
+    border-radius: 0;
+    padding: 0.15rem 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    overflow: visible;
   }
 
   &__title {
-    font-size: 0.63rem;
+    font-size: 0.54rem;
     font-weight: 600;
     color: rgba($light-gray, 0.6);
-    white-space: normal;
+    white-space: nowrap;
     line-height: 1.3;
   }
 
   &__sub {
-    font-size: 0.58rem;
-    color: $gray;
-    white-space: normal;
+    font-size: 0.49rem;
+    color: rgba($gray, 0.5);
+    white-space: nowrap;
     line-height: 1.3;
-    margin-top: 2px;
+    margin-top: 1px;
   }
 
   &__tags {
-    margin-top: 0;
-    padding-left: 6px;
-    border-left: 1px solid rgba(255,255,255,0.12);
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    overflow: hidden;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-
-  &:hover &__tags {
-    opacity: 1;
+    display: none;
   }
 
   &__skill-row {
@@ -172,45 +246,30 @@
     gap: 0;
 
     span {
-      font-size: 0.52rem;
-      color: rgba($gray, 0.85);
+      font-size: 0.5rem;
+      color: rgba($gray, 0.75);
       white-space: nowrap;
       flex-shrink: 0;
     }
 
     &--soft span {
-      color: rgba($gray, 0.5);
+      color: rgba($gray, 0.45);
+    }
+
+    .bio-timeline__preview & span {
+      font-size: 0.58rem;
+      color: $light-gray;
+    }
+
+    .bio-timeline__preview &--soft span {
+      color: rgba($light-gray, 0.75);
     }
 
     .bio-block__sep {
-      padding: 0 0.25em;
+      padding: 0 0.2em;
       flex-shrink: 0;
     }
   }
-
-  &--narrow {
-    .bio-block__tags { display: none; }
-    .bio-block__box {
-      overflow: visible;
-      white-space: nowrap;
-    }
-    .bio-block__title,
-    .bio-block__sub { overflow: visible; }
-  }
-}
-
-.bio-timeline__row--positions .bio-block {
-  justify-content: flex-end;
-}
-
-.bio-timeline__row--positions .bio-block__box {
-  background: rgba(255,255,255,0.11);
-  border-color: rgba(255,255,255,0.22);
-}
-
-.bio-timeline__row--education .bio-block__box {
-  background: rgba(255,255,255,0.06);
-  border-color: rgba(255,255,255,0.12);
 }
 
 // Skills panels

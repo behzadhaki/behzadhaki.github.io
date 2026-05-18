@@ -7,7 +7,7 @@ positions:
       research: [Architectural and Environmental Acoustics, Noise & Vibration Control, Acoustic Modeling, Specialized Hardware R&D, Software Development]
       software: [EASE, CadnaA, Signal Processing, LEAP EnclosureShop and CrossoverShop, ARTA, winMLS]
 
-  - title: Teaching
+  - title: TA · Lecturer
     org: UPF (MTG) · Barcelona
     left: 50.29
     width: 27.14
@@ -24,7 +24,7 @@ positions:
       software: [Python, PyTorch, C++, Plugin Dev, ONNX/ORT]
 
 education:
-  - title: BASc · Electrical Engineering
+  - title: BASc · Electrical & Computer Eng.
     org: UBC · Vancouver
     left: 0
     width: 17.51
@@ -32,7 +32,7 @@ education:
       research: [DSP, Acoustics, Control Systems, Circuit Design, Wireless Communication]
       software: [C/C++, MATLAB, FPGA Programming, Assembly, VHDL/Verilog]
 
-  - title: Master in Sound and Music Computing
+  - title: "Masters. Sound & Music Comp."
     org: UPF (MTG) · Barcelona
     left: 28.29
     width: 17.00

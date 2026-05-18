@@ -298,9 +298,9 @@ html[data-theme='light'] {
   .bio-panel { background: rgba(0,0,0,0.05); }
   .bio-right { background: rgba(0,0,0,0.04); }
   .bio-skills__panel { background: rgba(0,0,0,0.04); }
+  .bio-timeline-panel { background: rgba(0,0,0,0.04); }
   .bio-skills__label { color: rgba(0,0,0,0.38); }
   .bio-skills__tag   { color: rgba(0,0,0,0.55); }
-  .bio-block__tags   { border-left-color: rgba(0,0,0,0.10); }
   .bio-block__skill-row span { color: rgba(0,0,0,0.6); }
   .bio-block__skill-row--soft span { color: rgba(0,0,0,0.35); }
   .bio-subtitle { color: #555; }
@@ -315,26 +315,16 @@ html[data-theme='light'] {
   .bio-social a { color: #555; &:hover { color: #505065; } }
 
   // ── Home page — Bio timeline ─────────────────────────────────
-  .bio-block__box {
-    border-color: rgba(0,0,0,0.12);
-  }
+  .bio-block__dot   { background: rgba(0,0,0,0.25); }
+  .bio-timeline__preview { border-top-color: rgba(0,0,0,0.08); }
+  .bio-block__bar   { background: rgba(0,0,0,0.1); }
+  .bio-timeline::after { background: rgba(0,0,0,0.1); }
   .bio-block__title { color: rgba(80, 80, 101, 0.65); }
   .bio-block__sub   { color: rgba(102, 102, 102, 0.65); }
-  .bio-block__tags {
-    border-left-color: rgba(0,0,0,0.12);
-    span {
-      color: #777;
-      &::before { background: rgba(0,0,0,0.18); }
-    }
-  }
-  .bio-timeline__row--positions .bio-block__box {
-    background: rgba(0,0,0,0.06);
-    border-color: rgba(0,0,0,0.15);
-  }
-  .bio-timeline__row--education .bio-block__box {
-    background: rgba(0,0,0,0.04);
-    border-color: rgba(0,0,0,0.10);
-  }
+  .bio-block.is-active .bio-block__dot  { background: rgba(0,0,0,0.7); }
+  .bio-block.is-active .bio-block__bar  { background: rgba(0,0,0,0.25); }
+  .bio-block.is-active .bio-block__title { color: rgba(40, 40, 60, 1); }
+  .bio-block.is-active .bio-block__sub   { color: rgba(60, 60, 80, 0.85); }
   .bio-contact { color: #555; a { color: #555; &:hover { color: #505065; } } }
 
   // ── Home page — News cards ───────────────────────────────────

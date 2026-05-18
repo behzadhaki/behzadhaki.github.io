@@ -56,13 +56,15 @@
         </div>
 
         <!-- Career timeline -->
+        <div class="bio-timeline-panel">
+          <div class="bio-skills__label">Education &amp; Work Experience</div>
         <div class="bio-timeline-wrap">
           <div class="bio-timeline" role="img" aria-label="Career and education timeline">
 
             <!-- Education track (top) -->
-            <div class="bio-timeline__row bio-timeline__row--positions">
+            <div class="bio-timeline__row bio-timeline__row--edu">
               {% for item in site.data.bio.education %}
-              <div class="bio-block" style="left:{{ item.left }}%;width:{{ item.width }}%">
+              <div class="bio-block bio-block--edu" style="left:{{ item.left }}%;width:{{ item.width }}%">
                 <div class="bio-block__tags">
                   {% if item.skills.research %}<div class="bio-block__skill-row">{% for tag in item.skills.research %}<span>{% unless forloop.first %}<span class="bio-block__sep">&middot;</span>{% endunless %}{{ tag }}</span>{% endfor %}</div>{% endif %}
                   {% if item.skills.software %}<div class="bio-block__skill-row bio-block__skill-row--soft">{% for tag in item.skills.software %}<span>{% unless forloop.first %}<span class="bio-block__sep">&middot;</span>{% endunless %}{{ tag }}</span>{% endfor %}</div>{% endif %}
@@ -71,14 +73,18 @@
                   <div class="bio-block__title">{{ item.title }}</div>
                   <div class="bio-block__sub">{{ item.org }}</div>
                 </div>
+                <div class="bio-block__dot"></div>
+                <div class="bio-block__bar"></div>
               </div>
               {% endfor %}
             </div>
 
             <!-- Positions track (bottom) -->
-            <div class="bio-timeline__row bio-timeline__row--education">
+            <div class="bio-timeline__row bio-timeline__row--pos">
               {% for item in site.data.bio.positions %}
-              <div class="bio-block" style="left:{{ item.left }}%;width:{{ item.width }}%">
+              <div class="bio-block bio-block--pos" style="left:{{ item.left }}%;width:{{ item.width }}%">
+                <div class="bio-block__bar"></div>
+                <div class="bio-block__dot"></div>
                 <div class="bio-block__box">
                   <div class="bio-block__title">{{ item.title }}</div>
                   <div class="bio-block__sub">{{ item.org }}</div>
@@ -93,6 +99,10 @@
 
           </div>
         </div>
+        <div class="bio-timeline__preview">
+          <span class="bio-timeline__preview-hint">Hover over an entry to see details</span>
+        </div>
+        </div>
 
       </div>
 
@@ -102,22 +112,20 @@
 <!-- end bio -->
 <script>
 (function () {
-  function updateSeps() {
-    document.querySelectorAll('.bio-block__skill-row .bio-block__sep').forEach(function (sep) {
-      sep.style.display = '';
-      var parent = sep.parentElement;
-      var prev = parent ? parent.previousElementSibling : null;
-      if (!prev || !parent) return;
-      var prevTop  = Math.round(prev.getBoundingClientRect().top);
-      var thisTop  = Math.round(parent.getBoundingClientRect().top);
-      if (prevTop !== thisTop) sep.style.display = 'none';
+  var preview = document.querySelector('.bio-timeline__preview');
+  var hint = preview ? preview.querySelector('.bio-timeline__preview-hint') : null;
+  document.querySelectorAll('.bio-block').forEach(function (block) {
+    block.addEventListener('mouseenter', function () {
+      var tags = block.querySelector('.bio-block__tags');
+      if (!tags || !preview) return;
+      document.querySelectorAll('.bio-block').forEach(function (b) { b.classList.remove('is-active'); });
+      block.classList.add('is-active');
+      preview.innerHTML = tags.innerHTML;
     });
-  }
-  window.addEventListener('load', function () {
-    requestAnimationFrame(function () { requestAnimationFrame(updateSeps); });
-  });
-  window.addEventListener('resize', function () {
-    requestAnimationFrame(function () { requestAnimationFrame(updateSeps); });
+    block.addEventListener('mouseleave', function () {
+      block.classList.remove('is-active');
+      if (preview) preview.innerHTML = '<span class="bio-timeline__preview-hint">Hover over an entry to see details</span>';
+    });
   });
 })();
 </script>
