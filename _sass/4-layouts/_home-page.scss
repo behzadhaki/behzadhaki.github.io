@@ -162,8 +162,7 @@
 
   &__skill-row {
     display: flex;
-    flex-wrap: nowrap;
-    overflow: hidden;
+    flex-wrap: wrap;
     gap: 0;
 
     span {

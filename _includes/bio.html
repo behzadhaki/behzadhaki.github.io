@@ -99,3 +99,24 @@
   </div>
 </section>
 <!-- end bio -->
+<script>
+(function () {
+  function updateSeps() {
+    document.querySelectorAll('.bio-block__skill-row .bio-block__sep').forEach(function (sep) {
+      sep.style.display = '';
+      var parent = sep.parentElement;
+      var prev = parent ? parent.previousElementSibling : null;
+      if (!prev || !parent) return;
+      var prevTop  = Math.round(prev.getBoundingClientRect().top);
+      var thisTop  = Math.round(parent.getBoundingClientRect().top);
+      if (prevTop !== thisTop) sep.style.display = 'none';
+    });
+  }
+  window.addEventListener('load', function () {
+    requestAnimationFrame(function () { requestAnimationFrame(updateSeps); });
+  });
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(function () { requestAnimationFrame(updateSeps); });
+  });
+})();
+</script>

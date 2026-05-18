@@ -4,23 +4,24 @@ positions:
     left: 17.51
     width: 32.78
     skills:
-      research: [Room Acoustics, Architectural Acoustics, Noise Control]
-      software: [EASE, ODEON, AutoCAD, Signal Processing]
+      research: [Architectural and Environmental Acoustics, Noise & Vibration Control, Acoustic Modeling, Specialized Hardware R&D, Software Development]
+      software: [EASE, CadnaA, AutoCAD, Signal Processing, LEAP EnclosureShop and CrossoverShop, ARTA, winMLS]
 
   - title: Teaching
     org: UPF (MTG) · Barcelona
     left: 50.29
     width: 27.14
     skills:
-      software: [Python, Max/MSP]
+      research: [Electronic Music Production, Introduction to Programming, Computer Organization & Architecture, Computational Music Creativity]
+      software: [Pure Data, Python, C/C++, Assembly, Neural Networks, Generative AI]
 
   - title: Research Engineer
     org: UPF (MTG) · Barcelona
     left: 77.43
     width: 22.57
     skills:
-      research: [Music AI, Real-Time Systems, Generative Models]
-      software: [Python, PyTorch, C++ / JUCE, VST3]
+      research: [NN Deployment, Real-Time Systems, Generative Models]
+      software: [Python, PyTorch, C++, Plugin Dev, ONNX/ORT]
 
 education:
   - title: BASc · Electrical Engineering
@@ -28,24 +29,24 @@ education:
     left: 0
     width: 17.51
     skills:
-      research: [DSP, Acoustics, Control Systems]
-      software: [C/C++, MATLAB, Circuit Design]
+      research: [DSP, Acoustics, Control Systems, Circuit Design, Wireless Communication]
+      software: [C/C++, MATLAB, FPGA Programming, Assembly, VHDL/Verilog]
 
   - title: Master in Sound and Music Computing
     org: UPF (MTG) · Barcelona
     left: 28.29
     width: 17.00
     skills:
-      research: [MIR]
-      software: [Python, ML, Max/MSP]
+      research: [Multimodal Interaction, NIME, ML, Generative Music, MIR, DSP]
+      software: [Python, Keras, Tensorflow, Pure Data]
 
   - title: PhD · Sound & Music Computing
     org: UPF (MTG) · Barcelona
     left: 50.29
     width: 38.17
     skills:
-      research: [Generative AI, Neural Networks, Rhythm & Timing]
-      software: [PyTorch, C++ / JUCE, VST3, Eurorack]
+      research: [Neural Networks, Autoregressive Models, Transformers, Rhythm Perception, Real-Time Generation, Deployment, NIME, HCI, Participatory Design]
+      software: [PyTorch/Libtorch, ONNX/ORT, Python, C++, Plugin Dev, Embedded Systems, Hardware Prototyping]
 
 skills:
   research:
@@ -58,7 +59,7 @@ skills:
     - Sound Synthesis
   software:
     - Python
-    - C++ / JUCE
+    - C++, JUCE
     - VST3
     - PyTorch
     - Eurorack
