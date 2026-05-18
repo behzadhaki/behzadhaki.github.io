@@ -61,7 +61,7 @@ skills:
 
     software:
       - Python
-      - PyTorch
+      - PyTorch/Libtorch
       - ONNX/ORT
       - Docker
 
@@ -85,6 +85,7 @@ skills:
   - label: Hardware & Embedded Systems
     topics:
       - Embedded Systems
+      - Circuit Design
       - PCB Design
       - Prototyping
       - Eurorack Modules
@@ -99,6 +100,7 @@ skills:
     topics:
       - Room Acoustics
       - Architectural Acoustics
+      - Environmental Acoustics
       - Noise & Vibration Control
       - Acoustic Modeling
     software:
