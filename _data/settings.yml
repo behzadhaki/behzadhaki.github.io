@@ -20,8 +20,6 @@ author:
 # Navigation Settings
 menu-settings:
   menu-items:
-    - title: Publications
-      url: /publications/
     - title: Works
       url: /works/
       sub_menus:
@@ -54,8 +52,10 @@ menu-settings:
           project_type: web-widgets
     - title: Tutorials
       url: /tutorials/
-    - title: Installations & Performances
+    - title: Installations
       url: /installations-performances/
+    - title: Publications
+      url: /publications/
     - title: CV
       url: /cv/
 
