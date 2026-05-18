@@ -7,7 +7,9 @@
         <div class="bio-photo">
           <img src="{{ '/assets/img/prof_pic.jpg' | relative_url }}"
                alt="{{ site.data.settings.author.name }}"
-               class="bio-photo__img">
+               class="bio-photo__img"
+               oncontextmenu="return false;"
+               draggable="false">
         </div>
         <div class="bio-id">
           <h2 class="bio-name">{{ site.data.settings.author.name }}</h2>
