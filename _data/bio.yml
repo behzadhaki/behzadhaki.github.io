@@ -1,37 +1,67 @@
 positions:
   - title: Acoustic Engineer
     org: BAP Acoustics · Vancouver
-    left: 22.22
+    left: 17.51
     width: 32.78
-    tags: [Room Acoustics, Consulting, Signal Processing]
+    skills:
+      research: [Room Acoustics, Architectural Acoustics, Noise Control]
+      software: [EASE, ODEON, AutoCAD, Signal Processing]
 
   - title: Teaching
     org: UPF (MTG) · Barcelona
-    left: 55.00
-    width: 15.56
-    tags: [Music Technology, Programming, SMC Masters]
+    left: 50.29
+    width: 27.14
+    skills:
+      software: [Python, Max/MSP]
 
   - title: Research Engineer
     org: UPF (MTG) · Barcelona
-    left: 70.56
-    width: 21.56
-    tags: [Music AI, Real-Time Systems]
+    left: 77.43
+    width: 22.57
+    skills:
+      research: [Music AI, Real-Time Systems, Generative Models]
+      software: [Python, PyTorch, C++ / JUCE, VST3]
 
 education:
   - title: BASc · Electrical Engineering
     org: UBC · Vancouver
     left: 0
-    width: 21.89
-    tags: [DSP, Acoustics, C/C++, Circuit Design]
+    width: 17.51
+    skills:
+      research: [DSP, Acoustics, Control Systems]
+      software: [C/C++, MATLAB, Circuit Design]
 
   - title: Master in Sound and Music Computing
     org: UPF (MTG) · Barcelona
-    left: 37.67
-    width: 10.73
-    tags: [SMC, ML]
+    left: 28.29
+    width: 17.00
+    skills:
+      research: [MIR]
+      software: [Python, ML, Max/MSP]
 
   - title: PhD · Sound & Music Computing
     org: UPF (MTG) · Barcelona
-    left: 55.00
-    width: 21.89
-    tags: [Generative AI, Neural Networks, VST3/JUCE, Eurorack]
+    left: 50.29
+    width: 38.17
+    skills:
+      research: [Generative AI, Neural Networks, Rhythm & Timing]
+      software: [PyTorch, C++ / JUCE, VST3, Eurorack]
+
+skills:
+  research:
+    - Generative AI
+    - Music Information Retrieval
+    - Real-Time Systems
+    - Neural Networks
+    - Signal Processing
+    - Room Acoustics
+    - Sound Synthesis
+  software:
+    - Python
+    - C++ / JUCE
+    - VST3
+    - PyTorch
+    - Eurorack
+    - Max/MSP
+    - MATLAB
+    - Git

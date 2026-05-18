@@ -43,7 +43,8 @@
               {% for item in site.data.bio.education %}
               <div class="bio-block" style="left:{{ item.left }}%;width:{{ item.width }}%">
                 <div class="bio-block__tags">
-                  {% for tag in item.tags %}<span>{{ tag }}</span>{% endfor %}
+                  {% if item.skills.research %}<div class="bio-block__skill-row">{% for tag in item.skills.research %}<span>{% unless forloop.first %}<span class="bio-block__sep">&middot;</span>{% endunless %}{{ tag }}</span>{% endfor %}</div>{% endif %}
+                  {% if item.skills.software %}<div class="bio-block__skill-row bio-block__skill-row--soft">{% for tag in item.skills.software %}<span>{% unless forloop.first %}<span class="bio-block__sep">&middot;</span>{% endunless %}{{ tag }}</span>{% endfor %}</div>{% endif %}
                 </div>
                 <div class="bio-block__box">
                   <div class="bio-block__title">{{ item.title }}</div>
@@ -62,7 +63,8 @@
                   <div class="bio-block__sub">{{ item.org }}</div>
                 </div>
                 <div class="bio-block__tags">
-                  {% for tag in item.tags %}<span>{{ tag }}</span>{% endfor %}
+                  {% if item.skills.research %}<div class="bio-block__skill-row">{% for tag in item.skills.research %}<span>{% unless forloop.first %}<span class="bio-block__sep">&middot;</span>{% endunless %}{{ tag }}</span>{% endfor %}</div>{% endif %}
+                  {% if item.skills.software %}<div class="bio-block__skill-row bio-block__skill-row--soft">{% for tag in item.skills.software %}<span>{% unless forloop.first %}<span class="bio-block__sep">&middot;</span>{% endunless %}{{ tag }}</span>{% endfor %}</div>{% endif %}
                 </div>
               </div>
               {% endfor %}
@@ -70,6 +72,27 @@
 
           </div>
         </div>
+
+        <!-- Skills -->
+        <div class="bio-skills">
+          <div class="bio-skills__panel">
+            <div class="bio-skills__label">Research</div>
+            <div class="bio-skills__tags">
+              {% for tag in site.data.bio.skills.research %}
+              <span class="bio-skills__tag">{{ tag }}</span>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="bio-skills__panel">
+            <div class="bio-skills__label">Software &amp; Tools</div>
+            <div class="bio-skills__tags">
+              {% for tag in site.data.bio.skills.software %}
+              <span class="bio-skills__tag">{{ tag }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>

@@ -152,28 +152,34 @@
 
   &__tags {
     margin-top: 0;
-    padding-left: 10px;
+    padding-left: 6px;
     border-left: 1px solid rgba(255,255,255,0.12);
     display: flex;
     flex-direction: column;
+    gap: 3px;
+    overflow: hidden;
+  }
+
+  &__skill-row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    gap: 0;
 
     span {
-      font-size: 0.58rem;
-      color: rgba($gray, 0.8);
+      font-size: 0.52rem;
+      color: rgba($gray, 0.85);
       white-space: nowrap;
-      line-height: 1.65;
-      display: flex;
-      align-items: center;
+      flex-shrink: 0;
+    }
 
-      &::before {
-        content: '';
-        display: inline-block;
-        width: 7px;
-        height: 1px;
-        background: rgba(255,255,255,0.18);
-        margin-right: 5px;
-        flex-shrink: 0;
-      }
+    &--soft span {
+      color: rgba($gray, 0.5);
+    }
+
+    .bio-block__sep {
+      padding: 0 0.25em;
+      flex-shrink: 0;
     }
   }
 
@@ -200,6 +206,43 @@
 .bio-timeline__row--education .bio-block__box {
   background: rgba(255,255,255,0.06);
   border-color: rgba(255,255,255,0.12);
+}
+
+// Skills panels
+.bio-skills {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.bio-skills__panel {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+}
+
+.bio-skills__label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba($gray, 0.65);
+  margin-bottom: 0.4rem;
+}
+
+.bio-skills__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.bio-skills__tag {
+  font-size: 0.58rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba($gray, 0.85);
 }
 
 .bio-contact {

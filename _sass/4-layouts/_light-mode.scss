@@ -297,6 +297,12 @@ html[data-theme='light'] {
   .bio-photo   { border-color: rgba(0,0,0,0.12); }
   .bio-panel { background: rgba(0,0,0,0.05); }
   .bio-right { background: rgba(0,0,0,0.04); }
+  .bio-skills__panel { background: rgba(0,0,0,0.04); }
+  .bio-skills__label { color: rgba(0,0,0,0.38); }
+  .bio-skills__tag   { border-color: rgba(0,0,0,0.12); color: rgba(0,0,0,0.55); }
+  .bio-block__tags   { border-left-color: rgba(0,0,0,0.10); }
+  .bio-block__skill-row span { color: rgba(0,0,0,0.6); }
+  .bio-block__skill-row--soft span { color: rgba(0,0,0,0.35); }
   .bio-subtitle { color: #555; }
   .bio-text p  { color: #2d2b3d; }
   .bio-text a  {
