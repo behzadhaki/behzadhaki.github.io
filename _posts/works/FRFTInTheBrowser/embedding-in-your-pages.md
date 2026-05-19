@@ -263,6 +263,7 @@ Shows the FRFT output at 16 fractional orders simultaneously — four large pane
     <option value="0.5">1/2</option>
     <option value="1">1</option>
     <option value="2">2</option>
+    <option value="dft">DFT</option>
   </select>
   <label>Mode</label>
   <select id="fe5-interactive">
