@@ -105,10 +105,3 @@ The waveforms at the frequency domain are the real part of the Fourier Transform
 
 {:.note} 
 To understand the impact of time reversal, use the "Freq sweep" input and also switch to "Spectrogram" visualization.
-
-## Synthesis with Fourier Transform
-
-
-
-Below is a visual representation of this rotational behavior of the FT, using a conceptual time-frequency plane:
-
