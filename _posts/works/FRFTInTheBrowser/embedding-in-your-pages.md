@@ -186,6 +186,8 @@ Adjust the parameters for each widget below, then click **Apply** to update the 
 
 Shows the magnitude spectrum of the full signal (32768-sample window). Switch between Exact, Hann, and Rect windowing directly inside the embedded widget.
 
+**Exact** snaps the signal frequency to the nearest DFT bin, then computes the spectrum analytically from the known harmonic series of each waveform. The result is mathematically ideal: spikes land at exact bin positions with absolute silence between them — no windowing artefacts, no spectral leakage. **Hann** and **Rect** use the standard FFT path; Hann suppresses leakage at the cost of a wider main lobe, while Rect gives the narrowest peaks but leaks when the frequency falls between bins.
+
 <div class="frft-embeds">
 <div class="fe-controls">
   <label>Width</label>
@@ -207,6 +209,11 @@ Shows the magnitude spectrum of the full signal (32768-sample window). Switch be
     <option value="exact" selected>Exact</option>
     <option value="hann">Hann</option>
     <option value="rect">Rectangular</option>
+  </select>
+  <label>Mode</label>
+  <select id="fe7-interactive">
+    <option value="1" selected>Interactive</option>
+    <option value="0">Static</option>
   </select>
   <button onclick="feApply7()">Apply</button>
 </div>
@@ -615,13 +622,16 @@ Shows how block-processing artefacts change with different block sizes and overl
     const hasFreq = wave !== 'sweep';
     g('fe7-freq').disabled = !hasFreq;
     g('fe7-freq-lbl').style.opacity = hasFreq ? '1' : '0.4';
+    const interactive = g('fe7-interactive').value;
     const p = new URLSearchParams({ w, h, type: wave, win: g('fe7-win').value });
     if (hasFreq) p.set('freq', g('fe7-freq').value);
+    if (interactive === '0') p.set('interactive', '0');
     g('fe7-code').textContent = buildCode('embed_fft_spectrum.html', p.toString(), w, h);
     loadFrame('fe7-frame', 'embed_fft_spectrum.html', p.toString(), w, h);
   };
   g('fe7-wave').addEventListener('change', feApply7);
   g('fe7-win').addEventListener('change', feApply7);
+  g('fe7-interactive').addEventListener('change', feApply7);
   feApply7();
 
   /* ── 5. Rotation diagram ────────────────────────────────── */
