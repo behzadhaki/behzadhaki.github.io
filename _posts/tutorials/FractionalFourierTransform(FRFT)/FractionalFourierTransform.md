@@ -1,6 +1,5 @@
 
-
-## What is Fractional Fourier Transform (FRFT)?
+## FRFT as a Generalization of Fourier Transform
 
 ### FRFT relationship with FFT
 
@@ -12,6 +11,3 @@
 
 ## Block-based Analysis 
 
-## FRFT for Synthesis and Processing
-
-## Using FRFT in Real-Time
