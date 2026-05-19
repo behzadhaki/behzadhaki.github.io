@@ -228,6 +228,51 @@ Shows the magnitude spectrum of the full signal (32768-sample window). Switch be
 </div>
 </div>
 
+## Listen to FT Directly
+
+Displays the real part, imaginary part, or magnitude of the Fourier Transform of the selected signal. Hit **Play** to hear what the FT *sounds like*: the selected component is played back as audio while a playhead scrubs left-to-right from −fNyq to +fNyq. The x-axis switches from frequency to time during playback, then reverts when playback stops. A Hann window is always applied.
+
+Switch between **Re**, **Im**, and **Mag** to explore FT structure: for a real signal, Re[FT] is even-symmetric and Im[FT] is odd-symmetric around DC; |FT| is always even. Try a 440 Hz sine — the imaginary part shows two clean spikes, and the audio is a pair of impulses.
+
+<div class="frft-embeds">
+<div class="fe-controls">
+  <label>Width</label>
+  <input type="number" id="fe8-w" value="600" min="200" step="10">
+  <label>Height</label>
+  <input type="number" id="fe8-h" value="220" min="100" step="10">
+  <label>Waveform</label>
+  <select id="fe8-wave">
+    <option value="sine" selected>Sine</option>
+    <option value="triangle">Triangle</option>
+    <option value="sawtooth">Sawtooth</option>
+    <option value="square">Square</option>
+    <option value="sweep">Freq sweep</option>
+  </select>
+  <label id="fe8-freq-lbl">Freq (Hz)</label>
+  <input type="number" id="fe8-freq" value="440" min="20" max="20000">
+  <label>Part</label>
+  <select id="fe8-part">
+    <option value="imag" selected>Imaginary</option>
+    <option value="real">Real</option>
+  </select>
+  <label>Mode</label>
+  <select id="fe8-interactive">
+    <option value="1" selected>Interactive</option>
+    <option value="0">Static</option>
+  </select>
+  <button onclick="feApply8()">Apply</button>
+</div>
+<div class="fe-bottom-row">
+<div class="fe-frame-wrap">
+  <iframe id="fe8-frame" class="reframe-off" width="600" height="220"></iframe>
+</div>
+<div class="fe-code-wrap">
+  <pre id="fe8-code"></pre>
+  <button class="fe-copy-btn" onclick="feCopy('fe8-code',this)">⧉</button>
+</div>
+</div>
+</div>
+
 ## FRFT Rotation Diagram
 
 Shows the FRFT output at 16 fractional orders simultaneously — four large panels at the cardinal positions (time, frequency, reversed-time, inverse-FT) and twelve small panels at intermediate α values arranged around a circle. Click any play button to hear the output at that order; an arrow in the centre tracks the active position.
@@ -614,6 +659,27 @@ Shows how block-processing artefacts change with different block sizes and overl
     });
   };
 
+  /* ── 8. Listen to FT Directly ──────────────────────────── */
+  window.feApply8 = function () {
+    const w = Math.max(200, parseInt(g('fe8-w').value) || 600);
+    const h = Math.max(100, parseInt(g('fe8-h').value) || 220);
+    g('fe8-w').value = w; g('fe8-h').value = h;
+    const wave = g('fe8-wave').value;
+    const hasFreq = wave !== 'sweep';
+    g('fe8-freq').disabled = !hasFreq;
+    g('fe8-freq-lbl').style.opacity = hasFreq ? '1' : '0.4';
+    const interactive = g('fe8-interactive').value;
+    const p = new URLSearchParams({ w, h, type: wave, part: g('fe8-part').value });
+    if (hasFreq) p.set('freq', g('fe8-freq').value);
+    if (interactive === '0') p.set('interactive', '0');
+    g('fe8-code').textContent = buildCode('embed_ft_listen.html', p.toString(), w, h);
+    loadFrame('fe8-frame', 'embed_ft_listen.html', p.toString(), w, h);
+  };
+  g('fe8-wave').addEventListener('change', feApply8);
+  g('fe8-part').addEventListener('change', feApply8);
+  g('fe8-interactive').addEventListener('change', feApply8);
+  feApply8();
+
   /* ── 7. FT Spectrum ─────────────────────────────────────── */
   window.feApply7 = function () {
     const w = Math.max(200, parseInt(g('fe7-w').value) || 600);
@@ -795,12 +861,13 @@ Shows how block-processing artefacts change with different block sizes and overl
   }
   feHostMode.addEventListener('change', function () {
     syncHostUI();
-    feApply7(); feApply5(); feApply6(); feApply1(); feApply2(); feApply3(); feApply4();
+    feApply8(); feApply7(); feApply5(); feApply6(); feApply1(); feApply2(); feApply3(); feApply4();
   });
   syncHostUI();
 
   /* ── ZIP download ────────────────────────────────────────────────────── */
   const ZIP_FILES = [
+    { src:'/assets/web/frft/demos/embed_ft_listen.html',             dst:'web/frft/demos/embed_ft_listen.html' },
     { src:'/assets/web/frft/demos/embed_fft_spectrum.html',          dst:'web/frft/demos/embed_fft_spectrum.html' },
     { src:'/assets/web/frft/demos/embed_frft_rotation.html',         dst:'web/frft/demos/embed_frft_rotation.html' },
     { src:'/assets/web/frft/demos/embed_frft_additivity.html',       dst:'web/frft/demos/embed_frft_additivity.html' },
