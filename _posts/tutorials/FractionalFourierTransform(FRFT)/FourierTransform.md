@@ -87,10 +87,24 @@ if you apply the FT four times consecutively, you will get back to the original 
 
 $$x[n] \xrightarrow{\text{FT}} X[k] \xrightarrow{\text{FT}} x[-n] \xrightarrow{\text{FT}} X[-k] \xrightarrow{\text{FT}} x[n]$$
 
-In other words,
+To conceptualize this, we can think of the time-frequency plane as a 2D space where the x-axis represents time and the y-axis represents frequency.
+As such, applying the FT corresponds to a 90-degree rotation in this plane. The following demo visualizes this rotational behavior of the FT:
 
-$$ \text{Time Domain} \xrightarrow{\text{FT}} \text{Frequency Domain} \xrightarrow{\text{FT}} \text{Time Domain (reversed)} \xrightarrow{\text{FT}} \text{Frequency Domain (reversed)} \xrightarrow{\text{FT}} \text{Time Domain} $$
+<div style="width:100%; max-width:400px;">
+  <iframe src="/assets/web/frft/demos/embed_frft_rotation.html?w=400&h=400&wave=sine&disp=wave&dalpha=dft&win=hann&freq=1004"
+          style="width:100%; height:400px; border:none; display:block"
+          allow="autoplay">
+  </iframe>
+</div>
 
+{:.note} 
+Press on the waveforms to listen to the corresponding time-domain or frequency-domain signals
+
+{:.note} 
+The waveforms at the frequency domain are the real part of the Fourier Transform. 
+
+{:.note} 
+To understand the impact of time reversal, use the "Freq sweep" input and also switch to "Spectrogram" visualization.
 
 ## Synthesis with Fourier Transform
 
@@ -98,9 +112,3 @@ $$ \text{Time Domain} \xrightarrow{\text{FT}} \text{Frequency Domain} \xrightarr
 
 Below is a visual representation of this rotational behavior of the FT, using a conceptual time-frequency plane:
 
-<div style="width:100%; max-width:400px;">
-  <iframe src="/assets/web/frft/demos/embed_frft_rotation.html?w=400&h=400&wave=sine&disp=wave&dalpha=dft&win=hann&freq=1989"
-          style="width:100%; height:400px; border:none; display:block"
-          allow="autoplay">
-  </iframe>
-</div>
