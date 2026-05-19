@@ -182,6 +182,45 @@ html[data-theme='light'] .fe-hosting-bar button:hover:not(:disabled) { backgroun
 
 Adjust the parameters for each widget below, then click **Apply** to update the live preview and generate a ready-to-paste `<iframe>` embed snippet with those values baked in as defaults.
 
+## FT Spectrum
+
+Shows the magnitude spectrum of the full signal (32768-sample window). Switch between Exact, Hann, and Rect windowing directly inside the embedded widget.
+
+<div class="frft-embeds">
+<div class="fe-controls">
+  <label>Width</label>
+  <input type="number" id="fe7-w" value="600" min="200" step="10">
+  <label>Height</label>
+  <input type="number" id="fe7-h" value="220" min="100" step="10">
+  <label>Waveform</label>
+  <select id="fe7-wave">
+    <option value="sweep" selected>Freq sweep</option>
+    <option value="sine">Sine</option>
+    <option value="triangle">Triangle</option>
+    <option value="sawtooth">Sawtooth</option>
+    <option value="square">Square</option>
+  </select>
+  <label id="fe7-freq-lbl">Freq (Hz)</label>
+  <input type="number" id="fe7-freq" value="440" min="20" max="20000" disabled>
+  <label>Win</label>
+  <select id="fe7-win">
+    <option value="exact" selected>Exact</option>
+    <option value="hann">Hann</option>
+    <option value="rect">Rectangular</option>
+  </select>
+  <button onclick="feApply7()">Apply</button>
+</div>
+<div class="fe-bottom-row">
+<div class="fe-frame-wrap">
+  <iframe id="fe7-frame" class="reframe-off" width="600" height="220"></iframe>
+</div>
+<div class="fe-code-wrap">
+  <pre id="fe7-code"></pre>
+  <button class="fe-copy-btn" onclick="feCopy('fe7-code',this)">⧉</button>
+</div>
+</div>
+</div>
+
 ## FRFT Rotation Diagram
 
 Shows the FRFT output at 16 fractional orders simultaneously — four large panels at the cardinal positions (time, frequency, reversed-time, inverse-FT) and twelve small panels at intermediate α values arranged around a circle. Click any play button to hear the output at that order; an arrow in the centre tracks the active position.
@@ -567,6 +606,24 @@ Shows how block-processing artefacts change with different block sizes and overl
     });
   };
 
+  /* ── 7. FT Spectrum ─────────────────────────────────────── */
+  window.feApply7 = function () {
+    const w = Math.max(200, parseInt(g('fe7-w').value) || 600);
+    const h = Math.max(100, parseInt(g('fe7-h').value) || 220);
+    g('fe7-w').value = w; g('fe7-h').value = h;
+    const wave = g('fe7-wave').value;
+    const hasFreq = wave !== 'sweep';
+    g('fe7-freq').disabled = !hasFreq;
+    g('fe7-freq-lbl').style.opacity = hasFreq ? '1' : '0.4';
+    const p = new URLSearchParams({ w, h, type: wave, win: g('fe7-win').value });
+    if (hasFreq) p.set('freq', g('fe7-freq').value);
+    g('fe7-code').textContent = buildCode('embed_fft_spectrum.html', p.toString(), w, h);
+    loadFrame('fe7-frame', 'embed_fft_spectrum.html', p.toString(), w, h);
+  };
+  g('fe7-wave').addEventListener('change', feApply7);
+  g('fe7-win').addEventListener('change', feApply7);
+  feApply7();
+
   /* ── 5. Rotation diagram ────────────────────────────────── */
   window.feApply5 = function () {
     const w = Math.max(200, parseInt(g('fe5-w').value) || 600);
@@ -727,12 +784,13 @@ Shows how block-processing artefacts change with different block sizes and overl
   }
   feHostMode.addEventListener('change', function () {
     syncHostUI();
-    feApply5(); feApply6(); feApply1(); feApply2(); feApply3(); feApply4();
+    feApply7(); feApply5(); feApply6(); feApply1(); feApply2(); feApply3(); feApply4();
   });
   syncHostUI();
 
   /* ── ZIP download ────────────────────────────────────────────────────── */
   const ZIP_FILES = [
+    { src:'/assets/web/frft/demos/embed_fft_spectrum.html',          dst:'web/frft/demos/embed_fft_spectrum.html' },
     { src:'/assets/web/frft/demos/embed_frft_rotation.html',         dst:'web/frft/demos/embed_frft_rotation.html' },
     { src:'/assets/web/frft/demos/embed_frft_additivity.html',       dst:'web/frft/demos/embed_frft_additivity.html' },
     { src:'/assets/web/frft/demos/embed_interactive_frft.html',     dst:'web/frft/demos/embed_interactive_frft.html' },

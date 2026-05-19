@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FT Spectrum</title>
+<script>
+  (function () {
+    const sp = new URLSearchParams(location.search);
+    const w = sp.get('w'), h = sp.get('h');
+    if (w) document.documentElement.style.width  = Math.max(200, +w) + 'px';
+    if (h) document.documentElement.style.height = Math.max(100, +h) + 'px';
+    const t = sp.get('type');
+    window._p = {
+      type: ['sine','triangle','sawtooth','square','sweep'].includes(t) ? t : 'sweep',
+      freq: Math.max(20, parseFloat(sp.get('freq')) || 440),
+      win:  ['exact','hann','rect'].includes(sp.get('win')) ? sp.get('win') : 'exact',
+    };
+  })();
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  button, input, select, textarea { font: inherit; }
+
+  :root {
+    --bg:        #1a1a1a;
+    --surface:   #222222;
+    --surface2:  #282828;
+    --border:    #333333;
+    --border2:   #3a3a3a;
+    --accent:    #c8902a;
+    --accent-lo: #7a5418;
+    --text:      #d0d0d0;
+    --muted:     #aaaaaa;
+    --red:       #cc4444;
+  }
+
+  html { font-size: 12px; }
+  html, body {
+    width: 100%; height: 100%;
+    background: transparent;
+    color: var(--text);
+    font-family: "Inter", "Segoe UI", -apple-system, sans-serif;
+    overflow: hidden;
+  }
+
+  .layout {
+    display: flex; flex-direction: column;
+    gap: 0.4em; padding: 0.4em; height: 100%;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 0.55em 0.75em;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 1px 3px rgba(0,0,0,0.4);
+    display: flex; flex-direction: column; gap: 0.35em; min-height: 0;
+  }
+
+  button {
+    height: 100%; padding: 0 0.75em;
+    border-radius: 3px; font-size: 0.82em; font-weight: 700;
+    letter-spacing: 0.03em; cursor: pointer; transition: filter .12s;
+    white-space: nowrap; border: 1px solid transparent;
+    display: flex; align-items: center;
+  }
+  button:hover:not(:disabled) { filter: brightness(1.15); }
+  button:active:not(:disabled) { filter: brightness(0.9); }
+  button:disabled { opacity: .3; cursor: default; }
+
+  #playBtn { width: 2.5em; justify-content: center; }
+  .btn-ok      { background: #2a2218; color: var(--accent); border-color: var(--accent-lo); }
+  .btn-playing { background: var(--accent-lo); color: #f0c060; border-color: var(--accent); }
+  .btn-neutral { background: var(--surface2); color: var(--muted); border-color: var(--border2); }
+
+  #status {
+    font-size: 0.80em; border: none; background: none;
+    color: var(--muted); white-space: nowrap; flex-shrink: 0;
+    display: flex; align-items: center;
+  }
+  #status.err { color: var(--red); }
+
+  .controls-row {
+    display: flex; align-items: stretch; gap: 0.4em; flex: 1; min-height: 0;
+  }
+
+  .tab-group { display: flex; flex-shrink: 0; }
+  .tab {
+    height: 100%; padding: 0 0.7em;
+    background: var(--surface2); color: var(--muted);
+    border: 1px solid var(--border2); border-radius: 0;
+    font-size: 0.80em; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center;
+  }
+  .tab:first-child { border-radius: 3px 0 0 3px; }
+  .tab:last-child  { border-radius: 0 3px 3px 0; }
+  .tab.active { background: var(--accent-lo); color: var(--accent); border-color: var(--accent); }
+
+  #infoBtn {
+    height: 100%; padding: 0 0.55em;
+    background: var(--surface2); color: var(--muted);
+    border: 1px solid var(--border2); border-radius: 3px;
+    font-size: 0.9em; font-weight: 700; cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #infoBtn:hover { color: var(--text); border-color: var(--border); }
+
+  .spec-area {
+    flex: 1; min-height: 0; position: relative;
+  }
+  #specCanvas {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; display: block;
+    border-radius: 3px; background: #0a0a0a;
+    border: 1px solid var(--border);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+
+  .settings-row { display: flex; align-items: center; gap: 0.6em; flex-wrap: wrap; }
+  .st-item { display: flex; align-items: baseline; gap: 0.25em; white-space: nowrap; }
+  .st-key  { font-size: 0.68em; font-weight: 700; letter-spacing: 0.05em; color: var(--muted); }
+  .st-val  { font-size: 0.78em; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); }
+  .st-val.accent { color: var(--accent); }
+  .st-sep  { color: var(--border2); font-size: 0.7em; flex-shrink: 0; user-select: none; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <div class="card" style="padding: 0.4em 0.75em;">
+    <div class="controls-row" id="ctrlRow">
+      <button class="btn-ok" id="playBtn" disabled>▶</button>
+      <div class="tab-group">
+        <button class="tab" id="tabExact" title="Snap frequency to nearest bin — zero inter-bin leakage">Exact</button>
+        <button class="tab" id="tabHann">Hann</button>
+        <button class="tab" id="tabRect">Rect</button>
+      </div>
+      <span id="status"></span>
+      <button class="btn-neutral" id="downloadBtn" style="margin-left:auto" disabled>⬇</button>
+      <button id="infoBtn" title="More info &amp; embed instructions">&lt;/&gt;</button>
+    </div>
+  </div>
+
+  <div class="spec-area">
+    <canvas id="specCanvas"></canvas>
+  </div>
+
+  <div class="card" style="padding:0.35em 0.75em; flex:none;" id="settingsPanel"></div>
+
+</div>
+
+<script>
+'use strict';
+
+const SR = 44100;
+const p  = window._p;
+
+let dryBuf      = null;
+let specData    = null;
+let activeMode  = p.win;   // 'exact' | 'hann' | 'rect'
+let snappedFreq = null;    // set in compute() when Exact mode is active
+
+let audioCtx  = null;
+let activeSrc = null;
+let isPlaying = false;
+
+const statusEl    = document.getElementById('status');
+const playBtn     = document.getElementById('playBtn');
+const tabHann     = document.getElementById('tabHann');
+const tabRect     = document.getElementById('tabRect');
+const tabExact    = document.getElementById('tabExact');
+const infoBtn     = document.getElementById('infoBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const specCanvas  = document.getElementById('specCanvas');
+const ctrlRow     = document.getElementById('ctrlRow');
+
+syncTabs();
+
+// ── ResizeObserver ────────────────────────────────────────────────────────────
+const specRO = new ResizeObserver(() => {
+  const dpr  = window.devicePixelRatio || 1;
+  const rect = specCanvas.getBoundingClientRect();
+  const cw   = Math.max(1, Math.floor(rect.width  * dpr));
+  const ch   = Math.max(1, Math.floor(rect.height * dpr));
+  if (specCanvas.width !== cw || specCanvas.height !== ch) {
+    specCanvas.width  = cw;
+    specCanvas.height = ch;
+    specData ? renderSpectrum() : clearCanvas();
+  }
+});
+specRO.observe(specCanvas);
+
+// ── Mode tab switchers ────────────────────────────────────────────────────────
+tabExact.addEventListener('click', () => { if (activeMode !== 'exact') { activeMode = 'exact'; syncTabs(); compute(); } });
+tabHann.addEventListener('click',  () => { if (activeMode !== 'hann')  { activeMode = 'hann';  syncTabs(); compute(); } });
+tabRect.addEventListener('click',  () => { if (activeMode !== 'rect')  { activeMode = 'rect';  syncTabs(); compute(); } });
+
+function syncTabs() {
+  tabExact.classList.toggle('active', activeMode === 'exact');
+  tabHann.classList.toggle('active',  activeMode === 'hann');
+  tabRect.classList.toggle('active',  activeMode === 'rect');
+}
+
+// ── Play / stop ───────────────────────────────────────────────────────────────
+playBtn.addEventListener('click', () => { isPlaying ? stopPlayback() : startPlayback(); });
+
+function startPlayback() {
+  if (!dryBuf) return;
+  if (activeSrc) { try { activeSrc.stop(); } catch (_) {} activeSrc = null; }
+  if (audioCtx)  { audioCtx.close(); audioCtx = null; }
+  audioCtx  = new AudioContext({ sampleRate: SR });
+  const buf = audioCtx.createBuffer(1, dryBuf.length, SR);
+  buf.copyToChannel(dryBuf, 0);
+  activeSrc        = audioCtx.createBufferSource();
+  activeSrc.buffer = buf;
+  activeSrc.connect(audioCtx.destination);
+  activeSrc.start();
+  activeSrc.onended = stopPlayback;
+  isPlaying           = true;
+  playBtn.textContent = '■';
+  playBtn.className   = 'btn-playing';
+}
+
+function stopPlayback() {
+  if (activeSrc) { try { activeSrc.stop(); } catch (_) {} activeSrc = null; }
+  if (audioCtx)  { audioCtx.close(); audioCtx = null; }
+  isPlaying           = false;
+  playBtn.textContent = '▶';
+  playBtn.className   = 'btn-ok';
+}
+
+// ── Info button ───────────────────────────────────────────────────────────────
+infoBtn.addEventListener('click', () => {
+  window.open('https://behzadhaki.com/works/frft-in-the-browser/#ft-spectrum', '_blank');
+});
+
+// ── Download ──────────────────────────────────────────────────────────────────
+downloadBtn.addEventListener('click', async () => {
+  if (!dryBuf || !specData) return;
+  const tmp = document.createElement('canvas');
+  tmp.width  = specCanvas.width;
+  tmp.height = specCanvas.height;
+  renderSpectrumToCanvas(tmp);
+  const specPNG = await canvasToPNG(tmp);
+  const zip = buildZip([
+    { name: 'source.wav',      data: buildWAV(dryBuf, SR) },
+    { name: 'ft_spectrum.png', data: specPNG },
+  ]);
+  const url = URL.createObjectURL(new Blob([zip], { type: 'application/zip' }));
+  Object.assign(document.createElement('a'), { href: url, download: 'ft_spectrum.zip' }).click();
+  URL.revokeObjectURL(url);
+});
+
+// ── Signal generation ─────────────────────────────────────────────────────────
+function generateSignal(type, seconds, sr, freq) {
+  const n   = Math.floor(seconds * sr);
+  const buf = new Float32Array(n);
+  if (type === 'sine') {
+    for (let i = 0; i < n; i++)
+      buf[i] = Math.sin(2 * Math.PI * freq * i / sr);
+  } else if (type === 'triangle') {
+    for (let i = 0; i < n; i++)
+      buf[i] = (2 / Math.PI) * Math.asin(Math.sin(2 * Math.PI * freq * i / sr));
+  } else if (type === 'sawtooth') {
+    for (let i = 0; i < n; i++)
+      buf[i] = 2 * ((freq * i / sr) % 1) - 1;
+  } else if (type === 'square') {
+    for (let i = 0; i < n; i++)
+      buf[i] = Math.sin(2 * Math.PI * freq * i / sr) >= 0 ? 1 : -1;
+  } else {
+    const f0 = 20, f1 = 4000;
+    for (let i = 0; i < n; i++) {
+      const t = i / sr;
+      buf[i] = Math.sin(2 * Math.PI * (f0 + (f1 - f0) * (t / seconds)) * t);
+    }
+  }
+  return buf;
+}
+
+// ── FFT helpers ───────────────────────────────────────────────────────────────
+function nextPow2(n) { let p = 1; while (p < n) p <<= 1; return p; }
+
+function fftInPlace(re, im, N) {
+  let j = 0;
+  for (let i = 1; i < N; i++) {
+    let bit = N >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) {
+      let t = re[i]; re[i] = re[j]; re[j] = t;
+          t = im[i]; im[i] = im[j]; im[j] = t;
+    }
+  }
+  for (let len = 2; len <= N; len <<= 1) {
+    const half = len >> 1;
+    const ang  = -2 * Math.PI / len;
+    const wcos = Math.cos(ang), wsin = Math.sin(ang);
+    for (let i = 0; i < N; i += len) {
+      let wr = 1, wi = 0;
+      for (let k = 0; k < half; k++) {
+        const tr = wr*re[i+k+half] - wi*im[i+k+half];
+        const ti = wr*im[i+k+half] + wi*re[i+k+half];
+        re[i+k+half] = re[i+k] - tr; im[i+k+half] = im[i+k] - ti;
+        re[i+k] += tr; im[i+k] += ti;
+        const nwr = wr*wcos - wi*wsin;
+        wi = wr*wsin + wi*wcos; wr = nwr;
+      }
+    }
+  }
+}
+
+// ── Compute spectrum ──────────────────────────────────────────────────────────
+function compute() {
+  specData             = null;
+  playBtn.disabled     = true;
+  downloadBtn.disabled = true;
+
+  const N_FFT = 32768;
+  const relDB = new Float32Array(N_FFT);
+  let genFreq = p.freq;
+  snappedFreq = null;
+
+  if (activeMode === 'exact' && p.type !== 'sweep') {
+    // Analytical ideal spectrum — all harmonics land on exact bins by construction,
+    // giving perfect zero between spikes rather than leakage from sample-boundary
+    // rounding in the time-domain signal.
+    const k0 = Math.round(p.freq * N_FFT / SR);
+    genFreq = k0 * SR / N_FFT;
+    snappedFreq = genFreq;
+
+    const mag = new Float64Array(N_FFT);
+    const set = (b, a) => { if (b > 0 && b < N_FFT / 2) { mag[b] = a; mag[N_FFT - b] = a; } };
+
+    if (p.type === 'sine') {
+      set(k0, 1);
+    } else if (p.type === 'square') {
+      for (let m = 1; ; m += 2) { if (m * k0 >= N_FFT / 2) break; set(m * k0, 4 / (Math.PI * m)); }
+    } else if (p.type === 'triangle') {
+      for (let m = 1; ; m += 2) { if (m * k0 >= N_FFT / 2) break; set(m * k0, 8 / (Math.PI * Math.PI * m * m)); }
+    } else if (p.type === 'sawtooth') {
+      for (let m = 1; ; m++)     { if (m * k0 >= N_FFT / 2) break; set(m * k0, 2 / (Math.PI * m)); }
+    }
+
+    let peakMag = 0;
+    for (let k = 0; k < N_FFT; k++) if (mag[k] > peakMag) peakMag = mag[k];
+    for (let k = 0; k < N_FFT; k++) relDB[k] = 20 * Math.log10(mag[k] / peakMag + 1e-12);
+
+    dryBuf = generateSignal(p.type, N_FFT / SR, SR, genFreq);
+  } else {
+    dryBuf = generateSignal(p.type, N_FFT / SR, SR, genFreq);
+
+    const re = new Float64Array(N_FFT);
+    const im = new Float64Array(N_FFT);
+
+    if (activeMode === 'hann') {
+      for (let i = 0; i < N_FFT; i++)
+        re[i] = dryBuf[i] * (0.5 - 0.5 * Math.cos(2 * Math.PI * i / (N_FFT - 1)));
+    } else {
+      for (let i = 0; i < N_FFT; i++) re[i] = dryBuf[i];
+    }
+
+    fftInPlace(re, im, N_FFT);
+
+    let peakDB = -Infinity;
+    for (let k = 0; k < N_FFT; k++) {
+      const r = re[k] / N_FFT, ii = im[k] / N_FFT;
+      const db = 20 * Math.log10(Math.sqrt(r*r + ii*ii) + 1e-10);
+      relDB[k] = db;
+      if (db > peakDB) peakDB = db;
+    }
+    for (let k = 0; k < N_FFT; k++) relDB[k] -= peakDB;
+  }
+
+  specData = { relDB, N_FFT };
+  renderSpectrum();
+  buildSettingsPanel();
+  playBtn.disabled     = false;
+  playBtn.className    = 'btn-ok';
+  downloadBtn.disabled = false;
+}
+
+// ── Spectrum rendering ────────────────────────────────────────────────────────
+const DB_MIN = -100;
+const DB_MAX = 0;
+
+function clearCanvas() {
+  const ctx = specCanvas.getContext('2d');
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, specCanvas.width, specCanvas.height);
+}
+
+function renderSpectrum() { renderSpectrumToCanvas(specCanvas); }
+
+function renderSpectrumToCanvas(canvas) {
+  if (!specData) return;
+  const { relDB, N_FFT } = specData;
+  const ctx  = canvas.getContext('2d');
+  const W    = canvas.width;
+  const H    = canvas.height;
+  const dpr  = window.devicePixelRatio || 1;
+  const fNyq = SR / 2;   // Nyquist — full axis runs from -fNyq to +fNyq
+
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, W, H);
+
+  const LEFT   = Math.round(30 * dpr);
+  const RIGHT  = Math.round(8  * dpr);
+  const TOP    = Math.round(8  * dpr);
+  const BOTTOM = Math.round(18 * dpr);
+  const PW = W - LEFT - RIGHT;
+  const PH = H - TOP  - BOTTOM;
+  if (PW <= 0 || PH <= 0) return;
+
+  // Linear frequency axis: f ∈ [-fNyq, +fNyq], DC at centre
+  function fx(f) { return LEFT + (f / fNyq + 1) * PW / 2; }
+  function dy(db) { return TOP  + PH * (1 - (db - DB_MIN) / (DB_MAX - DB_MIN)); }
+
+  // ── Grid ─────────────────────────────────────────────────────────────────
+  ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+  ctx.lineWidth   = 1;
+
+  for (const db of [-20, -40, -60, -80]) {
+    const y = dy(db);
+    ctx.beginPath(); ctx.moveTo(LEFT, y); ctx.lineTo(LEFT + PW, y); ctx.stroke();
+  }
+  // DC centre line (slightly brighter)
+  ctx.strokeStyle = 'rgba(255,255,255,0.13)';
+  const xDC = fx(0);
+  ctx.beginPath(); ctx.moveTo(xDC, TOP); ctx.lineTo(xDC, TOP + PH); ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+  for (const f of [1000, 5000, 10000, 20000]) {
+    for (const sign of [-1, 1]) {
+      const x = fx(sign * f);
+      if (x > LEFT && x < LEFT + PW) {
+        ctx.beginPath(); ctx.moveTo(x, TOP); ctx.lineTo(x, TOP + PH); ctx.stroke();
+      }
+    }
+  }
+
+  // ── Per-pixel spectrum: fftshifted — DC at centre ─────────────────────────
+  // Pixel px maps to frequency f = (px/PW - 0.5) * SR
+  // Fftshifted bin index b ∈ [-N/2, N/2), natural index k = ((b % N) + N) % N
+  const pts = new Float32Array(PW);
+  for (let px = 0; px < PW; px++) {
+    const b0 = Math.round((px       / PW - 0.5) * N_FFT);
+    const b1 = Math.round(((px + 1) / PW - 0.5) * N_FFT);
+    let maxDB = DB_MIN;
+    for (let b = b0; b <= b1; b++) {
+      const k = ((b % N_FFT) + N_FFT) % N_FFT;
+      if (relDB[k] > maxDB) maxDB = relDB[k];
+    }
+    pts[px] = Math.max(DB_MIN, Math.min(DB_MAX, maxDB));
+  }
+
+  // ── Filled gradient area ──────────────────────────────────────────────────
+  const grd = ctx.createLinearGradient(0, TOP, 0, TOP + PH);
+  grd.addColorStop(0,   'rgba(200, 144, 42, 0.85)');
+  grd.addColorStop(0.5, 'rgba(200, 144, 42, 0.35)');
+  grd.addColorStop(1,   'rgba(200, 144, 42, 0.05)');
+
+  ctx.beginPath();
+  ctx.moveTo(LEFT, TOP + PH);
+  for (let px = 0; px < PW; px++) ctx.lineTo(LEFT + px, dy(pts[px]));
+  ctx.lineTo(LEFT + PW - 1, TOP + PH);
+  ctx.closePath();
+  ctx.fillStyle = grd;
+  ctx.fill();
+
+  // ── Spectrum line ─────────────────────────────────────────────────────────
+  ctx.beginPath();
+  for (let px = 0; px < PW; px++) {
+    const x = LEFT + px, y = dy(pts[px]);
+    px === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = 'rgba(200, 144, 42, 1.0)';
+  ctx.lineWidth   = Math.max(1, Math.round(dpr));
+  ctx.stroke();
+
+  // ── Axis labels ───────────────────────────────────────────────────────────
+  const fontSize = Math.max(7, Math.round(8.5 * dpr));
+  ctx.font        = `${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
+  ctx.fillStyle   = 'rgba(160, 160, 160, 0.75)';
+
+  ctx.textAlign    = 'right';
+  ctx.textBaseline = 'middle';
+  for (const db of [0, -20, -40, -60, -80]) {
+    ctx.fillText(db + ' dB', LEFT - 3 * dpr, dy(db));
+  }
+
+  ctx.textAlign    = 'center';
+  ctx.textBaseline = 'bottom';
+  const fLabels = [[-20000,'-20k'],[-10000,'-10k'],[-5000,'-5k'],[-1000,'-1k'],
+                   [0,'0'],[1000,'1k'],[5000,'5k'],[10000,'10k'],[20000,'20k']];
+  for (const [f, lbl] of fLabels) {
+    const x = fx(f);
+    if (x >= LEFT && x <= LEFT + PW) ctx.fillText(lbl, x, H - 2 * dpr);
+  }
+}
+
+// ── Settings panel ────────────────────────────────────────────────────────────
+function buildSettingsPanel() {
+  const type = p.type;
+  // Use snapped frequency in label when Exact mode is active
+  const dispFreq = (snappedFreq !== null) ? snappedFreq : p.freq;
+  const freqLabel = Number.isInteger(dispFreq) ? dispFreq : dispFreq.toFixed(3);
+
+  let srcLabel;
+  if      (type === 'sine')     srcLabel = freqLabel + ' Hz Sine';
+  else if (type === 'triangle') srcLabel = freqLabel + ' Hz Triangle';
+  else if (type === 'sawtooth') srcLabel = freqLabel + ' Hz Sawtooth';
+  else if (type === 'square')   srcLabel = freqLabel + ' Hz Square';
+  else                          srcLabel = 'Sweep 20–4k Hz';
+
+  const items = [
+    { key: 'Source', val: srcLabel },
+    { key: 'Window', val: activeMode === 'exact' ? 'Exact' : activeMode === 'hann' ? 'Hann' : 'Rect', accent: true },
+    { key: 'Method', val: 'FT' },
+  ];
+
+  const panel = document.getElementById('settingsPanel');
+  panel.innerHTML = '';
+  const row = document.createElement('div');
+  row.className = 'settings-row';
+  items.forEach((item, i) => {
+    const el = document.createElement('span');
+    el.className = 'st-item';
+    el.innerHTML =
+      '<span class="st-key">' + item.key + '</span>' +
+      '<span class="st-val' + (item.accent ? ' accent' : '') + '">' + item.val + '</span>';
+    row.appendChild(el);
+    if (i < items.length - 1) {
+      const sep = document.createElement('span');
+      sep.className = 'st-sep'; sep.textContent = '·';
+      row.appendChild(sep);
+    }
+  });
+  panel.appendChild(row);
+}
+buildSettingsPanel();
+
+// ── Initial computation ───────────────────────────────────────────────────────
+compute();
+
+// ── WAV builder ───────────────────────────────────────────────────────────────
+function buildWAV(samples, sr) {
+  const numSamples = samples.length;
+  const dataBytes  = numSamples * 2;
+  const buf        = new ArrayBuffer(44 + dataBytes);
+  const v          = new DataView(buf);
+  const str = (off, s) => { for (let i = 0; i < s.length; i++) v.setUint8(off+i, s.charCodeAt(i)); };
+  str(0, 'RIFF'); v.setUint32(4,  36 + dataBytes, true);
+  str(8, 'WAVE'); str(12, 'fmt ');
+  v.setUint32(16, 16,   true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, sr,   true); v.setUint32(28, sr * 2, true);
+  v.setUint16(32, 2,    true); v.setUint16(34, 16, true);
+  str(36, 'data'); v.setUint32(40, dataBytes, true);
+  let off = 44;
+  for (let i = 0; i < numSamples; i++) {
+    const s = Math.max(-1, Math.min(1, samples[i]));
+    v.setInt16(off, s < 0 ? s * 0x8000 : s * 0x7FFF, true); off += 2;
+  }
+  return new Uint8Array(buf);
+}
+
+// ── Canvas → PNG ──────────────────────────────────────────────────────────────
+function canvasToPNG(canvas) {
+  return new Promise(resolve => {
+    canvas.toBlob(blob => blob.arrayBuffer().then(b => resolve(new Uint8Array(b))), 'image/png');
+  });
+}
+
+// ── Minimal ZIP (store only) ──────────────────────────────────────────────────
+function crc32(data) {
+  if (!crc32._t) {
+    crc32._t = new Uint32Array(256);
+    for (let i = 0; i < 256; i++) {
+      let c = i;
+      for (let j = 0; j < 8; j++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      crc32._t[i] = c;
+    }
+  }
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < data.length; i++) c = crc32._t[(c ^ data[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+
+function buildZip(files) {
+  const enc = new TextEncoder();
+  const locals = [], offsets = [];
+  let pos = 0;
+  for (const f of files) {
+    const name = enc.encode(f.name), crc = crc32(f.data);
+    const lh   = new Uint8Array(30 + name.length);
+    const lv   = new DataView(lh.buffer);
+    lv.setUint32(0, 0x04034b50, true); lv.setUint16(4, 20, true);
+    lv.setUint16(6, 0, true); lv.setUint16(8, 0, true);
+    lv.setUint16(10, 0, true); lv.setUint16(12, 0, true);
+    lv.setUint32(14, crc, true); lv.setUint32(18, f.data.length, true);
+    lv.setUint32(22, f.data.length, true); lv.setUint16(26, name.length, true);
+    lv.setUint16(28, 0, true); lh.set(name, 30);
+    offsets.push(pos); locals.push({ lh, data: f.data, name, crc });
+    pos += lh.length + f.data.length;
+  }
+  const cdStart = pos;
+  const cdParts = locals.map(({ data, name, crc }, i) => {
+    const cd = new Uint8Array(46 + name.length), cv = new DataView(cd.buffer);
+    cv.setUint32(0, 0x02014b50, true); cv.setUint16(4, 20, true); cv.setUint16(6, 20, true);
+    cv.setUint16(8, 0, true); cv.setUint16(10, 0, true); cv.setUint16(12, 0, true);
+    cv.setUint16(14, 0, true); cv.setUint32(16, crc, true);
+    cv.setUint32(20, data.length, true); cv.setUint32(24, data.length, true);
+    cv.setUint16(28, name.length, true); cv.setUint16(30, 0, true);
+    cv.setUint16(32, 0, true); cv.setUint16(34, 0, true); cv.setUint16(36, 0, true);
+    cv.setUint32(38, 0, true); cv.setUint32(42, offsets[i], true); cd.set(name, 46);
+    return cd;
+  });
+  const cdSize = cdParts.reduce((s, p2) => s + p2.length, 0);
+  const eocd   = new Uint8Array(22), ev = new DataView(eocd.buffer);
+  ev.setUint32(0, 0x06054b50, true); ev.setUint16(4, 0, true); ev.setUint16(6, 0, true);
+  ev.setUint16(8, files.length, true); ev.setUint16(10, files.length, true);
+  ev.setUint32(12, cdSize, true); ev.setUint32(16, cdStart, true); ev.setUint16(20, 0, true);
+  const out = new Uint8Array(cdStart + cdSize + 22);
+  let pp = 0;
+  for (const { lh, data } of locals) { out.set(lh, pp); pp += lh.length; out.set(data, pp); pp += data.length; }
+  for (const cd of cdParts) { out.set(cd, pp); pp += cd.length; }
+  out.set(eocd, pp);
+  return out;
+}
+</script>
+</body>
+</html>
