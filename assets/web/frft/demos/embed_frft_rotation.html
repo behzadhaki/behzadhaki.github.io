@@ -19,7 +19,10 @@
     const disp = sp.get('disp');
     if (disp === 'wave' || disp === 'scope') window._initDisp = disp;
     const dalphaStr = sp.get('dalpha');
-    if (dalphaStr) {
+    if (dalphaStr === 'dft') {
+      window._initDalpha  = 1;
+      window._initDFTMode = true;
+    } else if (dalphaStr) {
       const v = parseFloat(dalphaStr);
       if (!isNaN(v) && v > 0) window._initDalpha = v;
     }
@@ -205,6 +208,7 @@ button:active:not(:disabled) { filter: brightness(0.85); }
 
 // ── Constants ────────────────────────────────────────────────────────────────
 const DELTA_ALPHA = (window._initDalpha != null) ? window._initDalpha : (1 / 3);
+const DFT_MODE    = window._initDFTMode === true;
 const NUM_ALPHA   = Math.round(4 / DELTA_ALPHA);
 // Use i*4/NUM_ALPHA instead of i*DELTA_ALPHA to avoid floating-point drift
 // (e.g. 3*(1/3) = 0.9999... vs 3*4/12 = 1.0 exactly)
@@ -221,9 +225,12 @@ const PANEL_W_F  = 0.185;  // panel width  (landscape: x-sep binds at −60°/�
 const PANEL_H_F  = 0.140;  // panel height (y-sep binds at −30°/−60°)
 
 function alphaFrac(idx) {
-  // idx * 4 / NUM_ALPHA in lowest terms; integer multiples → whole number label
-  const d = NUM_ALPHA / 4;           // denominator (e.g. 3 for delta=1/3)
-  const n = idx;                     // numerator before simplification
+  if (DFT_MODE) {
+    const degs = ['0°', '90°', '180°', '270°'];
+    return degs[Math.round(ALPHA_LIST[idx])] || '';
+  }
+  const d = NUM_ALPHA / 4;
+  const n = idx;
   if (n % d === 0) return String(n / d);
   return n + '/' + d;
 }
@@ -316,7 +323,7 @@ const panels = ALPHA_LIST.map((alpha, idx) => {
   div.append(cv);
   mainEl.appendChild(div);
 
-  const CARD_LABELS = ['Time Signal', 'FFT', 'Time Reversed', 'Inverse FFT'];
+  const CARD_LABELS = ['Time Signal', 'Fourier Transform', 'Time Reversed', 'Inverse FT'];
   let labelEl = null;
   if (isCard) {
     labelEl = document.createElement('span');
@@ -474,6 +481,39 @@ function drawBg() {
     ctx.textAlign = 'center';
     ctx.fillText(txt, lx, ly);
   });
+
+  // Small X/Y axis legend in top-left corner
+  {
+    const pad   = 16;
+    const axLen = 28;
+    const hLen  = 5;
+    const hWid  = 3;
+    const ox    = pad + hWid;
+    const oy    = pad + axLen + hLen;
+    const col   = 'rgba(160,160,160,0.65)';
+    const fs    = Math.max(8, Math.round(R * 0.085));
+
+    ctx.strokeStyle = col; ctx.fillStyle = col;
+    ctx.lineWidth   = 1.2; ctx.setLineDash([]);
+
+    ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + axLen, oy); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(ox + axLen + hLen, oy);
+    ctx.lineTo(ox + axLen, oy - hWid); ctx.lineTo(ox + axLen, oy + hWid);
+    ctx.closePath(); ctx.fill();
+
+    ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox, oy - axLen); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(ox, oy - axLen - hLen);
+    ctx.lineTo(ox - hWid, oy - axLen); ctx.lineTo(ox + hWid, oy - axLen);
+    ctx.closePath(); ctx.fill();
+
+    ctx.font = `${fs}px -apple-system, sans-serif`;
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText('Time', ox + axLen + hLen + 3, oy);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    ctx.fillText('Freq', ox, oy - axLen - hLen - 2);
+  }
 
   ctx.restore();
 }
