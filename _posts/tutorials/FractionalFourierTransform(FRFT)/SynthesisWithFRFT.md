@@ -65,7 +65,7 @@ $$H[k] = \text{Filter Response}$$
 
 $$Y[k] = X[k] \cdot H[k]$$
 
-$$Y[k] \xrightarrow{\text{FRFT}(-\alpha)} Filtered Signal$$
+$$Y[k] \xrightarrow{\text{FRFT}(-\alpha)} \text{Filtered Signal}$$
 
 #### Convolution
 
@@ -77,7 +77,7 @@ $$x_2[n] \xrightarrow{\text{FRFT}(\alpha)}X_2[k]$$
 
 $$Y[k] = X_1[k] \cdot X_2[k]$$
 
-$$Y[k] \xrightarrow{\text{FRFT}(-\alpha)} Convolved Signal$$
+$$Y[k] \xrightarrow{\text{FRFT}(-\alpha)} \text{Convolution Result}$$
 
 #### Ring Mod
 
