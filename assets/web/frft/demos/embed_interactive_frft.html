@@ -35,6 +35,12 @@
 
     const hs = sp.get('halfspec');
     if (hs !== null)         window._initHalfspec = hs === '1';            // 0 | 1
+
+    const urlParam = sp.get('url') || null;
+    if (urlParam) {
+      window._initUrl  = urlParam;
+      window._initType = 'file';  // url= implies file mode
+    }
   })();
 </script>
 <style>
@@ -597,9 +603,23 @@ async function autoProcess() {
   try {
     if (!dryBuf) {
       if (srcType.value === 'file') {
-        if (!fileInput.files[0]) { setStatus('select a file ↑', ''); return; }
-        setStatus('Decoding…', 'busy');
-        dryBuf = await decodeFile(fileInput.files[0]);
+        if (window._initUrl) {
+          setStatus('Fetching…', 'busy');
+          try {
+            dryBuf = await fetchAndDecode(window._initUrl);
+            const fname = window._initUrl.split('/').pop().split('?')[0];
+            fileLabel.textContent = '📂 ' + fname;
+            fileLabel.classList.add('has-file');
+          } catch (err) {
+            setStatus('Fetch failed: ' + (err.message || err), 'err');
+            return;
+          }
+        } else if (!fileInput.files[0]) {
+          setStatus('select a file ↑', ''); return;
+        } else {
+          setStatus('Decoding…', 'busy');
+          dryBuf = await decodeFile(fileInput.files[0]);
+        }
       } else {
         sampleRate = 44100;
         dryBuf = generateSignal(srcType.value, parseInt(durNum.value) || 10, sampleRate, parseFloat(freqNum.value) || 440);
@@ -708,6 +728,12 @@ srcType.addEventListener('change', () => {
 });
 // Sync UI if type was set from URL param
 if (window._initType) srcType.dispatchEvent(new Event('change'));
+// When a url= is provided, pre-fill the label with the filename
+if (window._initUrl) {
+  const fname = window._initUrl.split('/').pop().split('?')[0];
+  fileLabel.textContent = '📂 ' + fname;
+  fileLabel.classList.add('has-file');
+}
 
 // ── Duration controls ─────────────────────────────────────────────────────────
 durNum.addEventListener('change', () => {
@@ -865,6 +891,23 @@ function generateSignal(type, seconds, sr, freq) {
 }
 
 // ── Decode audio file ─────────────────────────────────────────────────────────
+async function fetchAndDecode(url) {
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  const arrayBuf = await resp.arrayBuffer();
+  const ctx      = new AudioContext();
+  const decoded  = await ctx.decodeAudioData(arrayBuf);
+  const mono     = new Float32Array(decoded.length);
+  for (let ch = 0; ch < decoded.numberOfChannels; ch++) {
+    const chData = decoded.getChannelData(ch);
+    for (let i = 0; i < decoded.length; i++)
+      mono[i] += chData[i] / decoded.numberOfChannels;
+  }
+  sampleRate = decoded.sampleRate;
+  await ctx.close();
+  return mono;
+}
+
 async function decodeFile(file) {
   const arrayBuf = await file.arrayBuffer();
   const ctx      = new AudioContext();

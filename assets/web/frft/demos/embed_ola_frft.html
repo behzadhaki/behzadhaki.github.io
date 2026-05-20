@@ -25,6 +25,8 @@
 
     const wave = sp.get('wave');
     if (['sine','triangle','sawtooth','square'].includes(wave)) window._initWave = wave;
+    const win = sp.get('win');
+    if (win === 'hann' || win === 'rect') window._initWin = win;
     if (sp.get('lock') === '1') window._initLock = true;
   })();
 </script>
@@ -256,6 +258,13 @@
           </select>
         </div>
         <div class="row">
+          <label class="lbl">Window</label>
+          <select id="winSel">
+            <option value="hann" selected>Hann</option>
+            <option value="rect">Rectangular</option>
+          </select>
+        </div>
+        <div class="row">
           <label class="lbl">Block</label>
           <select id="blocksizeSel">
             <option value="1024">1024</option>
@@ -371,6 +380,7 @@ let p2Accum       = null;  // direct block-overlay accumulators for panel-2 colo
 let specGamma     = 1.0;
 let blockSize     = 131072;
 let halfSpectrum  = false;
+let noWindow      = false;
 let zoomView      = null;
 
 // Playback state
@@ -393,6 +403,7 @@ const alphaNum       = document.getElementById('alphaNum');
 const overlapSel     = document.getElementById('overlapSel');
 const blocksizeSel   = document.getElementById('blocksizeSel');
 const modeSel        = document.getElementById('modeSel');
+const winSel         = document.getElementById('winSel');
 
 // Apply URL param defaults
 if (window._initWave      !== undefined) waveSel.value      = window._initWave;
@@ -401,9 +412,11 @@ if (window._initAlpha     !== undefined) alphaNum.value     = window._initAlpha;
 if (window._initOverlap   !== undefined) overlapSel.value   = String(window._initOverlap);
 if (window._initBlocksize !== undefined) blocksizeSel.value = String(window._initBlocksize);
 if (window._initHalfspec  !== undefined) modeSel.value      = window._initHalfspec ? 'half' : 'full';
+if (window._initWin       !== undefined) winSel.value       = window._initWin;
 
 blockSize    = parseInt(blocksizeSel.value);
 halfSpectrum = modeSel.value === 'half';
+noWindow     = winSel.value === 'rect';
 
 if (window._initLock) {
   [overlapSel, blocksizeSel, modeSel].forEach(el => {
@@ -480,7 +493,7 @@ function sendWorkerJob(block, alpha) {
     frftWorker.postMessage({
       type: 'process', samples: block, alpha,
       bufSize: blockSize, overlapFactor: 1,
-      halfSpectrum, noWindow: false, jobId,
+      halfSpectrum, noWindow, jobId,
     });
   });
 }
@@ -649,6 +662,10 @@ blocksizeSel.addEventListener('change', () => {
 });
 modeSel.addEventListener('change', () => {
   halfSpectrum = modeSel.value === 'half';
+  scheduleProcess();
+});
+winSel.addEventListener('change', () => {
+  noWindow = winSel.value === 'rect';
   scheduleProcess();
 });
 
