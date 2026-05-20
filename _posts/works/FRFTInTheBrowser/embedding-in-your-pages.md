@@ -358,9 +358,14 @@ Demonstrates that FRFT(α₂) ∘ FRFT(α₁) = FRFT(α₁+α₂). The widget sh
     <option value="wave" selected>Waveform</option>
     <option value="scope">Spectrogram</option>
   </select>
-  <label>&alpha;&#x2081;</label>
+  <label>Demo</label>
+  <select id="fe6-demo">
+    <option value="additivity" selected>Additivity</option>
+    <option value="inversion">Inversion</option>
+  </select>
+  <label id="fe6-a1-lbl">&alpha;&#x2081;</label>
   <input type="number" id="fe6-a1" value="0.5" min="-4" max="4" step="0.05" style="width:52px">
-  <label>&alpha;&#x2082;</label>
+  <label id="fe6-a2-lbl">&alpha;&#x2082;</label>
   <input type="number" id="fe6-a2" value="0.75" min="-4" max="4" step="0.05" style="width:52px">
   <label>Mode</label>
   <select id="fe6-interactive">
@@ -382,7 +387,7 @@ Demonstrates that FRFT(α₂) ∘ FRFT(α₁) = FRFT(α₁+α₂). The widget sh
 
 ## Interactive FRFT
 
-Full controls — let visitors change signal type, α order, block size and overlap directly in the widget.
+Full controls — let visitors change signal type, α order, block size and overlap directly in the widget. To pre-load your own audio file, add `url=` pointing to any same-origin path, e.g. `url=/assets/audio/my-file.mp3`. The widget fetches and decodes it automatically on load, and the file picker is hidden.
 
 <div class="frft-embeds">
 <div class="fe-controls">
@@ -443,7 +448,7 @@ Full controls — let visitors change signal type, α order, block size and over
 
 ## Non-interactive FRFT
 
-Fixed parameters set at embed time — auto-plays on load, no controls shown to the visitor.
+Fixed parameters set at embed time — auto-plays on load, no controls shown to the visitor. To use your own audio file, add `url=` pointing to any same-origin path, e.g. `url=/assets/audio/my-file.mp3`. The file is fetched and decoded automatically — no file picker needed.
 
 <div class="frft-embeds">
 <div class="fe-controls">
@@ -584,6 +589,16 @@ Shows how block-processing artefacts change with different block sizes and overl
   <label>Half-spec</label>
   <select id="fe4-halfspec">
     <option value="0" selected>No</option><option value="1">Yes</option>
+  </select>
+  <label>Window</label>
+  <select id="fe4-win">
+    <option value="hann" selected>Hann</option>
+    <option value="rect">Rectangular</option>
+  </select>
+  <label>Lock example</label>
+  <select id="fe4-lock">
+    <option value="0" selected>No</option>
+    <option value="1">Yes</option>
   </select>
   <button onclick="feApply4()">Apply</button>
 </div>
@@ -732,7 +747,24 @@ Shows how block-processing artefacts change with different block sizes and overl
   feApply5();
 
   /* ── 6. Index Additivity ─────────────────────────────────── */
+  function fe6SyncInversion() {
+    const isInversion = g('fe6-demo').value === 'inversion';
+    const a2el = g('fe6-a2');
+    if (isInversion) {
+      a2el.value = (-parseFloat(g('fe6-a1').value || 0)).toString();
+      a2el.disabled = true;
+      a2el.style.opacity = '0.5';
+      g('fe6-a1-lbl').textContent = 'α';
+      g('fe6-a2-lbl').textContent = '−α';
+    } else {
+      a2el.disabled = false;
+      a2el.style.opacity = '1';
+      g('fe6-a1-lbl').innerHTML = '&alpha;&#x2081;';
+      g('fe6-a2-lbl').innerHTML = '&alpha;&#x2082;';
+    }
+  }
   window.feApply6 = function () {
+    fe6SyncInversion();
     const w = Math.max(200, parseInt(g('fe6-w').value) || 750);
     const h = Math.max(200, parseInt(g('fe6-h').value) || 400);
     g('fe6-w').value = w;
@@ -744,6 +776,7 @@ Shows how block-processing artefacts change with different block sizes and overl
     g('fe6-wave').disabled = false;
     g('fe6-freq').disabled = !hasFreq;
     g('fe6-freq-lbl').style.opacity = hasFreq ? '1' : '0.4';
+    const isInversion = g('fe6-demo').value === 'inversion';
     const p = new URLSearchParams({
       w, h, wave, disp: g('fe6-disp').value,
       win: g('fe6-win').value,
@@ -752,9 +785,17 @@ Shows how block-processing artefacts change with different block sizes and overl
     });
     if (hasFreq) p.set('freq', g('fe6-freq').value);
     if (isStatic) p.set('interactive', '0');
+    if (isInversion) p.set('inversion', '1');
     g('fe6-code').textContent = buildCode('embed_frft_additivity.html', p.toString(), w, h);
     loadFrame('fe6-frame', 'embed_frft_additivity.html', p.toString(), w, h);
   };
+  g('fe6-demo').addEventListener('change', feApply6);
+  g('fe6-a1').addEventListener('change', feApply6);
+  g('fe6-a1').addEventListener('input', function () {
+    if (g('fe6-demo').value === 'inversion') {
+      g('fe6-a2').value = (-parseFloat(this.value || 0)).toString();
+    }
+  });
   g('fe6-wave').addEventListener('change', feApply6);
   g('fe6-win').addEventListener('change', feApply6);
   g('fe6-disp').addEventListener('change', feApply6);
@@ -839,7 +880,9 @@ Shows how block-processing artefacts change with different block sizes and overl
       wave: g('fe4-wave').value, freq: g('fe4-freq').value,
       alpha: g('fe4-alpha').value, blocksize: g('fe4-block').value,
       overlap: g('fe4-overlap').value, halfspec: g('fe4-halfspec').value,
+      win: g('fe4-win').value,
     });
+    if (g('fe4-lock').value === '1') p.set('lock', '1');
     g('fe4-code').textContent = buildCode('embed_ola_frft.html', p.toString(), w, h);
     loadFrame('fe4-frame', 'embed_ola_frft.html', p.toString(), w, h);
   };
@@ -847,6 +890,8 @@ Shows how block-processing artefacts change with different block sizes and overl
   g('fe4-block').addEventListener('change', feApply4);
   g('fe4-overlap').addEventListener('change', feApply4);
   g('fe4-halfspec').addEventListener('change', feApply4);
+  g('fe4-win').addEventListener('change', feApply4);
+  g('fe4-lock').addEventListener('change', feApply4);
   feApply4();
 
   /* ── Hosting mode (registered after all feApplyN are defined) ─────────── */

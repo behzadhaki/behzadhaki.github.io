@@ -74,6 +74,9 @@ In the following demo, you can try out different waveforms and listen to the rea
 Try out different waveforms: sine, square, triangle, and sawtooth. In these cases, the resulting sound is a squence of clicks, 
 as the Fourier Transform of these waveforms consists of a series of impulses at the harmonic frequencies.
 
+{:.note}
+When interacting with the demo, notice the X-axis transforming from frequency to time as soon as you play the sound.
+In the rest of this tutorial, we will be listening to the real part of any complex signal, whether obtained from the FT or any other operation.
 
 ## Rotational Behavior of Fourier Transform
 
@@ -82,8 +85,7 @@ Likewise, there is an inverse operation called the Inverse Fourier Transform (IF
 
 $$x[n] \xrightarrow{\text{FT}} X[k]  \xrightarrow{\text{IFT}} x[n]$$
 
-An interesting property of the FT is that it can be interpreted as a rotation in the time-frequency plane. That is to say, 
-if you apply the FT four times consecutively, you will get back to the original signal:
+An interesting property of the FT is that if we apply the FT four times consecutively, you will get back to the original signal:
 
 $$x[n] \xrightarrow{\text{FT}} X[k] \xrightarrow{\text{FT}} x[-n] \xrightarrow{\text{FT}} X[-k] \xrightarrow{\text{FT}} x[n]$$
 
@@ -105,3 +107,4 @@ The waveforms at the frequency domain are the real part of the Fourier Transform
 
 {:.note} 
 To understand the impact of time reversal, use the "Freq sweep" input and also switch to "Spectrogram" visualization.
+
