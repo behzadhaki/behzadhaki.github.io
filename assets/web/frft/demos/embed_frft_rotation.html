@@ -842,7 +842,8 @@ function startPlay(idx) {
   stopPlayback();
   const buf = wetBufs[idx];
   if (!buf) return;
-  audioCtx  = new AudioContext({ sampleRate });
+  if (!audioCtx) audioCtx = new AudioContext({ sampleRate });
+  if (audioCtx.state === 'suspended') audioCtx.resume();
   const gain = audioCtx.createGain(); gain.gain.value = 0.5;
   gain.connect(audioCtx.destination);
   const ab = audioCtx.createBuffer(1, buf.length, sampleRate);
@@ -864,7 +865,6 @@ function startPlay(idx) {
 function stopPlayback() {
   cancelAnimationFrame(playheadRaf);
   if (activeSrc) { try { activeSrc.stop(); } catch {} activeSrc = null; }
-  if (audioCtx)  { audioCtx.close(); audioCtx = null; }
   if (activeIdx >= 0) {
     panels[activeIdx].div.classList.remove('active');
     renderPanel(activeIdx);

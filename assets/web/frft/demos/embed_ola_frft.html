@@ -994,7 +994,6 @@ function stopPlayback() {
   clearSpectrum(); clearPlayhead();
   if (activeSrc)  { try { activeSrc.stop();  } catch {} activeSrc  = null; }
   if (activeSrc2) { try { activeSrc2.stop(); } catch {} activeSrc2 = null; }
-  if (audioCtx)   { audioCtx.close(); audioCtx = null; }
   masterGain = null; dryGain = null; wetGain = null; playingWhich = null;
   playBtn.textContent = '▶'; playBtn.className = 'btn-ok';
 }
@@ -1007,10 +1006,10 @@ function applyMix(which) {
 function startPlayback(which) {
   if (activeSrc)  { try { activeSrc.stop();  } catch {} activeSrc  = null; }
   if (activeSrc2) { try { activeSrc2.stop(); } catch {} activeSrc2 = null; }
-  if (audioCtx)   { audioCtx.close(); audioCtx = null; }
   if (playheadInterval) { clearInterval(playheadInterval); playheadInterval = null; }
   if (!dryBuf || !olaOutput) return;
-  audioCtx   = new AudioContext({ sampleRate });
+  if (!audioCtx) audioCtx = new AudioContext({ sampleRate });
+  if (audioCtx.state === 'suspended') audioCtx.resume();
   masterGain = audioCtx.createGain(); masterGain.gain.value = 0.5;
   masterGain.connect(audioCtx.destination);
   dryGain = audioCtx.createGain(); wetGain = audioCtx.createGain();

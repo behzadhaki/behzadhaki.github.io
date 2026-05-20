@@ -769,7 +769,6 @@ function stopPlayback() {
   clearPlayhead();
   if (activeSrc)  { try { activeSrc.stop();  } catch {} activeSrc  = null; }
   if (activeSrc2) { try { activeSrc2.stop(); } catch {} activeSrc2 = null; }
-  if (audioCtx)   { audioCtx.close(); audioCtx = null; }
   masterGain   = null;
   dryGain      = null;
   wetGain      = null;
@@ -790,7 +789,6 @@ function applyMix(which) {
 function startPlayback(which, offset = 0) {
   if (activeSrc)  { try { activeSrc.stop();  } catch {} activeSrc  = null; }
   if (activeSrc2) { try { activeSrc2.stop(); } catch {} activeSrc2 = null; }
-  if (audioCtx)   { audioCtx.close(); audioCtx = null; }
   if (playheadInterval) { clearInterval(playheadInterval); playheadInterval = null; }
   masterGain = null; dryGain = null; wetGain = null;
 
@@ -799,7 +797,8 @@ function startPlayback(which, offset = 0) {
   // Clamp offset to valid range using dry buffer as reference
   offset = Math.max(0, Math.min(offset, trimmedDryBuf.length / sampleRate - 0.01));
 
-  audioCtx   = new AudioContext({ sampleRate });
+  if (!audioCtx) audioCtx = new AudioContext({ sampleRate });
+  if (audioCtx.state === 'suspended') audioCtx.resume();
   masterGain = audioCtx.createGain();
   masterGain.gain.value = 0.5;
   masterGain.connect(audioCtx.destination);

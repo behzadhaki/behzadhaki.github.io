@@ -281,8 +281,8 @@ playBtn.addEventListener('click', () => { isPlaying ? stopPlayback() : startPlay
 function startPlayback() {
   if (!dryBuf) return;
   if (activeSrc) { try { activeSrc.stop(); } catch (_) {} activeSrc = null; }
-  if (audioCtx)  { audioCtx.close(); audioCtx = null; }
-  audioCtx  = new AudioContext({ sampleRate: SR });
+  if (!audioCtx) audioCtx = new AudioContext({ sampleRate: SR });
+  if (audioCtx.state === 'suspended') audioCtx.resume();
   const buf = audioCtx.createBuffer(1, dryBuf.length, SR);
   buf.copyToChannel(dryBuf, 0);
   activeSrc        = audioCtx.createBufferSource();
@@ -297,7 +297,6 @@ function startPlayback() {
 
 function stopPlayback() {
   if (activeSrc) { try { activeSrc.stop(); } catch (_) {} activeSrc = null; }
-  if (audioCtx)  { audioCtx.close(); audioCtx = null; }
   isPlaying           = false;
   playBtn.textContent = '▶';
   playBtn.className   = 'btn-ok';
