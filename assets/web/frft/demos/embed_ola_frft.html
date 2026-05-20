@@ -25,6 +25,7 @@
 
     const wave = sp.get('wave');
     if (['sine','triangle','sawtooth','square'].includes(wave)) window._initWave = wave;
+    if (sp.get('lock') === '1') window._initLock = true;
   })();
 </script>
 <style>
@@ -403,6 +404,15 @@ if (window._initHalfspec  !== undefined) modeSel.value      = window._initHalfsp
 
 blockSize    = parseInt(blocksizeSel.value);
 halfSpectrum = modeSel.value === 'half';
+
+if (window._initLock) {
+  [overlapSel, blocksizeSel, modeSel].forEach(el => {
+    el.disabled = true;
+    el.style.opacity = '0.4';
+    el.style.cursor  = 'not-allowed';
+    el.style.pointerEvents = 'none';
+  });
+}
 
 
 const statusEl       = document.getElementById('status');
