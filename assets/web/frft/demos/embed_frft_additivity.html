@@ -25,6 +25,7 @@
     if (!isNaN(a1) && a1 >= -4 && a1 <= 4) window._initAlpha1 = a1;
     const a2 = parseFloat(sp.get('alpha2'));
     if (!isNaN(a2) && a2 >= -4 && a2 <= 4) window._initAlpha2 = a2;
+    if (sp.get('inversion') === '1') window._initInversion = true;
   })();
 </script>
 <style>
@@ -243,11 +244,11 @@ body {
   </div>
   <!-- α controls overlaid on the sequential arrows -->
   <div id="alpha1Ctrl" class="alpha-overlay">
-    <label>&alpha;&#x2081;</label>
+    <label id="alpha1Lbl">&alpha;&#x2081;</label>
     <input id="alpha1Num" class="alpha-num" type="number" value="0.5" min="-4" max="4" step="0.05">
   </div>
   <div id="alpha2Ctrl" class="alpha-overlay">
-    <label>&alpha;&#x2082;</label>
+    <label id="alpha2Lbl">&alpha;&#x2082;</label>
     <input id="alpha2Num" class="alpha-num" type="number" value="0.75" min="-4" max="4" step="0.05">
   </div>
 </div>
@@ -291,6 +292,9 @@ const alpha1Num    = document.getElementById('alpha1Num');
 const alpha2Num    = document.getElementById('alpha2Num');
 const alpha1CtrlEl = document.getElementById('alpha1Ctrl');
 const alpha2CtrlEl = document.getElementById('alpha2Ctrl');
+const alpha1Lbl    = document.getElementById('alpha1Lbl');
+const alpha2Lbl    = document.getElementById('alpha2Lbl');
+const INVERSION    = !!window._initInversion;
 const viewBarEl    = document.getElementById('viewBar');
 const tabWave      = document.getElementById('tabWave');
 const tabSpec     = document.getElementById('tabSpec');
@@ -314,6 +318,14 @@ if (window._initAlpha1 != null)  alpha1Num.value  = String(window._initAlpha1);
 if (window._initAlpha2 != null)  alpha2Num.value  = String(window._initAlpha2);
 syncFreqDisabled();
 
+if (INVERSION) {
+  alpha1Lbl.textContent = 'α';
+  alpha2Lbl.textContent = '−α';
+  alpha2Num.value    = String(-(parseFloat(alpha1Num.value) || 0));
+  alpha2Num.disabled = true;
+  alpha2Num.style.display = 'none';
+}
+
 function getAlpha1() { return Math.max(-4, Math.min(4, parseFloat(alpha1Num.value) || 0)); }
 function getAlpha2() { return Math.max(-4, Math.min(4, parseFloat(alpha2Num.value) || 0)); }
 function fmtAlpha(v) { return String(parseFloat(v.toFixed(4))); }
@@ -335,9 +347,9 @@ if (!INTERACTIVE) {
     { key: 'Wave',   val: wave.charAt(0).toUpperCase() + wave.slice(1) },
     ...(wave !== 'sweep' ? [{ key: 'Freq', val: freq + ' Hz', accent: true }] : []),
     { key: 'Window', val: win },
-    { key: 'α₁',             val: fmtAlpha(a1),      accent: true },
-    { key: 'α₂',             val: fmtAlpha(a2),      accent: true },
-    { key: 'α₁+α₂', val: fmtAlpha(a1 + a2), accent: true },
+    { key: INVERSION ? 'α'    : 'α₁',     val: fmtAlpha(a1),      accent: true },
+    { key: INVERSION ? '−α'   : 'α₂',     val: fmtAlpha(a2),      accent: true },
+    { key: INVERSION ? 'α+(−α)' : 'α₁+α₂', val: INVERSION ? '0' : fmtAlpha(a1 + a2), accent: true },
   ];
   items.forEach((item, i) => {
     if (i > 0) {
@@ -608,7 +620,7 @@ function drawBg() {
     ctx.lineTo(ex, ey);
     ctx.stroke();
     arrowTip(ex, ey);
-    connLabel((xElbow + r[3].left) / 2, ey, 'α₁+α₂ = ' + fmtAlpha(a1 + a2));
+    if (!INVERSION) connLabel((xElbow + r[3].left) / 2, ey, 'α₁+α₂ = ' + fmtAlpha(a1 + a2));
   }
 
   // ── Error connections: dashed verticals from Sequential & Direct into Error ──
@@ -1009,16 +1021,22 @@ freqNum.addEventListener('input',  () => {
 });
 winSel.addEventListener('change',  () => { stopPlayback(); startPrecompute(); });
 
-function onAlphaChange() { drawBg(); stopPlayback(); startPrecompute(); }
+function syncInversionAlpha2() {
+  if (INVERSION) alpha2Num.value = String(-(parseFloat(alpha1Num.value) || 0));
+}
+function onAlphaChange() { syncInversionAlpha2(); drawBg(); stopPlayback(); startPrecompute(); }
 function onAlphaInput(el) {
+  syncInversionAlpha2();
   drawBg();
   clearTimeout(el._t);
   el._t = setTimeout(() => { stopPlayback(); startPrecompute(); }, 500);
 }
 alpha1Num.addEventListener('change', onAlphaChange);
 alpha1Num.addEventListener('input',  () => onAlphaInput(alpha1Num));
-alpha2Num.addEventListener('change', onAlphaChange);
-alpha2Num.addEventListener('input',  () => onAlphaInput(alpha2Num));
+if (!INVERSION) {
+  alpha2Num.addEventListener('change', onAlphaChange);
+  alpha2Num.addEventListener('input',  () => onAlphaInput(alpha2Num));
+}
 
 tabWave.addEventListener('click', () => setView('wave'));
 tabSpec.addEventListener('click', () => setView('scope'));
