@@ -628,7 +628,7 @@ Shows how block-processing artefacts change with different block sizes and overl
 
   function buildCode(file, params, w, h) {
     const src = getEmbedBase() + file + '?' + params;
-    return '<div style="width:100%; max-width:' + w + 'px;">\n' +
+    return '<div style="width:100%; max-width:' + w + 'px; background:#1a1a1a; border-radius:8px; overflow:hidden;">\n' +
            '  <iframe src="' + src + '"\n' +
            '          style="width:100%; height:' + h + 'px; border:none; display:block"\n' +
            '          allow="autoplay">\n' +

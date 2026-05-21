@@ -8,7 +8,7 @@ Basicaly, `FT` transforms a `time-domain` signal into a `frequency-domain` repre
 
 For instance, if you have a pure tone at 1000 Hz, FT results in a representation such as the following:
 
-<div style="width:100%; max-width:600px;">
+<div style="width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
   <iframe src="https://behzadhaki.com/assets/web/frft/demos/embed_fft_spectrum.html?w=600&h=220&type=sine&win=exact&freq=1000"
           style="width:100%; height:220px; border:none; display:block"
           allow="autoplay">
@@ -63,7 +63,7 @@ $$ x[n] \xrightarrow{\text{FT}} X[k] \xrightarrow{\text{Imaginary Part}} \text{I
 
 In the following demo, you can try out different waveforms and listen to the real (or imaginary) part of their Fourier Transform directly, while treating them as audio signals:
 
-<div style="width:100%; max-width:600px;">
+<div style="width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
   <iframe src="/assets/web/frft/demos/embed_ft_listen.html?w=600&h=220&type=sine&part=imag&freq=440"
           style="width:100%; height:220px; border:none; display:block"
           allow="autoplay">
@@ -92,7 +92,7 @@ $$x[n] \xrightarrow{\text{FT}} X[k] \xrightarrow{\text{FT}} x[-n] \xrightarrow{\
 To conceptualize this, we can think of the time-frequency plane as a 2D space where the x-axis represents time and the y-axis represents frequency.
 As such, applying the FT corresponds to a 90-degree rotation in this plane. The following demo visualizes this rotational behavior of the FT:
 
-<div style="width:100%; max-width:400px;">
+<div style="width:100%; max-width:400px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
   <iframe src="/assets/web/frft/demos/embed_frft_rotation.html?w=400&h=400&wave=sine&disp=wave&dalpha=dft&win=hann&freq=1004"
           style="width:100%; height:400px; border:none; display:block"
           allow="autoplay">
