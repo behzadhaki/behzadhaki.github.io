@@ -1,0 +1,466 @@
+<style>
+.constellation-section { padding: 0 0 1.5rem; }
+.constellation-hint { font-size:0.78rem; color:var(--global-text-color-light); margin-bottom:0.6rem; opacity:0.55; }
+.constellation-wrap { position:relative; border-radius:12px; overflow:hidden; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); }
+html[data-theme='light'] .constellation-wrap { background:rgba(0,0,0,0.02); border-color:rgba(0,0,0,0.07); }
+#constellation-canvas { display:block; width:100%; }
+.constellation-tooltip { position:absolute; pointer-events:none; max-width:220px; padding:5px 10px; background:rgba(18,18,18,0.92); border:1px solid rgba(255,255,255,0.12); border-radius:6px; font-size:11px; color:#d0d0d0; line-height:1.4; transform:translateX(-50%); white-space:normal; z-index:10; display:none; }
+html[data-theme='light'] .constellation-tooltip { background:rgba(255,255,255,0.96); border-color:rgba(0,0,0,0.12); color:#333; }
+.constellation-legend { display:flex; gap:1.2rem; flex-wrap:wrap; margin-top:0.6rem; font-size:11px; color:var(--global-text-color-light); align-items:center; }
+.cl-item { display:flex; align-items:center; gap:5px; }
+.cl-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; border:1.5px solid currentColor; background:transparent; }
+</style>
+
+<section class="constellation-section">
+  <div class="container">
+    <div class="widget__head" style="margin:2rem 0 0.4rem">
+      <h3 class="widget__title">Background</h3>
+    </div>
+    <p class="constellation-hint">Hover to explore · drag to rearrange</p>
+    <div class="constellation-wrap" id="constellation-wrap">
+      <canvas id="constellation-canvas"></canvas>
+      <div class="constellation-tooltip" id="constellation-tooltip"></div>
+    </div>
+    <div class="constellation-legend" id="constellation-legend"></div>
+  </div>
+</section>
+
+<script>
+(function() {
+  'use strict';
+
+  var canvas = document.getElementById('constellation-canvas');
+  if (!canvas) return;
+
+  var wrap = document.getElementById('constellation-wrap');
+  var tooltip = document.getElementById('constellation-tooltip');
+  var legendEl = document.getElementById('constellation-legend');
+  var ctx = canvas.getContext('2d');
+
+  var CATS = {
+    education: { label:'Education', dark:'#c8902a', light:'#a06b10' },
+    research:  { label:'Research',  dark:'#7abfab', light:'#3a8f76' },
+    skill:     { label:'Skills',    dark:'#9aaabf', light:'#4a6a90' },
+    tool:      { label:'Tools',     dark:'#aaaaaa', light:'#555555' },
+    output:    { label:'Outputs',   dark:'#bf9a7a', light:'#7a5030' },
+  };
+
+  var NODES = [
+    { id:0,  label:'PhD\nSound & Music',   cat:'education', info:'Sound and Music Computing · UPF, Barcelona · 2020–2024',        size:18 },
+    { id:1,  label:'MSc\nSound & Music',   cat:'education', info:'Sound and Music Computing · UPF, Barcelona · 2018–2020',        size:13 },
+    { id:2,  label:'BASc\nElec. Eng.',     cat:'education', info:'Electrical Engineering (DSP & Acoustics) · UBC · 2013–2018',    size:13 },
+    { id:3,  label:'Real-time\nGeneration',cat:'research',  info:'Live generative systems for music improvisation',               size:15 },
+    { id:4,  label:'Drum\nAccompaniment',  cat:'research',  info:'Neural drum generation conditioned on live input',              size:14 },
+    { id:5,  label:'Generative\nModels',   cat:'research',  info:'LSTMs, Transformers, lightweight architectures',                size:13 },
+    { id:6,  label:'Interactive\nSystems', cat:'research',  info:'Digital instruments and live performance tools',                size:12 },
+    { id:7,  label:'Signal\nProcessing',   cat:'skill',     info:'DSP, FRFT, spectral analysis, audio analysis',                 size:14 },
+    { id:8,  label:'Machine\nLearning',    cat:'skill',     info:'Neural networks · training · deployment',                      size:13 },
+    { id:9,  label:'Acoustics',            cat:'skill',     info:'Room acoustics · psychoacoustics · consulting',                size:11 },
+    { id:10, label:'Music\nTechnology',    cat:'skill',     info:'Music information retrieval · audio analysis',                 size:12 },
+    { id:11, label:'Python\n& PyTorch',    cat:'tool',      info:'Primary research stack — PyTorch, ONNX, TensorFlow',           size:12 },
+    { id:12, label:'C++',                  cat:'tool',      info:'Audio engines · WebAssembly · JUCE · embedded systems',        size:12 },
+    { id:13, label:'JUCE / VST',           cat:'tool',      info:'Plugin development framework for audio software',              size:11 },
+    { id:14, label:'Max/MSP\n& Max4Live',  cat:'tool',      info:'Visual dataflow programming for music and live use',           size:11 },
+    { id:15, label:'JS & WASM',            cat:'tool',      info:'Browser-based audio tools and interactive widgets',            size:11 },
+    { id:16, label:'Pure Data',            cat:'tool',      info:'Open-source visual programming environment',                   size:10 },
+    { id:17, label:'VST Plugins',          cat:'output',    info:'Open-source audio plugins for music production',              size:13 },
+    { id:18, label:'Hardware',             cat:'output',    info:'Embedded systems and custom digital instruments',             size:12 },
+    { id:19, label:'Web Widgets',          cat:'output',    info:'Interactive browser tools — e.g. FRFT widget',               size:11 },
+    { id:20, label:'Publications',         cat:'output',    info:'Peer-reviewed papers at ISMIR, NIME, SMC, and others',       size:12 },
+    { id:21, label:'Acoustic\nConsulting', cat:'output',    info:'Applied acoustics consulting for architectural projects',     size:10 },
+  ];
+
+  var EDGES = [
+    [2,7],[2,9],[2,12],
+    [1,10],[1,7],[1,14],[1,16],
+    [0,1],[1,2],
+    [0,3],[0,4],[0,5],[0,6],[0,8],[0,20],
+    [3,4],[3,17],[3,18],[3,6],
+    [4,5],[4,20],
+    [5,8],[5,11],
+    [6,18],[6,19],[6,14],
+    [7,12],[7,15],
+    [8,11],
+    [9,21],
+    [10,4],
+    [12,13],[12,18],
+    [13,17],
+    [15,19],
+  ];
+
+  var CLUSTER = {
+    education: [0.20, 0.50],
+    research:  [0.48, 0.43],
+    skill:     [0.32, 0.70],
+    tool:      [0.72, 0.58],
+    output:    [0.65, 0.27],
+  };
+
+  var W, H, dpr;
+  var hoveredNode = null;
+  var dragNode = null;
+  var frameCount = 0;
+  var animId = null;
+
+  function getTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  }
+
+  function catColor(cat) {
+    var theme = getTheme();
+    return CATS[cat][theme];
+  }
+
+  function nodeRadius(n) {
+    return 13 + (n.size - 10) * 1.5;
+  }
+
+  function initDimensions() {
+    dpr = window.devicePixelRatio || 1;
+    W = wrap.clientWidth;
+    H = Math.min(500, Math.max(300, W * 0.55));
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.height = H + 'px';
+  }
+
+  function initNodes() {
+    NODES.forEach(function(n) {
+      var cl = CLUSTER[n.cat];
+      n.x = cl[0] * W + (Math.random() - 0.5) * 110;
+      n.y = cl[1] * H + (Math.random() - 0.5) * 110;
+      n.vx = 0;
+      n.vy = 0;
+      n.r = nodeRadius(n);
+    });
+  }
+
+  function clampNodes() {
+    NODES.forEach(function(n) {
+      var pad = n.r + 6;
+      if (n.x < pad) { n.x = pad; n.vx = 0; }
+      if (n.x > W - pad) { n.x = W - pad; n.vx = 0; }
+      if (n.y < pad) { n.y = pad; n.vy = 0; }
+      if (n.y > H - pad) { n.y = H - pad; n.vy = 0; }
+    });
+  }
+
+  function tick() {
+    var cx = W / 2;
+    var cy = H / 2;
+
+    // Repulsion between all pairs
+    for (var i = 0; i < NODES.length; i++) {
+      for (var j = i + 1; j < NODES.length; j++) {
+        var a = NODES[i], b = NODES[j];
+        var dx = b.x - a.x;
+        var dy = b.y - a.y;
+        var dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
+        var f = 7000 / (dist * dist);
+        var fx = (dx / dist) * f;
+        var fy = (dy / dist) * f;
+        a.vx -= fx;
+        a.vy -= fy;
+        b.vx += fx;
+        b.vy += fy;
+      }
+    }
+
+    // Spring attraction along edges
+    EDGES.forEach(function(e) {
+      var a = NODES[e[0]], b = NODES[e[1]];
+      var dx = b.x - a.x;
+      var dy = b.y - a.y;
+      var dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
+      var f = 0.035 * (dist - 130);
+      var fx = (dx / dist) * f;
+      var fy = (dy / dist) * f;
+      a.vx += fx;
+      a.vy += fy;
+      b.vx -= fx;
+      b.vy -= fy;
+    });
+
+    // Center gravity
+    NODES.forEach(function(n) {
+      n.vx += 0.009 * (cx - n.x);
+      n.vy += 0.009 * (cy - n.y);
+    });
+
+    // Slow drift every 4 frames
+    if (frameCount % 4 === 0) {
+      NODES.forEach(function(n) {
+        n.vx += (Math.random() - 0.5) * 1.0;
+        n.vy += (Math.random() - 0.5) * 1.0;
+      });
+    }
+
+    // Integrate + dampen
+    NODES.forEach(function(n) {
+      if (n === dragNode) return;
+      n.vx *= 0.87;
+      n.vy *= 0.87;
+      n.x += n.vx;
+      n.y += n.vy;
+    });
+
+    clampNodes();
+    frameCount++;
+  }
+
+  function draw() {
+    var theme = getTheme();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+
+    // Build set of edge ids connected to hovered node
+    var hoveredEdges = {};
+    if (hoveredNode !== null) {
+      EDGES.forEach(function(e, i) {
+        if (e[0] === hoveredNode.id || e[1] === hoveredNode.id) {
+          hoveredEdges[i] = true;
+        }
+      });
+    }
+
+    // Draw edges
+    EDGES.forEach(function(e, i) {
+      var a = NODES[e[0]], b = NODES[e[1]];
+      var isHot = hoveredEdges[i];
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      if (isHot) {
+        ctx.lineWidth = 1.8;
+        ctx.strokeStyle = theme === 'dark' ? 'rgba(255,255,255,0.38)' : 'rgba(0,0,0,0.28)';
+      } else {
+        ctx.lineWidth = 0.8;
+        ctx.strokeStyle = theme === 'dark' ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.08)';
+      }
+      ctx.stroke();
+    });
+
+    // Draw nodes
+    NODES.forEach(function(n) {
+      var color = catColor(n.cat);
+      var isHovered = hoveredNode && hoveredNode.id === n.id;
+
+      if (isHovered) {
+        // Glow ring
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r + 10, 0, Math.PI * 2);
+        ctx.fillStyle = color + '28';
+        ctx.fill();
+      }
+
+      // Node fill
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = color + '1a';
+      ctx.fill();
+
+      // Node stroke
+      ctx.lineWidth = isHovered ? 1.8 : 1.2;
+      ctx.strokeStyle = isHovered ? color + 'cc' : color + '80';
+      ctx.stroke();
+
+      // Labels
+      var lines = n.label.split('\n');
+      var fontSize = n.size >= 15 ? 9.5 : 8.5;
+      ctx.font = fontSize + 'px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      if (isHovered) {
+        ctx.fillStyle = color;
+      } else {
+        ctx.fillStyle = theme === 'dark' ? 'rgba(220,220,220,0.88)' : 'rgba(20,20,20,0.85)';
+      }
+
+      var lineH = 11;
+      var totalH = (lines.length - 1) * lineH;
+      lines.forEach(function(line, li) {
+        var ty = n.y - totalH / 2 + li * lineH;
+        ctx.fillText(line, n.x, ty);
+      });
+    });
+  }
+
+  function loop() {
+    tick();
+    draw();
+    animId = requestAnimationFrame(loop);
+  }
+
+  function warmup() {
+    for (var i = 0; i < 120; i++) {
+      tick();
+    }
+  }
+
+  function getCanvasPos(e) {
+    var rect = canvas.getBoundingClientRect();
+    var clientX, clientY;
+    if (e.touches) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+    return {
+      x: (clientX - rect.left) * (W / rect.width),
+      y: (clientY - rect.top) * (H / rect.height)
+    };
+  }
+
+  function findNode(pos) {
+    for (var i = NODES.length - 1; i >= 0; i--) {
+      var n = NODES[i];
+      var dx = pos.x - n.x;
+      var dy = pos.y - n.y;
+      if (dx * dx + dy * dy <= n.r * n.r) return n;
+    }
+    return null;
+  }
+
+  function showTooltip(n) {
+    tooltip.textContent = n.info;
+    tooltip.style.left = n.x + 'px';
+    tooltip.style.top = (n.y + n.r + 8) + 'px';
+    tooltip.style.display = 'block';
+  }
+
+  function hideTooltip() {
+    tooltip.style.display = 'none';
+  }
+
+  canvas.addEventListener('mousemove', function(e) {
+    var pos = getCanvasPos(e);
+    if (dragNode) {
+      dragNode.x = pos.x;
+      dragNode.y = pos.y;
+      clampNodes();
+      showTooltip(dragNode);
+      return;
+    }
+    var found = findNode(pos);
+    hoveredNode = found;
+    if (found) {
+      canvas.style.cursor = 'grab';
+      showTooltip(found);
+    } else {
+      canvas.style.cursor = 'default';
+      hideTooltip();
+    }
+  });
+
+  canvas.addEventListener('mouseleave', function() {
+    if (!dragNode) {
+      hoveredNode = null;
+      hideTooltip();
+      canvas.style.cursor = 'default';
+    }
+  });
+
+  canvas.addEventListener('mousedown', function(e) {
+    var pos = getCanvasPos(e);
+    var found = findNode(pos);
+    if (found) {
+      dragNode = found;
+      dragNode.vx = 0;
+      dragNode.vy = 0;
+      canvas.style.cursor = 'grabbing';
+      e.preventDefault();
+    }
+  });
+
+  canvas.addEventListener('mouseup', function() {
+    if (dragNode) {
+      dragNode.vx = 0;
+      dragNode.vy = 0;
+      dragNode = null;
+      canvas.style.cursor = hoveredNode ? 'grab' : 'default';
+    }
+  });
+
+  canvas.addEventListener('touchstart', function(e) {
+    var pos = getCanvasPos(e);
+    var found = findNode(pos);
+    if (found) {
+      dragNode = found;
+      hoveredNode = found;
+      dragNode.vx = 0;
+      dragNode.vy = 0;
+      showTooltip(found);
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', function(e) {
+    if (dragNode) {
+      var pos = getCanvasPos(e);
+      dragNode.x = pos.x;
+      dragNode.y = pos.y;
+      clampNodes();
+      showTooltip(dragNode);
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', function() {
+    if (dragNode) {
+      dragNode.vx = 0;
+      dragNode.vy = 0;
+      dragNode = null;
+      hoveredNode = null;
+      hideTooltip();
+    }
+  });
+
+  // Build legend
+  Object.keys(CATS).forEach(function(key) {
+    var cat = CATS[key];
+    var theme = getTheme();
+    var color = cat[theme];
+    var item = document.createElement('div');
+    item.className = 'cl-item';
+    var dot = document.createElement('span');
+    dot.className = 'cl-dot';
+    dot.style.borderColor = color;
+    var lbl = document.createElement('span');
+    lbl.textContent = cat.label;
+    item.appendChild(dot);
+    item.appendChild(lbl);
+    legendEl.appendChild(item);
+  });
+
+  // Theme observer — update legend dot colors on theme change
+  var observer = new MutationObserver(function() {
+    var theme = getTheme();
+    var dots = legendEl.querySelectorAll('.cl-dot');
+    var keys = Object.keys(CATS);
+    dots.forEach(function(dot, i) {
+      dot.style.borderColor = CATS[keys[i]][theme];
+    });
+  });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  // Resize handler
+  var resizeObserver = new ResizeObserver(function() {
+    if (animId) cancelAnimationFrame(animId);
+    initDimensions();
+    clampNodes();
+    draw();
+    animId = requestAnimationFrame(loop);
+  });
+  resizeObserver.observe(wrap);
+
+  // Initialize
+  initDimensions();
+  initNodes();
+  warmup();
+  animId = requestAnimationFrame(loop);
+
+})();
+</script>
