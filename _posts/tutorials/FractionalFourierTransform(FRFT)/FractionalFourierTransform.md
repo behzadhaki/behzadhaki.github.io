@@ -1,7 +1,7 @@
 
 ## FRFT as a Generalization of Fourier Transform
 
-We ended the previous section by mentioning that the Fourier Transform (FT) can be thought of as a rotation in the time-frequency plane.
+We ended the previous section by mentioning that the Fourier Transform (FT) can be thought of as a rotation in a conceptual time-frequency plane.
 
 That is, in this 2D conceptual space, a 90-degree rotation corresponds to a single application of the FT, and
 given its rotational behavior, applying the FT four times will bring you back to the original signal.
@@ -73,7 +73,11 @@ In the case of the FRFT, there is no separate inverse operation. Instead, the in
 
 $$ x[n] \xrightarrow{\text{FRFT}(\alpha)} X_\alpha[k] \xrightarrow{\text{FRFT}(-\alpha)} x[n] $$
 
-In the following demo, you can see the impact of inverting the FRFT by applying a FRFT with a positive rotation factor followed by a FRFT with the corresponding negative rotation factor, and observing the resulting waveforms and spectrograms at each step:
+{:.note}
+A positive rotation factor $\alpha$ corresponds to a counter-clockwise rotation in the time-frequency plane, 
+while a negative rotation factor corresponds to a clockwise rotation.
+
+In the following demo, you can transform a signal into the alpha domain and then apply the inverse transformation to get back to the original signal:
 
 <div style="width:100%; max-width:500px;">
   <iframe src="/assets/web/frft/demos/embed_frft_additivity.html?w=500&h=400&wave=triangle&disp=wave&win=hann&alpha1=0.5&alpha2=-0.5&freq=440&inversion=1"
@@ -82,21 +86,29 @@ In the following demo, you can see the impact of inverting the FRFT by applying 
   </iframe>
 </div>
 
+Here you can see that the final output after $\alpha$ and $-\alpha$ transformations is almost identical to the original input signal.
+
 {:.note} 
 In this demo, we visualize the error between the two paths. For a perfect mathematically accurate implementation of the FRFT, this error should be zero. 
-However, in here, we are using a light-weight implementation of the FRFT which is highly optimized for real-time performance. Hence, the error is not exactly zero, but it is still very small and inaudible in most cases.
+However, in here, we are using a light-weight implementation of the FRFT which is highly optimized for real-time performance at the cost of some accuracy.
+Hence, the error is not exactly zero, but it is still very small and inaudible in most cases. 
+That said, in pure mathematical terms, the error should be zero, and the original signal should be perfectly 
+reconstructed after applying the FRFT and its inverse.
 
 
 ### Index Additivity
 
 The FRFT has an interesting property called `index additivity`, which states that if you apply two FRFTs with rotation factors $\alpha_1$ and $\alpha_2$ consecutively, it is equivalent to applying a single FRFT with a rotation factor that is the sum of the two individual rotation factors:
 
-$$ x[n] \xrightarrow{\text{FRFT}(\alpha_1)} X_{\alpha_1}[k] \xrightarrow{\text{FRFT}(\alpha_2)} X_{\alpha_1 + \alpha_2}[k] \xleftarrow{\text{FRFT}(\alpha_1 + \alpha_2)} x[n] $$
+$$\begin{array}{c}
+x[n] \xrightarrow{\text{FRFT}(\alpha_1)} X_{\alpha_1}[k] \xrightarrow{\text{FRFT}(\alpha_2)} X_{\alpha_1+\alpha_2}[k] \\[6pt]
+x[n] \xrightarrow[\text{FRFT}(\alpha_1+\alpha_2)]{\hspace{14em}} X_{\alpha_1+\alpha_2}[k]
+\end{array}$$
 
 In the following demo, you can apply two consecutive FRFTs and observe the resulting waveforms and spectrograms at each step, as well as the final result of applying a single FRFT with the combined rotation factor:
 
 <div style="width:100%; max-width:500px;">
-  <iframe src="/assets/web/frft/demos/embed_frft_additivity.html?w=500&h=400&wave=sawtooth&disp=wave&win=hann&alpha1=0.15&alpha2=0.62&freq=440"
+  <iframe src="/assets/web/frft/demos/embed_frft_additivity.html?w=500&h=400&wave=sawtooth&disp=scope&win=hann&alpha1=0.15&alpha2=0.62&freq=440"
           style="width:100%; height:400px; border:none; display:block"
           allow="autoplay">
   </iframe>
@@ -106,7 +118,7 @@ In the following demo, you can apply two consecutive FRFTs and observe the resul
 
 The resulting sounds obtained from applying the FRFT to an input signal can vary greatly depending on the characteristics of the input signal and the chosen rotation factor $\alpha$.
 
-In this part, we will how the spectral content of a sound, as well as the choice of $\alpha$, can impact the resulting textures obtained from applying the FRFT.
+In this part, we will see how the spectral content of a sound, as well as the choice of $\alpha$, can impact the resulting textures obtained from applying the FRFT.
 
 To start with, let's look at the following demo in which we use a sine sweep input signal and apply the FRFT with different values of $\alpha$ to observe the resulting waveforms and spectrograms:
 
@@ -136,9 +148,9 @@ For now, we suggest not modifying the source panel (except for the source type)
 
 We suggest the following steps to explore the impact of $\alpha$ and the input spectral content on the resulting textures:
 
-    - At a fixed value of $\alpha$, move the frequency slider to explore the impact of the input spectral content on the resulting textures.
-    - At a fixed input frequency, move the $\alpha$ slider to explore the impact of $\alpha$ on the resulting textures.
-    - Try out different waveforms (sine, square, triangle, and sawtooth) to explore the impact of the input waveform on the resulting textures.
+- At a fixed value of $\alpha$, move the frequency slider to explore the impact of the input spectral content on the resulting textures.
+- At a fixed input frequency, move the $\alpha$ slider to explore the impact of $\alpha$ on the resulting textures.
+- Try out different waveforms (sine, square, triangle, and sawtooth) to explore the impact of the input waveform on the resulting textures.
 
 
 ## Impact of Windowing
@@ -147,7 +159,7 @@ The way we've been applying the FRFT so far is by taking the entire input signal
 
 That said, just like most spectral processing techniques, the FRFT can also be applied in a windowed manner, where we take a short segment of the input signal (called a window), apply the FRFT to that segment, and then move the window across the entire signal to process it in chunks.
 
-To construct the final output, we can either concatenate the processed segments together, or we can overlap and add them together to create a smoother result.
+To construct the final output, we can either concatenate the processed segments together (non-overlapping windows) or we can overlap and add the processed segments together (overlapping windows).
 
 
 ### Window Size Vs. Chirp Speed
@@ -155,7 +167,7 @@ Let's start with considering this example: Generating a long Sinusoidal signal w
 The way we can apply FRFT, is either we apply it to the entire signal at once, or we can chop the signal into smaller non-overlapping segments and apply the FRFT to each segment separately.
 Because the spectral content in each of the cases (regardless of the segment size) is the same, visually, the resulting spectrograms look similar. 
 However, when we play each of the resulting outputs, the speed at which the textures evolve over time is different.
-This can be observed in the following demo in which on the left we use a window size of 131072 samples and on the right we use half this size i.e. 65536 samples):
+This can be observed in the following demo in which on the left we use a window size of 131072 samples and on the right we use half this size i.e. 32768 samples):
 
 
 <div style="display:flex; gap:1rem; flex-wrap:wrap;">
@@ -166,14 +178,14 @@ This can be observed in the following demo in which on the left we use a window 
     </iframe>
   </div>
   <div style="flex:1; min-width:280px;">
-    <iframe src="/assets/web/frft/demos/embed_ola_frft.html?w=600&h=250&wave=sine&freq=440&alpha=0.50&blocksize=65536&overlap=1&halfspec=0&lock=1"
+    <iframe src="/assets/web/frft/demos/embed_ola_frft.html?w=600&h=250&wave=sine&freq=440&alpha=0.50&blocksize=32768&overlap=1&halfspec=0&lock=1"
             style="width:100%; height:250px; border:none; display:block"
             allow="autoplay">
     </iframe>
   </div>
 </div>
 
-As you notice, while the spectral content look the same, the textures in the left panel evolve more slowly over time compared to the right panel.
+As you notice, while the spectral content look the same, the textures for the smaller window size (on the right) evolve faster over time compared to the larger window size (on the left).
 
 {:.note} 
 The smearing of the spectrum on the write panel is due to the smaller window size, which results in a lower frequency resolution.
@@ -190,7 +202,8 @@ In this case, you can clearly see that the chirp-like structures from one window
   </iframe>
 </div>
 
-Change the `overlap` parameter to see the impact of different overlap amounts on the resulting textures. Increasing it, results in faster evolving textures.
+Change the `overlap` parameter to see the impact of different overlap amounts on the resulting textures. 
+Increasing it, results in faster textures with more chirp-like structures. 
 
 ### Effect of Windowing Functions
 In these demos, we apply a Hann window to each segment before applying the FRFT, which helps to reduce spectral leakage and create smoother transitions between the segments when they are overlapped and added together.

@@ -67,6 +67,9 @@ $$Y[k] = X[k] \cdot H[k]$$
 
 $$Y[k] \xrightarrow{\text{FRFT}(-\alpha)} \text{Filtered Signal}$$
 
+{:.note}
+If you use $\alpha = 1.0$, the operations above are identical to filtering in the frequency domain using the Fourier Transform
+
 #### Convolution
 
 In convolution, we take two signals to the same alpha domain, multiply them together, and then bring the result back to time domain.
@@ -78,6 +81,9 @@ $$x_2[n] \xrightarrow{\text{FRFT}(\alpha)}X_2[k]$$
 $$Y[k] = X_1[k] \cdot X_2[k]$$
 
 $$Y[k] \xrightarrow{\text{FRFT}(-\alpha)} \text{Convolution Result}$$
+
+{:.note}
+If you use $\alpha = 1.0$, the operations above are identical to convolution in the frequency domain using the Fourier Transform
 
 #### Ring Mod
 
@@ -100,12 +106,14 @@ The FRFT assumes a full spectrum representation (i.e. both positive and negative
 Despite that FRFT internally assumes a full spectrum, we can still feed it with a half spectrum (i.e. only positive frequencies) and it will still work. 
 That said, the resulting sounds will be different from the one obtained by feeding it with a full spectrum.
 
-We suggest going back through some of the demos above and modify the full/half spectrum setting to see how it affects the resulting sound.
+We suggest going back through some of the demos above and modify the full/half spectrum setting to see how it affects the resulting sounds. 
 
 
 ## Using FRFT in Real-Time
 
 We have developed a real-time version of the FRFT dedicated for MAX/MSP and Max for Live. 
+
+The developed real-time version allows for real-time synthesis and processing, filtering, convolution, ring modulation, and more using the FRFT.
 
 Please refer to the following link to read more about this:
 

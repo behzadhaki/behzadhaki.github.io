@@ -25,7 +25,7 @@ FT results in a complex-valued signal, here we are only showing the magnitude of
 
 {:.note}
 When we perform FT on a real signal (like an audio signal), we get a spectrum that is symmetric (as in the example above). 
-In such cases, commonly we only look at the positive frequencies (the right half of the spectrum) since the negative frequencies are just a mirror image of the positive ones.
+In such cases, commonly we work with the positive frequencies (the right half of the spectrum) since the negative frequencies are just a mirror image of the positive ones.
 That said, in this tutorial, we will be working with the full spectrum. This will be important when we discuss Fractional Fourier Transform (FRFT) later on. 
 
 ## Fourier Transform for Synthesis and Processing
