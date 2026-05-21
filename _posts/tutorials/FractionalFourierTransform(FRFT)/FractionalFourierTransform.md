@@ -14,7 +14,7 @@ The FRFT is a generalization of the FT that enables us to perform rotations by a
 
 Here is an extended version of the previous demo that also allows for intermediate rotations using the FRFT:
 
-<div style="width:100%; max-width:400px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+<div style="margin:1em 0; width:100%; max-width:400px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
   <iframe src="/assets/web/frft/demos/embed_frft_rotation.html?w=400&h=400&wave=sine&disp=scope&dalpha=0.333&win=hann&freq=440"
           style="width:100%; height:400px; border:none; display:block"
           allow="autoplay">
@@ -58,7 +58,7 @@ We have already discussed that the FRFT is a generalization of the FT, and as su
 
 The following demo illustrates these special cases applying the FRFT to a sine sweep input:
 
-<div style="width:100%; max-width:400px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+<div style="margin:1em 0; width:100%; max-width:400px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
   <iframe src="/assets/web/frft/demos/embed_frft_rotation.html?w=400&h=430&wave=sweep&disp=scope&dalpha=1&win=hann&interactive=0"
           style="width:100%; height:430px; border:none; display:block"
           allow="autoplay">
@@ -79,7 +79,7 @@ while a negative rotation factor corresponds to a clockwise rotation.
 
 In the following demo, you can transform a signal into the alpha domain and then apply the inverse transformation to get back to the original signal:
 
-<div style="width:100%; max-width:500px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+<div style="margin:1em 0; width:100%; max-width:500px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
   <iframe src="/assets/web/frft/demos/embed_frft_additivity.html?w=500&h=400&wave=triangle&disp=wave&win=hann&alpha1=0.5&alpha2=-0.5&freq=440&inversion=1"
           style="width:100%; height:400px; border:none; display:block"
           allow="autoplay">
@@ -107,7 +107,7 @@ x[n] \xrightarrow[\text{FRFT}(\alpha_1+\alpha_2)]{\hspace{14em}} X_{\alpha_1+\al
 
 In the following demo, you can apply two consecutive FRFTs and observe the resulting waveforms and spectrograms at each step, as well as the final result of applying a single FRFT with the combined rotation factor:
 
-<div style="width:100%; max-width:500px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+<div style="margin:1em 0; width:100%; max-width:500px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
   <iframe src="/assets/web/frft/demos/embed_frft_additivity.html?w=500&h=400&wave=sawtooth&disp=scope&win=hann&alpha1=0.15&alpha2=0.62&freq=440"
           style="width:100%; height:400px; border:none; display:block"
           allow="autoplay">
@@ -122,7 +122,7 @@ In this part, we will see how the spectral content of a sound, as well as the ch
 
 To start with, let's look at the following demo in which we use a sine sweep input signal and apply the FRFT with different values of $\alpha$ to observe the resulting waveforms and spectrograms:
 
-<div style="width:100%; max-width:500px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+<div style="margin:1em 0; width:100%; max-width:500px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
   <iframe src="/assets/web/frft/demos/embed_frft_rotation.html?w=500&h=500&wave=sweep&disp=scope&dalpha=0.333&win=hann"
           style="width:100%; height:500px; border:none; display:block"
           allow="autoplay">
@@ -135,7 +135,7 @@ With these observations in mind, for the remainder of this section, we will focu
 In the following demo, for a specific input type, we render many different combinations of $\alpha$ and the input frequency content.
 We suggest interacting with the demo and exploring the impact of these parameters on the resulting textures.
 
-<div style="width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+<div style="margin:1em 0; width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
   <iframe src="/assets/web/frft/demos/embed_alpha_sweep_frft.html?w=600&h=300&wave=sine&win=hann&halfspec=0&freqidx=3&alpha=0.5"
           style="width:100%; height:300px; border:none; display:block"
           allow="autoplay">
@@ -170,7 +170,7 @@ However, when we play each of the resulting outputs, the speed at which the text
 This can be observed in the following demo in which on the left we use a window size of 131072 samples and on the right we use half this size i.e. 32768 samples):
 
 
-<div style="display:flex; gap:1rem; flex-wrap:wrap;">
+<div style="margin:1em 0; display:flex; gap:1rem; flex-wrap:wrap;">
   <div style="flex:1; min-width:280px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
     <iframe src="/assets/web/frft/demos/embed_ola_frft.html?w=600&h=250&wave=sine&freq=440&alpha=0.50&blocksize=131072&overlap=1&halfspec=0&lock=1"
             style="width:100%; height:250px; border:none; display:block"
@@ -195,7 +195,7 @@ The smearing of the spectrum on the write panel is due to the smaller window siz
 We can also apply the FRFT in an overlapping manner, where we take overlapping segments of the input signal, apply the FRFT to each segment separately, and then overlap and add the processed segments together.
 In this case, you can clearly see that the chirp-like structures from one window bleed into the next window:  
 
-<div style="width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+<div style="margin:1em 0; width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
   <iframe src="/assets/web/frft/demos/embed_ola_frft.html?w=600&h=250&wave=sine&freq=440&alpha=0.50&blocksize=32768&overlap=4&halfspec=0"
           style="width:100%; height:250px; border:none; display:block"
           allow="autoplay">
@@ -209,7 +209,7 @@ Increasing it, results in faster textures with more chirp-like structures.
 In these demos, we apply a Hann window to each segment before applying the FRFT, which helps to reduce spectral leakage and create smoother transitions between the segments when they are overlapped and added together.
 If you don't apply any windowing function (i.e. use a rectangular window), you will get more abrupt transitions between the segments, which can result in additional chirp-like structures in the spectrograms.
 
-<div style="width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+<div style="margin:1em 0; width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
   <iframe src="/assets/web/frft/demos/embed_ola_frft.html?w=600&h=250&wave=sine&freq=440&alpha=0.50&blocksize=32768&overlap=1&halfspec=0&win=rect"
           style="width:100%; height:250px; border:none; display:block"
           allow="autoplay">
@@ -223,7 +223,7 @@ If you don't apply any windowing function (i.e. use a rectangular window), you w
 [//]: # (If we add more harmonics to the input signal, we will get more chirp-like structures in the spectrograms, and the resulting textures will be more complex.)
 
 [//]: # ()
-[//]: # (<div style="width:100%; max-width:600px;">)
+[//]: # (<div style="margin:1em 0; width:100%; max-width:600px;">)
 
 [//]: # (  <iframe src="/assets/web/frft/demos/embed_ola_frft.html?w=600&h=250&wave=triangle&freq=440&alpha=0.50&blocksize=32768&overlap=4&halfspec=0")
 
