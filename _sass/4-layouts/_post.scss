@@ -559,9 +559,14 @@
 .proj-btn--mac-intel,
 .proj-btn--win,
 .proj-btn--linux,
-.proj-btn--download {
+.proj-btn--download,
+.proj-btn--releases {
   background: rgba(58, 80, 104, 0.6);
   color: #b8d0e4;
+}
+
+.proj-btn--releases .proj-btn__badge {
+  gap: 0.25em;
 }
 
 // ── Source code — forest green ──────────────────────────────────────────────
