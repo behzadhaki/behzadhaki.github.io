@@ -474,6 +474,16 @@ function drawBg() {
       ctx.closePath();
       ctx.fill();
     }
+    // "FT" label at the midpoint of each arc, just outside the circle
+    const labelR = R + arrowSize * 1.5;
+    ctx.font = `700 ${Math.max(9, Math.round(arrowSize * 0.95))}px -apple-system, sans-serif`;
+    ctx.fillStyle  = color;
+    ctx.textAlign  = 'center';
+    ctx.textBaseline = 'middle';
+    for (let i = 0; i < 4; i++) {
+      const midAngle = (-Math.PI / 2) * (i + 0.5);
+      ctx.fillText('FT', cx + labelR * Math.cos(midAngle), cy + labelR * Math.sin(midAngle));
+    }
   }
 
   // Tick marks + alpha labels on circle edge
