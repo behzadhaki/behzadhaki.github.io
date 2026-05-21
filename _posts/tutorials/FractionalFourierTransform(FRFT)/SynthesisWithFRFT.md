@@ -117,7 +117,10 @@ We have developed a real-time version of the FRFT dedicated for MAX/MSP and Max 
 
 The developed real-time version allows for real-time synthesis and processing, filtering, convolution, ring modulation, and more using the FRFT.
 
-Please refer to the following link to read more about this:
+Please refer to the following post to read more about this:
 
 
-
+<div class="works-card-grid">
+  {% assign project = site.posts | where: "title", "Real-time Fractional Fourier Transform (FRFT)" | first %}
+  {% if project %}{% include display_post_card.html doc=project %}{% endif %}
+</div>
