@@ -285,10 +285,8 @@ freqNum.disabled = waveSel.value === 'sweep';
 
 const INTERACTIVE = window._initInteractive !== false;
 if (!INTERACTIVE) {
-  document.getElementById('recomputeControls').style.display = 'none';
-
-  const pb = document.getElementById('paramsBar');
-  pb.style.display = 'flex';
+  const rc = document.getElementById('recomputeControls');
+  rc.innerHTML = '';
   const wave = waveSel.value;
   const freq = parseFloat(freqNum.value);
   const win  = winSel.value === 'hann' ? 'Hann' : 'Rectangular';
@@ -298,11 +296,11 @@ if (!INTERACTIVE) {
     { key: 'Window', val: win },
   ];
   items.forEach((item, i) => {
-    if (i > 0) { const s = document.createElement('span'); s.className = 'st-sep'; s.textContent = '·'; pb.appendChild(s); }
+    if (i > 0) { const s = document.createElement('span'); s.className = 'st-sep'; s.textContent = '·'; rc.appendChild(s); }
     const el = document.createElement('span');
     el.className = 'st-item';
     el.innerHTML = `<span class="st-key">${item.key}</span><span class="st-val${item.accent ? ' accent' : ''}">${item.val}</span>`;
-    pb.appendChild(el);
+    rc.appendChild(el);
   });
 }
 
