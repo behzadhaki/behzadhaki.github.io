@@ -15,7 +15,7 @@
     {% assign _github_url = nil %}
     {% for link in page.links %}
       {% unless link.type == "issues" or link.type == "email" %}
-        {% include proj-btn.html type=link.type label=link.label url=link.url disabled=link.disabled %}
+        {% include proj-btn.html type=link.type label=link.label url=link.url disabled=link.disabled os=link.os %}
         {% if link.type == "github" %}{% assign _github_url = link.url %}{% endif %}
       {% endunless %}
     {% endfor %}
