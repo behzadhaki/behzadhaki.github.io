@@ -474,15 +474,19 @@ function drawBg() {
       ctx.closePath();
       ctx.fill();
     }
-    // "FT" label at the midpoint of each arc, just outside the circle
+    // Label at the midpoint of each arc, just outside the circle
+    const arcLabel   = DFT_MODE ? 'FT' : 'FRFT(α=1)';
+    const arcFontSz  = DFT_MODE
+      ? Math.max(9,  Math.round(arrowSize * 0.95))
+      : Math.max(7,  Math.round(arrowSize * 0.65));
     const labelR = R + arrowSize * 1.5;
-    ctx.font = `700 ${Math.max(9, Math.round(arrowSize * 0.95))}px -apple-system, sans-serif`;
-    ctx.fillStyle  = color;
-    ctx.textAlign  = 'center';
+    ctx.font = `700 ${arcFontSz}px -apple-system, sans-serif`;
+    ctx.fillStyle    = color;
+    ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
     for (let i = 0; i < 4; i++) {
       const midAngle = (-Math.PI / 2) * (i + 0.5);
-      ctx.fillText('FT', cx + labelR * Math.cos(midAngle), cy + labelR * Math.sin(midAngle));
+      ctx.fillText(arcLabel, cx + labelR * Math.cos(midAngle), cy + labelR * Math.sin(midAngle));
     }
   }
 
