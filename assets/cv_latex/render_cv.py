@@ -290,6 +290,48 @@ def parse_cv(tex_path: Path):
 # publications.bib parser
 # ══════════════════════════════════════════════════════════════════════════
 
+def remove_hidden_bib_entries(text: str) -> str:
+    """Remove any @entry{...} block that contains  hide = {true}  (case-insensitive)."""
+    result = []
+    i = 0
+    while i < len(text):
+        at = text.find("@", i)
+        if at == -1:
+            result.append(text[i:])
+            break
+
+        # Preserve any text before this @entry
+        result.append(text[i:at])
+
+        m = re.match(r"@(\w+)\s*\{", text[at:])
+        if not m:
+            result.append(text[at])
+            i = at + 1
+            continue
+
+        brace_pos = at + len(m.group(0)) - 1
+        try:
+            content, end = read_braced_arg(text, brace_pos)
+        except ValueError:
+            result.append(text[at])
+            i = at + 1
+            continue
+
+        entry_type = m.group(1).lower()
+        if entry_type not in ("comment", "string", "preamble"):
+            # Check for hide = {true} (value is "true", case-insensitive, ignoring whitespace)
+            hide_match = re.search(
+                r'\bhide\s*=\s*\{\s*true\s*\}', content, re.IGNORECASE
+            )
+            if hide_match:
+                i = end
+                continue  # skip this entry
+
+        result.append(text[at:end])
+        i = end
+
+    return "".join(result)
+
 def parse_bib(bib_path: Path):
     """Returns list of field-dicts for each bib entry."""
     text = bib_path.read_text(encoding="utf-8")
@@ -452,13 +494,13 @@ def format_bib_html(e: dict) -> str:
 
 # ── CV entry helpers ───────────────────────────────────────────────────────
 
-_ROW  = "padding:0.55rem 0; border-bottom:1px solid rgba(255,255,255,0.05);"
-_TTL  = "font-weight:600; font-size:0.88rem; color:rgba(238,238,238,0.9);"
-_META = "font-size:0.78rem; color:rgba(238,238,238,0.5); margin-top:0.15rem;"
-_DATE = "font-size:0.75rem; color:rgba(238,238,238,0.35); white-space:nowrap; flex-shrink:0;"
-_SUM  = ("font-size:0.72rem; color:rgba(238,238,238,0.4); cursor:pointer; "
+_ROW  = "padding:0.55rem 0; border-bottom:1px solid var(--cv-row-border, rgba(255,255,255,0.05));"
+_TTL  = "font-weight:600; font-size:0.88rem; color:var(--cv-ttl, rgba(238,238,238,0.9));"
+_META = "font-size:0.78rem; color:var(--cv-meta, rgba(238,238,238,0.5)); margin-top:0.15rem;"
+_DATE = "font-size:0.75rem; color:var(--cv-date, rgba(238,238,238,0.35)); white-space:nowrap; flex-shrink:0;"
+_SUM  = ("font-size:0.72rem; color:var(--cv-sum, rgba(238,238,238,0.4)); cursor:pointer; "
          "user-select:none; margin-top:0.3rem; display:inline-block;")
-_DESC = "font-size:0.8rem; color:rgba(238,238,238,0.65); margin:0.35rem 0 0; line-height:1.6;"
+_DESC = "font-size:0.8rem; color:var(--cv-desc, rgba(238,238,238,0.65)); margin:0.35rem 0 0; line-height:1.6;"
 
 
 def cventry_html(entry: dict) -> str:
@@ -470,7 +512,7 @@ def cventry_html(entry: dict) -> str:
 
     if etitle.startswith("▲"):
         return (f'<div style="margin:0.9rem 0 0.3rem; font-size:0.78rem; font-weight:700; '
-                f'color:rgba(238,238,238,0.4); text-transform:uppercase; letter-spacing:0.06em;">'
+                f'color:var(--cv-sum, rgba(238,238,238,0.4)); text-transform:uppercase; letter-spacing:0.06em;">'
                 f'{h(etitle)}</div>\n')
 
     meta   = " · ".join(p for p in [inst, loc] if p)
@@ -496,14 +538,14 @@ def cvitem_html(entry: dict) -> str:
     if key:
         return (f'<div style="{_ROW}">'
                 f'<span style="{_TTL}">{key}:</span> '
-                f'<span style="font-size:0.82rem;color:rgba(238,238,238,0.7);">{val}</span>'
+                f'<span style="font-size:0.82rem;color:var(--cv-desc, rgba(238,238,238,0.7));">{val}</span>'
                 f'</div>\n')
     return f'<div style="{_META}padding:0.3rem 0;">{val}</div>\n'
 
 
 def cvitemwithcomment_html(entry: dict) -> str:
     key, val, cmt = h(entry["key"]), h(entry["value"]), h(entry["comment"])
-    right = (f'<span style="color:rgba(238,238,238,0.3);font-size:0.75rem;">{cmt}</span>'
+    right = (f'<span style="color:var(--cv-date, rgba(238,238,238,0.3));font-size:0.75rem;">{cmt}</span>'
              if cmt else "")
     return (f'<div style="{_ROW}display:flex;justify-content:space-between;">'
             f'<span><span style="{_TTL}">{key}:</span> '
@@ -523,7 +565,7 @@ def bib_section_html(bib_entries: list) -> str:
     for year in sorted(by_year.keys(), reverse=True):
         parts.append(
             f'<div style="margin:0.6rem 0 0.3rem;font-size:0.72rem;font-weight:700;'
-            f'text-transform:uppercase;letter-spacing:0.08em;color:rgba(238,238,238,0.35);">'
+            f'text-transform:uppercase;letter-spacing:0.08em;color:var(--cv-date, rgba(238,238,238,0.35));">'
             f'{year}</div>\n')
         for e in by_year[year]:
             parts.append(format_bib_html(e))
@@ -565,6 +607,7 @@ layout: page
 title: CV
 permalink: /cv/
 description: Curriculum Vitae
+hide_title: true
 ---
 
 <div style="text-align:right; margin-bottom:1.5rem;">
@@ -621,6 +664,7 @@ def compile_pdf(tex_path: Path, bib_path: Path, out_pdf: Path):
             end = bib_text.find("---", bib_text.find("---") + 3)
             if end != -1:
                 bib_text = bib_text[end + 3:]
+        bib_text = remove_hidden_bib_entries(bib_text)
         (tmp / "publications.bib").write_text(bib_text, encoding="utf-8")
         stem = tex_path.stem
 
