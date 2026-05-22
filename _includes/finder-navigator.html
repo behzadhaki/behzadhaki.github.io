@@ -10,7 +10,7 @@
 {% assign _wwdg  = site.posts | where_exp: "p", "p.project_types contains 'web-widgets'" | where_exp: "p", "p.hidden != true" %}
 {% assign works_posts    = "" | split: "" | concat: _wmax | concat: _wpd | concat: _wplug | concat: _wweb | concat: _whw | concat: _wds | concat: _wfw | concat: _wtmpl | concat: _wwdg | uniq %}
 {% assign tutorial_posts = site.posts | where_exp: "p", "p.project_types contains 'tutorials'"                  | where_exp: "p", "p.hidden != true" %}
-{% assign installs_posts = site.posts | where_exp: "p", "p.project_types contains 'installations-performances'" | where_exp: "p", "p.hidden != true" %}
+{% assign installs_posts = site.posts | where_exp: "p", "p.project_types contains 'showcases'" | where_exp: "p", "p.hidden != true" %}
 {% assign news_items = site.news | sort: "date" | reverse %}
 
 <!-- JSON metadata for col-1/col-2 lists -->
@@ -36,14 +36,15 @@
       "year": {{ post.date | date: "%Y" | jsonify }}
     }{% unless forloop.last %},{% endunless %}{% endfor %}
   ],
-  "installations": [
+  "showcases": [
     {% for post in installs_posts %}{
       "title": {{ post.title | jsonify }},
       "description": {% if post.description %}{{ post.description | jsonify }}{% else %}null{% endif %},
       "image": {% if post.image %}{{ post.image | relative_url | jsonify }}{% else %}null{% endif %},
       "url": {{ post.url | relative_url | jsonify }},
       "tags": {{ post.tags | jsonify }},
-      "year": {{ post.date | date: "%Y" | jsonify }}
+      "year": {{ post.date | date: "%Y" | jsonify }},
+      "showcaseType": {{ post.showcase_type | default: "" | jsonify }}
     }{% unless forloop.last %},{% endunless %}{% endfor %}
   ],
   "news": [
@@ -73,7 +74,7 @@
 <!-- Pre-rendered cards for col-3 detail view (hidden, using same templates as the pages) -->
 <div id="finder-work-details" style="display:none" aria-hidden="true">{% for post in works_posts %}<div data-url="{{ post.url | relative_url }}">{% include finder-post-detail.html doc=post %}</div>{% endfor %}</div>
 <div id="finder-tutorial-details" style="display:none" aria-hidden="true">{% for post in tutorial_posts %}<div data-url="{{ post.url | relative_url }}">{% include finder-post-detail.html doc=post %}</div>{% endfor %}</div>
-<div id="finder-install-details" style="display:none" aria-hidden="true">{% for post in installs_posts %}<div data-url="{{ post.url | relative_url }}">{% include finder-post-detail.html doc=post %}</div>{% endfor %}</div>
+<div id="finder-showcase-details" style="display:none" aria-hidden="true">{% for post in installs_posts %}<div data-url="{{ post.url | relative_url }}">{% include finder-post-detail.html doc=post %}</div>{% endfor %}</div>
 
 <div id="finder-news-details" style="display:none" aria-hidden="true">{% for item in news_items %}<div data-idx="{{ forloop.index0 }}">{{ item.content }}</div>{% endfor %}</div>
 
@@ -108,8 +109,8 @@
           <span class="finder-item__label"><i class="fa-solid fa-graduation-cap fa-fw finder-item__icon" aria-hidden="true"></i>Tutorials</span>
           <i class="fa-solid fa-chevron-right finder-item__chevron" aria-hidden="true"></i>
         </div>
-        <div class="finder-item" data-section="installations" role="button" tabindex="0">
-          <span class="finder-item__label"><i class="fa-solid fa-star fa-fw finder-item__icon" aria-hidden="true"></i>Installations</span>
+        <div class="finder-item" data-section="showcases" role="button" tabindex="0">
+          <span class="finder-item__label"><i class="fa-solid fa-star fa-fw finder-item__icon" aria-hidden="true"></i>Showcases</span>
           <i class="fa-solid fa-chevron-right finder-item__chevron" aria-hidden="true"></i>
         </div>
         <div class="finder-item" data-section="publications" role="button" tabindex="0">
@@ -207,7 +208,7 @@
   // Pre-rendered card containers
   var workDetailContainer     = document.getElementById('finder-work-details');
   var tutorialDetailContainer = document.getElementById('finder-tutorial-details');
-  var installDetailContainer  = document.getElementById('finder-install-details');
+  var installDetailContainer  = document.getElementById('finder-showcase-details');
   var newsDetailContainer     = document.getElementById('finder-news-details');
 
   // Parse publications from jekyll-scholar BibTeX output (<ol><li>…</li></ol> wrapper)
@@ -230,7 +231,7 @@
     function byYearDesc(a, b) { return parseInt(b.year, 10) - parseInt(a.year, 10); }
     data.works.sort(byYearDesc);
     data.tutorials.sort(byYearDesc);
-    data.installations.sort(byYearDesc);
+    data.showcases.sort(byYearDesc);
   }());
 
   // ── Static CV data ─────────────────────────────────────────────────────────
@@ -335,8 +336,8 @@
     var seen = {}, keys = [];
     data.works.forEach(function (w) {
       (w.types || []).forEach(function (t) {
-        // Don't list installations-performances as a Works sub-category
-        if (!seen[t] && t !== 'installations-performances') { seen[t] = true; keys.push(t); }
+        // Don't list showcases as a Works sub-category
+        if (!seen[t] && t !== 'showcases') { seen[t] = true; keys.push(t); }
       });
     });
     keys.sort(function (a, b) {
@@ -686,17 +687,30 @@
         wireCol2(data.tutorials, function (item) { showPostDetail(tutorialDetailContainer, item.url); });
       });
 
-    } else if (sectionKey === 'installations') {
-      col1.innerHTML =
-        '<div class="finder-item" data-sub-key="all" role="button" tabindex="0">' +
-        '<span class="finder-item__label">All Installations &amp; Performances</span>' +
-        redirectArrow('/installations-performances/', 'Go to Installations page') +
-        '</div>';
-      wireCol1(function () {
-        setActive(col1, 'all', 'subKey');
-        col2.innerHTML = renderImageList(data.installations);
+    } else if (sectionKey === 'showcases') {
+      var showcaseTypes = [
+        { key: 'all',              label: 'All Showcases'   },
+        { key: 'installation',     label: 'Installation'    },
+        { key: 'live-performance', label: 'Live Performance'},
+        { key: 'demo',             label: 'Demo'            }
+      ];
+      col1.innerHTML = showcaseTypes.map(function (t) {
+        var arrow = t.key === 'all' ? redirectArrow('/showcases/', 'Go to Showcases page') : '';
+        var chevron = t.key !== 'all'
+          ? '<i class="fa-solid fa-chevron-right finder-item__chevron" aria-hidden="true"></i>'
+          : '';
+        return '<div class="finder-item" data-sub-key="' + esc(t.key) + '" role="button" tabindex="0">' +
+          '<span class="finder-item__label">' + esc(t.label) + '</span>' +
+          arrow + chevron + '</div>';
+      }).join('');
+      wireCol1(function (el) {
+        setActive(col1, el.dataset.subKey, 'subKey');
+        var items = el.dataset.subKey === 'all'
+          ? data.showcases
+          : data.showcases.filter(function (s) { return s.showcaseType === el.dataset.subKey; });
+        col2.innerHTML = renderImageList(items);
         col3.innerHTML = '';
-        wireCol2(data.installations, function (item) { showPostDetail(installDetailContainer, item.url); });
+        wireCol2(items, function (item) { showPostDetail(installDetailContainer, item.url); });
       });
 
     } else if (sectionKey === 'publications') {

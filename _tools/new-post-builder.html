@@ -1765,7 +1765,7 @@ const ALSO_IN_WORKS_OPTIONS = [
 const POST_CATEGORIES = [
   {value:'works', label:'Works', folder:'_posts/works/{Folder}/', permalink:'/works/{slug}/'},
   {value:'tutorial', label:'Tutorial', folder:'_posts/tutorials/{Folder}/', permalink:'/tutorials/{slug}/'},
-  {value:'installation', label:'Installation/Performance', folder:'_posts/works/{Folder}/', permalink:'/installations-performances/{slug}/'},
+  {value:'installation', label:'Showcase', folder:'_posts/showcases/{Folder}/', permalink:'/showcases/{slug}/'},
 ];
 
 const ALL_TAGS = [
@@ -1815,7 +1815,7 @@ const DEV_STATUS = [
 
 const TYPE_LABEL_MAP = {
   max:'MAX/M4L', pd:'Pure Data', plugins:'Plugin', web:'Web', hardware:'Hardware',
-  'installations-performances':'Installation', datasets:'Dataset',
+  'showcases':'Showcase', datasets:'Dataset',
   frameworks:'Framework', 'frameworks-templates':'Framework',
   templates:'Template', 'web-widgets':'Web Widget', tutorials:'Tutorial',
 };
@@ -2037,8 +2037,8 @@ function getFormData() {
     projectTypes = ['tutorials'];
   } else if (postCategory === 'installation') {
     projectTypes = alsoInWorks
-      ? ['installations-performances', alsoInWorks]
-      : ['installations-performances'];
+      ? ['showcases', alsoInWorks]
+      : ['showcases'];
   } else {
     // works — read from checkbox grid
     projectTypes = Array.from(document.querySelectorAll('#project-types-grid input:checked')).map(i => i.value);
@@ -2069,7 +2069,7 @@ function onCategoryChange(val) {
 
 function getPermalinkPrefix() {
   if (postCategory === 'tutorial') return '/tutorials/';
-  if (postCategory === 'installation') return '/installations-performances/';
+  if (postCategory === 'installation') return '/showcases/';
   return '/works/';
 }
 
@@ -2165,7 +2165,7 @@ async function loadExistingPost(input) {
   let detectedCategory = 'works';
   if (types.includes('tutorials') || (fm.permalink || '').startsWith('/tutorials/')) {
     detectedCategory = 'tutorial';
-  } else if (types.includes('installations-performances') && !types.some(t =>
+  } else if (types.includes('showcases') && !types.some(t =>
     ['max','pd','plugins','web','hardware','datasets','frameworks','templates','web-widgets'].includes(t))) {
     detectedCategory = 'installation';
   }
@@ -2294,7 +2294,7 @@ function applyLoadedPost({ fm, folder, detectedCategory }, mode, dupTitle) {
   renderCategorizationSection();
   setTimeout(() => {
     const workTypes = (fm.project_types || []).filter(t =>
-      t !== 'tutorials' && t !== 'installations-performances');
+      t !== 'tutorials' && t !== 'showcases');
     workTypes.forEach(t => {
       const cb = document.querySelector(`#proj-type-grid input[value="${t}"]`);
       if (cb) cb.checked = true;

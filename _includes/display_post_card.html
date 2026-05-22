@@ -7,7 +7,13 @@
   {% when "plugins" %}{% assign type_label = "Plugin" %}
   {% when "web" %}{% assign type_label = "Web" %}
   {% when "hardware" %}{% assign type_label = "Hardware" %}
-  {% when "installations-performances" %}{% assign type_label = "Installation" %}
+  {% when "showcases" %}
+    {% case doc.showcase_type %}
+      {% when "installation" %}{% assign type_label = "Installation" %}
+      {% when "live-performance" %}{% assign type_label = "Live Performance" %}
+      {% when "demo" %}{% assign type_label = "Demo" %}
+      {% else %}{% assign type_label = "Showcase" %}
+    {% endcase %}
   {% when "datasets" %}{% assign type_label = "Dataset" %}
   {% when "frameworks-templates" %}{% assign type_label = "Framework" %}
   {% when "frameworks" %}{% assign type_label = "Framework" %}
@@ -17,7 +23,7 @@
   {% else %}{% assign type_label = type_slug %}
 {% endcase %}
 
-<div class="work-card" data-types="{{ doc.project_types | join: ' ' }}">
+<div class="work-card" data-types="{{ doc.project_types | join: ' ' }}"{% if doc.showcase_type %} data-showcase-type="{{ doc.showcase_type }}"{% endif %}>
   <a class="work-card__link" href="{{ doc.url | relative_url }}">
 
     <!-- Image header -->

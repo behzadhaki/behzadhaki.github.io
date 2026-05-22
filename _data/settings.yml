@@ -52,8 +52,8 @@ menu-settings:
           project_type: web-widgets
     - title: Tutorials
       url: /tutorials/
-    - title: Installations
-      url: /installations-performances/
+    - title: Showcases
+      url: /showcases/
     - title: Publications
       url: /publications/
     - title: CV
