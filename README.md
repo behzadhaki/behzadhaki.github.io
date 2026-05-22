@@ -138,3 +138,29 @@ Or filter by year:
 ### Finding a key
 
 Open the relevant `.bib` file and look for the `@article{KEY,` / `@inproceedings{KEY,` identifier — that is the value to pass to `key=`.
+
+### Bib fields that affect rendering
+
+These custom fields in `papers.bib` entries conditionally change what appears on the web CV, the publications page, or the PDF CV.
+
+| Field | Value | Effect |
+|---|---|---|
+| `hide` | `{true}` | Entry is **excluded from the PDF CV**. Also excluded from the web CV if `note = {Under review}` is set (the web CV already skips "under review" entries independently). |
+| `note` | `{Under review}` | Entry is **excluded from the web CV** (`_pages/cv.md`). Still appears on the publications page. Combine with `hide = {true}` to also drop it from the PDF. |
+| `preview` | `{filename.png}` | Thumbnail shown on the **publications page** card. Image must be in `assets/img/publication_preview/`. Accepts a full URL too. |
+| `abbr` | `{NIME}` | Short venue badge rendered next to the title on the **publications page** card. |
+| `bibtex_show` | `{true}` | Adds a collapsible **BibTeX** block to the publications page card. The `filtered_bibtex_keywords` list in `_config.yml` controls which custom fields are stripped before display. |
+
+Link fields below conditionally show a button on the **publications page** card and on the **web CV**. Relative values are resolved under `assets/pdf/`; absolute URLs pass through unchanged.
+
+| Field | Button label |
+|---|---|
+| `pdf` | PDF |
+| `arxiv` | arXiv (value is the arXiv ID, e.g. `2309.00001`) |
+| `website` | Website |
+| `code` | Code |
+| `slides` | Slides |
+| `poster` | Poster |
+| `supp` | Supp |
+| `blog` | Blog |
+| `html` | HTML |
