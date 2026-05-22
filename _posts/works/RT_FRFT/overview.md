@@ -2,11 +2,38 @@
 
 ## Overview
 
-DEMO TEST
 
-<div style="margin:1em 0; width:100%; max-width:600px;">
-  <iframe src="/assets/works/FRFT/demos/embed_interactive_frft.html?w=600&h=220"
-          style="width:100%; height:220px; border:none; display:block"
-          allow="autoplay">
-  </iframe>
-</div>
+## α-synthesis
+
+### Method
+
+### Implementation
+
+## α-processing
+
+### Method
+
+### Implementation
+
+
+## α-RM (Ring Modulation)
+
+### Method
+
+### Implementation
+
+
+## α-Convolution
+
+### Method
+
+### Implementation
+
+
+## α-Filtering
+
+### Method
+
+### Implementation
+
+
