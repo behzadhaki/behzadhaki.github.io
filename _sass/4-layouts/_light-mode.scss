@@ -328,6 +328,14 @@ html[data-theme='light'] {
   .bio-block.is-active .bio-block__sub   { color: rgba(60, 60, 80, 0.85); }
   .bio-contact { color: #555; a { color: #555; &:hover { color: #525252; } } }
 
+  // ── CV page — custom property overrides ─────────────────────
+  --cv-row-border: rgba(0,0,0,0.08);
+  --cv-ttl:        #525252;
+  --cv-meta:       #666;
+  --cv-date:       #888;
+  --cv-sum:        #888;
+  --cv-desc:       rgba(#2d2b3d, 0.75);
+
   // ── Home page — News cards ───────────────────────────────────
   .news-section { border-bottom: none; }
   .widget__title { color: #525252; &::after { display: none; } }
