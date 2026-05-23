@@ -23,7 +23,7 @@
   {% else %}{% assign type_label = type_slug %}
 {% endcase %}
 
-<div class="work-card" data-types="{{ doc.project_types | join: ' ' }}"{% if doc.showcase_type %} data-showcase-type="{{ doc.showcase_type }}"{% endif %}>
+<div class="work-card{% if include.layout == 'horizontal' %} work-card--horizontal{% endif %}" data-types="{{ doc.project_types | join: ' ' }}"{% if doc.showcase_type %} data-showcase-type="{{ doc.showcase_type }}"{% endif %}>
   <a class="work-card__link" href="{{ doc.url | relative_url }}">
 
     <!-- Image header -->
