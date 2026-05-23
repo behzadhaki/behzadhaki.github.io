@@ -954,6 +954,35 @@
   display: none;
 }
 
+// ── Horizontal card variant ──────────────────────────────────────────────────
+// Usage: {% include display_post_card.html doc=post layout="horizontal" %}
+// Wrap in .works-card-grid--horizontal to constrain max-width to 400px.
+.works-card-grid--horizontal {
+  max-width: 600px;
+  padding: 0.5rem 0 1rem;
+}
+
+.work-card--horizontal {
+  max-width: 600px;
+  flex-direction: row;
+
+  .work-card__link {
+    flex-direction: row;
+  }
+
+  .work-card__header {
+    flex: 0 0 120px;
+    min-height: unset;
+    height: auto;
+    align-self: stretch;
+  }
+
+  .work-card__body {
+    flex: 1;
+    min-width: 0; // prevent text overflow
+  }
+}
+
 // ========================
 // Finder Navigator
 // ========================
