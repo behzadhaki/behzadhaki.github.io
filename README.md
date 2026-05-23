@@ -95,6 +95,95 @@ Use `display_post_card.html` to embed a card linking to another post. Wrap it in
 
 The grid handles sizing automatically — identical to the works page. Without the `works-card-grid` wrapper the card stretches to fill the full post content width.
 
+### Horizontal card (image left, content right)
+
+Pass `layout="horizontal"` to the include and wrap in `works-card-grid--horizontal`. The card renders with a 120px image strip on the left and text on the right, capped at 600px wide.
+
+```liquid
+<div class="works-card-grid--horizontal">
+  {% assign project = site.posts | where: "title", "Exact Post Title Here" | first %}
+  {% if project %}{% include display_post_card.html doc=project layout="horizontal" %}{% endif %}
+</div>
+```
+
+## Embedding images and videos in post body
+
+### Simple image (Markdown)
+
+```markdown
+![Alt text](/assets/works/MyProject/screenshot.png)
+```
+
+### Responsive image with max-width (HTML)
+
+Constrains width on large screens while staying fluid on small ones:
+
+```html
+<img src="/assets/works/MyProject/screenshot.png" alt="Description" style="max-width:600px; width:100%">
+```
+
+### Percentage-width image
+
+Useful for side-by-side images or smaller thumbnails:
+
+```html
+<img src="/assets/works/MyProject/photo.jpg" alt="Description" width="45%">
+```
+
+### GIF (same as image)
+
+GIFs work with any of the image patterns above:
+
+```html
+<img src="/assets/works/MyProject/demo.gif" alt="Demo" style="max-width:600px; width:100%">
+```
+
+### HTML5 video (local file)
+
+Responsive with a max-width cap, `controls` adds the play bar:
+
+```html
+<video style="max-width:600px; width:100%" controls>
+  <source src="/assets/works/MyProject/demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+```
+
+For a fixed pixel size instead:
+
+```html
+<video width="600" height="400" controls>
+  <source src="/assets/works/MyProject/demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+```
+
+### YouTube embed
+
+```html
+<iframe width="560" height="315"
+  src="https://www.youtube.com/embed/VIDEO_ID"
+  title="YouTube video player" frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowfullscreen>
+</iframe>
+```
+
+### Custom web widget / interactive iframe
+
+Wrap in a styled div to control size and appearance:
+
+```html
+<div style="margin:1em 0; width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/my-demo/index.html"
+          style="width:100%; height:400px; border:none; display:block"
+          allow="autoplay">
+  </iframe>
+</div>
+```
+
+---
+
 ## Embedding a publication or reference card
 
 ### Bib files
