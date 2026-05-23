@@ -45,17 +45,17 @@ For special integer values of α, the FRFT reduces to familiar operations:
 
 Unlike the standard FT, which has a dedicated inverse operation, the FRFT is self-invertible: applying the FRFT with a negative α undoes the transformation:
 
-$$ x[n] \xrightarrow{\text{FRFT}(\alpha)} X[k] \xrightarrow{\text{FRFT}(-\alpha)} x[n] $$
+$$ x[n] \xrightarrow{\mathcal{F}^{\alpha}} X[k] \xrightarrow{\mathcal{F}^{-\alpha}} x[n] $$
 
 ### Index Additivity
 
 The index additivity property of the FRFT states that applying two FRFTs in sequence with angles α₁ and α₂ is equivalent to applying a single FRFT with the sum of those angles:
 
-$$ \text{FRFT}(\alpha_2) \circ \text{FRFT}(\alpha_1) = \text{FRFT}(\alpha_1 + \alpha_2) $$
+$$ \mathcal{F}^{\alpha_2} \circ \mathcal{F}^{\alpha_1} = \mathcal{F}^{\alpha_1 + \alpha_2} $$
 
 Note that this essentially implies that the order of the transforms does not matter, as long as the total angle is the same:
 
-$$ \text{FRFT}(\alpha_2) \circ \text{FRFT}(\alpha_1) = \text{FRFT}(\alpha_1) \circ \text{FRFT}(\alpha_2) $$
+$$ \mathcal{F}^{\alpha_2} \circ \mathcal{F}^{\alpha_1} = \mathcal{F}^{\alpha_1} \circ \mathcal{F}^{\alpha_2} $$
 
 
 ### Complex-Valued Output
@@ -63,12 +63,12 @@ $$ \text{FRFT}(\alpha_2) \circ \text{FRFT}(\alpha_1) = \text{FRFT}(\alpha_1) \ci
 Hence, if we start an audio signal (i.e. a real-valued time-domain waveform) and apply the FRFT with a non-integer α, we get a complex-valued output that contains both magnitude and phase information. 
 We can then manipulate this output in various ways (e.g. apply filters, perform convolution, multiply with another signal) and then apply the inverse FRFT (i.e. FRFT with -α) to return to the time domain, resulting in a transformed audio signal that incorporates the effects of our manipulations in the fractional domain.
 
-$$ x[n] \xrightarrow{\text{FRFT}(\alpha)} X[k] \xrightarrow{\text{Manipulation}} \tilde{X}[k] \xrightarrow{\text{FRFT}(-\alpha)} \tilde{x}[n] $$
+$$ x[n] \xrightarrow{\mathcal{F}^{\alpha}} X[k] \xrightarrow{\text{Manipulation}} \tilde{X}[k] \xrightarrow{\mathcal{F}^{-\alpha}} \tilde{x}[n] $$
 
 While this is the most straightforward way to use the FRFT for audio processing, we can also directly output the complex-valued result of the FRFT without applying an inverse transform.
 In such cases, we can take the real part of the output and use it as an audio signal directly.
 
-$$ x[n] \xrightarrow{\text{FRFT}(\alpha)} X[k] \xrightarrow{\operatorname{Re}} \operatorname{Re}(X[k]) $$
+$$ x[n] \xrightarrow{\mathcal{F}^{\alpha}} X[k] \xrightarrow{\operatorname{Re}} \operatorname{Re}(X[k]) $$
 
 ### Windowing and Overlap
 
@@ -111,17 +111,17 @@ Let's look at the example patch above. In this patch, a given window of audio go
 2. The output of fftin~ is then fed into the `frft` external, which applies the FRFT with a specified α to the input.
 3. The output of the `frft` external is then fed into fftout~, which applies the inverse FFT to return to the time domain and outputs the processed audio signal.
 
-$$ x_w[n] \xrightarrow{\text{FFT}} X[k] \xrightarrow{\text{FRFT}(\alpha)} \tilde{X}[k] \xrightarrow{\text{Inverse FFT}} \tilde{x}_w[n] $$
+$$ x_w[n] \xrightarrow{\text{FT}} X[k] \xrightarrow{\mathcal{F}^{\alpha}} \tilde{X}[k] \xrightarrow{\text{IFT}} \tilde{x}_w[n] $$
 
 Now remember that FFT and FRFT are equivalent to FRFTs with specific α values (FFT is FRFT with α = 1, and inverse FFT is FRFT with α = -1).
 
 Therefore, the above chain of operations can be rewritten as:
 
-$$ x_w[n] \xrightarrow{\text{FRFT}(1) \circ \text{FRFT}(\alpha) \circ \text{FRFT}(-1)} \tilde{x}_w[n] $$
+$$ x_w[n] \xrightarrow{\mathcal{F}^{1} \circ \mathcal{F}^{\alpha} \circ \mathcal{F}^{-1}} \tilde{x}_w[n] $$
 
 Which using the index additivity property of the FRFT can be simplified to:
 
-$$ x_w[n] \xrightarrow{\text{FRFT}(1+\alpha-1)=\text{FRFT}(\alpha)} \tilde{x}_w[n] $$
+$$ x_w[n] \xrightarrow{\mathcal{F}^{1+\alpha-1}=\mathcal{F}^{\alpha}} \tilde{x}_w[n] $$
 
 So, while all data within the pfft~ environment is technically provided in the frequency domain, the input fft/ifft (fftin~/fftout~) operations effectively cancel each other out; 
 this is as if we had directly applied the FRFT to the windowed audio segment in the time domain!
@@ -178,11 +178,11 @@ Percussive, tonal, and noisy sources each respond differently — tonal sources 
 
 α-Ring Modulation transforms **two independent signals into different fractional domains** (α₁ and α₂), multiplies them pointwise in those domains, and outputs the **real part of the result directly** — without applying an inverse FRFT:
 
-$$x_1[n] \xrightarrow{\text{FRFT}(\alpha_1)} X_1[k]$$
+$$x_1[n] \xrightarrow{\mathcal{F}^{\alpha_1}} X_1[k]$$
 
-$$x_2[n] \xrightarrow{\text{FRFT}(\alpha_2)} X_2[k]$$
+$$x_2[n] \xrightarrow{\mathcal{F}^{\alpha_2}} X_2[k]$$
 
-$$\text{Output} = \operatorname{Re}\bigl(X_1[k] \cdot X_2[k]\bigr)$$
+$$\text{Output} = \operatorname{Re}\bigl(X_1[k] \odot X_2[k]\bigr)$$
 
 Because the two signals are transformed to *different* fractional angles before multiplication, the result combines the chirp structures of both in a non-linear way, producing sidebands and interaction textures that are distinct from classical time-domain ring modulation.
 
@@ -196,9 +196,9 @@ Because the two signals are transformed to *different* fractional angles before 
 
 α-Convolution transforms **two signals to the same fractional domain**, multiplies them, and then applies the **inverse FRFT** (i.e. FRFT with −α) to return to the time domain:
 
-$$x_1[n] \xrightarrow{\text{FRFT}(\alpha)} X_1[k], \quad x_2[n] \xrightarrow{\text{FRFT}(\alpha)} X_2[k]$$
+$$x_1[n] \xrightarrow{\mathcal{F}^{\alpha}} X_1[k], \quad x_2[n] \xrightarrow{\mathcal{F}^{\alpha}} X_2[k]$$
 
-$$Y[k] = X_1[k] \cdot X_2[k] \xrightarrow{\text{FRFT}(-\alpha)} y[n]$$
+$$Y[k] = X_1[k] \odot X_2[k] \xrightarrow{\mathcal{F}^{-\alpha}} y[n]$$
 
 At α = 1 this is identical to standard frequency-domain convolution. At other values of α, the convolution is performed along a rotated axis in the time-frequency plane, which can impose the spectral envelope of one signal onto the chirp structure of the other in ways that standard convolution cannot.
 
@@ -212,7 +212,7 @@ At α = 1 this is identical to standard frequency-domain convolution. At other v
 
 α-Filtering takes a signal to a chosen fractional domain, applies a **filter response H[k]** pointwise, and then returns to the time domain via the inverse FRFT:
 
-$$x[n] \xrightarrow{\text{FRFT}(\alpha)} X[k] \xrightarrow{\times\, H[k]} \tilde{X}[k] \xrightarrow{\text{FRFT}(-\alpha)} \tilde{x}[n]$$
+$$x[n] \xrightarrow{\mathcal{F}^{\alpha}} X[k] \xrightarrow{\times\, H[k]} \tilde{X}[k] \xrightarrow{\mathcal{F}^{-\alpha}} \tilde{x}[n]$$
 
 At α = 1 this reduces to standard frequency-domain filtering. At other values of α, the filter mask is applied along a rotated axis — enabling filter shapes that would be impossible in the standard frequency domain, such as filtering out specific chirp rates while preserving others.
 

@@ -71,7 +71,7 @@ Remember that in the case of the FT, we had a dedicated inverse operation called
 
 In the case of the FRFT, there is no separate inverse operation. Instead, the inverse of the FRFT is also a FRFT, but with a negative rotation factor.
 
-$$ x[n] \xrightarrow{\text{FRFT}(\alpha)} X_\alpha[k] \xrightarrow{\text{FRFT}(-\alpha)} x[n] $$
+$$ x[n] \xrightarrow{\mathcal{F}^{\alpha}} X_\alpha[k] \xrightarrow{\mathcal{F}^{-\alpha}} x[n] $$
 
 {:.note}
 A positive rotation factor $\alpha$ corresponds to a counter-clockwise rotation in the time-frequency plane, 
@@ -101,8 +101,8 @@ reconstructed after applying the FRFT and its inverse.
 The FRFT has an interesting property called `index additivity`, which states that if you apply two FRFTs with rotation factors $\alpha_1$ and $\alpha_2$ consecutively, it is equivalent to applying a single FRFT with a rotation factor that is the sum of the two individual rotation factors:
 
 $$\begin{array}{c}
-x[n] \xrightarrow{\text{FRFT}(\alpha_1)} X_{\alpha_1}[k] \xrightarrow{\text{FRFT}(\alpha_2)} X_{\alpha_1+\alpha_2}[k] \\[6pt]
-x[n] \xrightarrow[\text{FRFT}(\alpha_1+\alpha_2)]{\hspace{14em}} X_{\alpha_1+\alpha_2}[k]
+x[n] \xrightarrow{\mathcal{F}^{\alpha_1}} X_{\alpha_1}[k] \xrightarrow{\mathcal{F}^{\alpha_2}} X_{\alpha_1+\alpha_2}[k] \\[6pt]
+x[n] \xrightarrow[\mathcal{F}^{\alpha_1+\alpha_2}]{\hspace{14em}} X_{\alpha_1+\alpha_2}[k]
 \end{array}$$
 
 In the following demo, you can apply two consecutive FRFTs and observe the resulting waveforms and spectrograms at each step, as well as the final result of applying a single FRFT with the combined rotation factor:

@@ -48,7 +48,7 @@ So far we just applied a single FRFT to a single source and listened to the real
 
 For exmaple, we can manipulate a signal in alpha domain and then apply the inverse FRFT to listen to the resulting sound directly in time domain.
 
-$$x[n] \xrightarrow{\text{FRFT}(\alpha)}X[k] \xrightarrow{\text{Manipulation}} \tilde{X}[k] \xrightarrow{\text{FRFT}(-\alpha)} \tilde{x}[n]$$
+$$x[n] \xrightarrow{\mathcal{F}^{\alpha}}X[k] \xrightarrow{\text{Manipulation}} \tilde{X}[k] \xrightarrow{\mathcal{F}^{-\alpha}} \tilde{x}[n]$$
 
 Alternatively, instead of applying FRFT to a single source, we can apply it to multiple sources and combine the resulting spectra in different ways to create new sounds.
 The two sounds can be combined either in the same alpha domain or in different alpha domains. 
@@ -61,13 +61,13 @@ Here are some examples of these different methods:
 
 In filtering, we take a signal to the alpha domain, apply a filter to it, and then bring it back to time domain.
 
-$$x[n] \xrightarrow{\text{FRFT}(\alpha)}X[k]$$
+$$x[n] \xrightarrow{\mathcal{F}^{\alpha}}X[k]$$
 
 $$H[k] = \text{Filter Response}$$
 
-$$Y[k] = X[k] \cdot H[k]$$
+$$Y[k] = X[k] \odot H[k]$$
 
-$$Y[k] \xrightarrow{\text{FRFT}(-\alpha)} \text{Filtered Signal}$$
+$$Y[k] \xrightarrow{\mathcal{F}^{-\alpha}} \text{Filtered Signal}$$
 
 {:.note}
 If you use $\alpha = 1.0$, the operations above are identical to filtering in the frequency domain using the Fourier Transform
@@ -76,13 +76,13 @@ If you use $\alpha = 1.0$, the operations above are identical to filtering in th
 
 In convolution, we take two signals to the same alpha domain, multiply them together, and then bring the result back to time domain.
 
-$$x_1[n] \xrightarrow{\text{FRFT}(\alpha)}X_1[k]$$
+$$x_1[n] \xrightarrow{\mathcal{F}^{\alpha}}X_1[k]$$
 
-$$x_2[n] \xrightarrow{\text{FRFT}(\alpha)}X_2[k]$$
+$$x_2[n] \xrightarrow{\mathcal{F}^{\alpha}}X_2[k]$$
 
-$$Y[k] = X_1[k] \cdot X_2[k]$$
+$$Y[k] = X_1[k] \odot X_2[k]$$
 
-$$Y[k] \xrightarrow{\text{FRFT}(-\alpha)} \text{Convolution Result}$$
+$$Y[k] \xrightarrow{\mathcal{F}^{-\alpha}} \text{Convolution Result}$$
 
 {:.note}
 If you use $\alpha = 1.0$, the operations above are identical to convolution in the frequency domain using the Fourier Transform
@@ -91,11 +91,11 @@ If you use $\alpha = 1.0$, the operations above are identical to convolution in 
 
 In ring modulation, we take two signals to different alpha domains, multiply them together, and then listen to the real part of the resulting signal directly in alpha domain.
 
-$$x_1[n] \xrightarrow{\text{FRFT}(\alpha_1)}X_1[k]$$
+$$x_1[n] \xrightarrow{\mathcal{F}^{\alpha_1}}X_1[k]$$
 
-$$x_2[n] \xrightarrow{\text{FRFT}(\alpha_2)}X_2[k]$$
+$$x_2[n] \xrightarrow{\mathcal{F}^{\alpha_2}}X_2[k]$$
 
-$$Y[k] = X_1[k] \cdot X_2[k]$$
+$$Y[k] = X_1[k] \odot X_2[k]$$
 
 $$Y[k] \xrightarrow{\text{Real Part}} \text{Ring Mod Output}$$
 
