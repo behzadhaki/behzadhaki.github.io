@@ -1,7 +1,7 @@
 {% if page.tabs and page.tabs_content %}
 {% assign file_index = 0 %}
 {% for tab in page.tabs %}
-{% assign section_label = tab | replace: "-", " " | capitalize %}
+{% assign section_label = tab | replace: "-", " " %}
 {% assign section_id = section_label | slugify %}
 <section class="project-section" id="{{ section_id }}">
   <h2 class="project-section__header">
