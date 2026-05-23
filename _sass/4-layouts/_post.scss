@@ -13,7 +13,7 @@
   margin-bottom: 32px;
 
   .row {
-    align-items: center;
+    align-items: stretch;
   }
 
   .post-head__box {
@@ -41,24 +41,23 @@
 
 .image-box {
   position: relative;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
-  background-color: $dark;
+  background-color: transparent;
   padding: 0;
-  min-height: auto;
+  height: 100%;
+  min-height: 0;
 
   @media (max-width: $tablet) {
     margin-bottom: 40px;
+    height: auto;
   }
 }
 
 .post-image {
-  position: static;        // ← let image flow naturally
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;            // ← preserve natural aspect ratio
-  border-radius: 16px;
-  object-fit: contain;     // or 'cover' if you prefer full fit inside box
+  height: 100%;
+  object-fit: contain;
 
 
   @media (max-width: $tablet) {
@@ -83,7 +82,7 @@
 
 .post__title {
   margin: 20px 0 20px;
-  font-size: 40px;
+  font-size: 28px;
   line-height: 1;
   display: flex;
   align-items: baseline;
