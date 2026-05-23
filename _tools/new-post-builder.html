@@ -1378,7 +1378,7 @@ input[type=number]:focus { border-color: var(--accent); }
       <div class="section-body">
         <div class="field">
           <label class="label" for="f-permalink">Permalink</label>
-          <input type="text" id="f-permalink" placeholder="/works/my-project/" oninput="onIdentityManual('permalink')">
+          <input type="text" id="f-permalink" placeholder="/works/{type}/my-project/" oninput="onIdentityManual('permalink')">
         </div>
         <div class="field">
           <label class="label" for="f-folder">Folder Name</label>
@@ -2070,7 +2070,22 @@ function onCategoryChange(val) {
 function getPermalinkPrefix() {
   if (postCategory === 'tutorial') return '/tutorials/';
   if (postCategory === 'installation') return '/showcases/';
+  // For works, use the first checked project type to build /works/{type}/
+  const grid = document.getElementById('project-types-grid');
+  if (grid) {
+    const checked = grid.querySelector('input[type="checkbox"]:checked');
+    if (checked) return '/works/' + checked.value + '/';
+  }
   return '/works/';
+}
+
+function onProjectTypeChange() {
+  // Re-derive permalink when a project type is checked/unchecked (unless user edited it manually)
+  if (!permalinkManual) {
+    const title = document.getElementById('f-title').value.trim();
+    document.getElementById('f-permalink').value = title ? getPermalinkPrefix() + toSlug(title) + '/' : '';
+  }
+  scheduleUpdate();
 }
 
 function getPostFolder() {
@@ -2095,7 +2110,7 @@ function renderCategorizationSection() {
     PROJECT_TYPES.forEach(pt => {
       const lbl = document.createElement('label');
       lbl.className = 'checkbox-item';
-      lbl.innerHTML = `<input type="checkbox" value="${pt.slug}" onchange="scheduleUpdate()"> ${pt.label}`;
+      lbl.innerHTML = `<input type="checkbox" value="${pt.slug}" onchange="onProjectTypeChange()"> ${pt.label}`;
       grid.appendChild(lbl);
     });
 
