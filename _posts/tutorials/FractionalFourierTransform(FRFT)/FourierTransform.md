@@ -9,7 +9,7 @@ Basicaly, `FT` transforms a `time-domain` signal into a `frequency-domain` repre
 For instance, if you have a pure tone at 1000 Hz, FT results in a representation such as the following:
 
 <div style="margin:1em 0; width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
-  <iframe src="https://behzadhaki.com/assets/web/frft/demos/embed_fft_spectrum.html?w=600&h=220&type=sine&win=exact&freq=1000"
+  <iframe src="/assets/web/frft/demos/embed_fft_spectrum.html?w=600&h=220&type=sine&win=exact&freq=1000"
           style="width:100%; height:220px; border:none; display:block"
           allow="autoplay">
   </iframe>
