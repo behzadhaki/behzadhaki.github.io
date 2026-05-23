@@ -215,6 +215,11 @@ Shows the magnitude spectrum of the full signal (32768-sample window). Switch be
     <option value="1" selected>Interactive</option>
     <option value="0">Static</option>
   </select>
+  <label>Auto-activate</label>
+  <select id="fe7-autoactivate">
+    <option value="0" selected>No</option>
+    <option value="1">Yes</option>
+  </select>
   <button onclick="feApply7()">Apply</button>
 </div>
 <div class="fe-bottom-row">
@@ -232,7 +237,7 @@ Shows the magnitude spectrum of the full signal (32768-sample window). Switch be
 
 Displays the real part, imaginary part, or magnitude of the Fourier Transform of the selected signal. Hit **Play** to hear what the FT *sounds like*: the selected component is played back as audio while a playhead scrubs left-to-right from −fNyq to +fNyq. The x-axis switches from frequency to time during playback, then reverts when playback stops. A Hann window is always applied.
 
-Switch between **Re**, **Im**, and **Mag** to explore FT structure: for a real signal, Re[FT] is even-symmetric and Im[FT] is odd-symmetric around DC; |FT| is always even. Try a 440 Hz sine — the imaginary part shows two clean spikes, and the audio is a pair of impulses.
+Switch between **Re**, and **Im** to explore FT structure: for a real signal, Re[FT] is even-symmetric and Im[FT] is odd-symmetric around DC; \|FT\| is always even. Try a 440 Hz sine — the imaginary part shows two clean spikes, and the audio is a pair of impulses.
 
 <div class="frft-embeds">
 <div class="fe-controls">
@@ -259,6 +264,11 @@ Switch between **Re**, **Im**, and **Mag** to explore FT structure: for a real s
   <select id="fe8-interactive">
     <option value="1" selected>Interactive</option>
     <option value="0">Static</option>
+  </select>
+  <label>Auto-activate</label>
+  <select id="fe8-autoactivate">
+    <option value="0" selected>No</option>
+    <option value="1">Yes</option>
   </select>
   <button onclick="feApply8()">Apply</button>
 </div>
@@ -314,6 +324,11 @@ Shows the FRFT output at 16 fractional orders simultaneously — four large pane
   <select id="fe5-interactive">
     <option value="1" selected>Interactive</option>
     <option value="0">Static</option>
+  </select>
+  <label>Auto-activate</label>
+  <select id="fe5-autoactivate">
+    <option value="0" selected>No</option>
+    <option value="1">Yes</option>
   </select>
   <button onclick="feApply5()">Apply</button>
 </div>
@@ -371,6 +386,11 @@ Demonstrates that FRFT(α₂) ∘ FRFT(α₁) = FRFT(α₁+α₂). The widget sh
   <select id="fe6-interactive">
     <option value="1" selected>Interactive</option>
     <option value="0">Static</option>
+  </select>
+  <label>Auto-activate</label>
+  <select id="fe6-autoactivate">
+    <option value="0" selected>No</option>
+    <option value="1">Yes</option>
   </select>
   <button onclick="feApply6()">Apply</button>
 </div>
@@ -433,6 +453,11 @@ Full controls — let visitors change signal type, α order, block size and over
     <option value="">(default)</option>
     <option value="0">No</option><option value="1">Yes</option>
   </select>
+  <label>Auto-activate</label>
+  <select id="fe1-autoactivate">
+    <option value="0" selected>No</option>
+    <option value="1">Yes</option>
+  </select>
   <button onclick="feApply1()">Apply</button>
 </div>
 <div class="fe-bottom-row">
@@ -491,6 +516,11 @@ Fixed parameters set at embed time — auto-plays on load, no controls shown to 
   <select id="fe2-halfspec">
     <option value="0" selected>No</option><option value="1">Yes</option>
   </select>
+  <label>Auto-activate</label>
+  <select id="fe2-autoactivate">
+    <option value="0" selected>No</option>
+    <option value="1">Yes</option>
+  </select>
   <button onclick="feApply2()">Apply</button>
 </div>
 <div class="fe-bottom-row">
@@ -539,6 +569,11 @@ Interactive slider that sweeps the fractional order α — shows how the spectru
   </select>
   <label>Init α</label>
   <input type="number" id="fe3-alpha" value="0" min="0" max="1" step="0.05">
+  <label>Auto-activate</label>
+  <select id="fe3-autoactivate">
+    <option value="0" selected>No</option>
+    <option value="1">Yes</option>
+  </select>
   <button onclick="feApply3()">Apply</button>
 </div>
 <div class="fe-bottom-row">
@@ -597,6 +632,11 @@ Shows how block-processing artefacts change with different block sizes and overl
   </select>
   <label>Lock example</label>
   <select id="fe4-lock">
+    <option value="0" selected>No</option>
+    <option value="1">Yes</option>
+  </select>
+  <label>Auto-activate</label>
+  <select id="fe4-autoactivate">
     <option value="0" selected>No</option>
     <option value="1">Yes</option>
   </select>
@@ -687,6 +727,7 @@ Shows how block-processing artefacts change with different block sizes and overl
     const p = new URLSearchParams({ w, h, type: wave, part: g('fe8-part').value });
     if (hasFreq) p.set('freq', g('fe8-freq').value);
     if (interactive === '0') p.set('interactive', '0');
+    if (g('fe8-autoactivate').value === '1') p.set('autoactivate', '1');
     g('fe8-code').textContent = buildCode('embed_ft_listen.html', p.toString(), w, h);
     loadFrame('fe8-frame', 'embed_ft_listen.html', p.toString(), w, h);
   };
@@ -708,6 +749,7 @@ Shows how block-processing artefacts change with different block sizes and overl
     const p = new URLSearchParams({ w, h, type: wave, win: g('fe7-win').value });
     if (hasFreq) p.set('freq', g('fe7-freq').value);
     if (interactive === '0') p.set('interactive', '0');
+    if (g('fe7-autoactivate').value === '1') p.set('autoactivate', '1');
     g('fe7-code').textContent = buildCode('embed_fft_spectrum.html', p.toString(), w, h);
     loadFrame('fe7-frame', 'embed_fft_spectrum.html', p.toString(), w, h);
   };
@@ -736,6 +778,7 @@ Shows how block-processing artefacts change with different block sizes and overl
                                     dalpha, win: g('fe5-win').value });
     if (hasFreq) p.set('freq', g('fe5-freq').value);
     if (isStatic) p.set('interactive', '0');
+    if (g('fe5-autoactivate').value === '1') p.set('autoactivate', '1');
     g('fe5-code').textContent = buildCode('embed_frft_rotation.html', p.toString(), w, h);
     loadFrame('fe5-frame', 'embed_frft_rotation.html', p.toString(), w, h);
   };
@@ -786,6 +829,7 @@ Shows how block-processing artefacts change with different block sizes and overl
     if (hasFreq) p.set('freq', g('fe6-freq').value);
     if (isStatic) p.set('interactive', '0');
     if (isInversion) p.set('inversion', '1');
+    if (g('fe6-autoactivate').value === '1') p.set('autoactivate', '1');
     g('fe6-code').textContent = buildCode('embed_frft_additivity.html', p.toString(), w, h);
     loadFrame('fe6-frame', 'embed_frft_additivity.html', p.toString(), w, h);
   };
@@ -820,6 +864,7 @@ Shows how block-processing artefacts change with different block sizes and overl
     if (overlap) p.set('overlap', overlap);
     const hs = g('fe1-halfspec').value;
     if (hs)      p.set('halfspec', hs);
+    if (g('fe1-autoactivate').value === '1') p.set('autoactivate', '1');
     g('fe1-code').textContent = buildCode('embed_interactive_frft.html', p.toString(), w, h);
     loadFrame('fe1-frame', 'embed_interactive_frft.html', p.toString(), w, h);
     g('fe1-freq').disabled = !hasFreq;
@@ -846,6 +891,7 @@ Shows how block-processing artefacts change with different block sizes and overl
       halfspec: g('fe2-halfspec').value,
     });
     if (hasFreq) p.set('freq', g('fe2-freq').value);
+    if (g('fe2-autoactivate').value === '1') p.set('autoactivate', '1');
     g('fe2-code').textContent = buildCode('embed_non_interactive_frft.html', p.toString(), w, h);
     loadFrame('fe2-frame', 'embed_non_interactive_frft.html', p.toString(), w, h);
   };
@@ -865,6 +911,7 @@ Shows how block-processing artefacts change with different block sizes and overl
       halfspec: g('fe3-halfspec').value,
       freqidx: g('fe3-freqidx').value, alpha: g('fe3-alpha').value,
     });
+    if (g('fe3-autoactivate').value === '1') p.set('autoactivate', '1');
     g('fe3-code').textContent = buildCode('embed_alpha_sweep_frft.html', p.toString(), w, h);
     loadFrame('fe3-frame', 'embed_alpha_sweep_frft.html', p.toString(), w, h);
   };
@@ -883,6 +930,7 @@ Shows how block-processing artefacts change with different block sizes and overl
       win: g('fe4-win').value,
     });
     if (g('fe4-lock').value === '1') p.set('lock', '1');
+    if (g('fe4-autoactivate').value === '1') p.set('autoactivate', '1');
     g('fe4-code').textContent = buildCode('embed_ola_frft.html', p.toString(), w, h);
     loadFrame('fe4-frame', 'embed_ola_frft.html', p.toString(), w, h);
   };
