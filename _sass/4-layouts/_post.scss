@@ -257,7 +257,7 @@
   // Consistent vertical gap around standalone images and equations
   p > img {
     display: block;
-    margin: $base-spacing-unit * 1.5 auto;
+    margin: $base-spacing-unit * 1.5 0;
   }
 
   // When callout classes are placed on a blockquote (via {: .note } before >),
@@ -1368,7 +1368,7 @@ hr {
   width: 90%;
   border-collapse: collapse;
   margin: 1em auto; // centers the table
-  font-size: 0.95rem;
+  font-size: 10px;
   line-height: 1.5;
   color: $text-color;
   background-color: $blue-dark; // optional
@@ -1382,12 +1382,14 @@ hr {
   color: $white;
   text-align: left;
   padding: 12px 16px;
+  font-size: 10px;
   border-bottom: 2px solid rgba($white, 0.1);
 }
 
 .post__content td,
 .page__content td {
   padding: 12px 16px;
+  font-size: 10px;
   border-bottom: 1px solid rgba($white, 0.1);
 }
 
