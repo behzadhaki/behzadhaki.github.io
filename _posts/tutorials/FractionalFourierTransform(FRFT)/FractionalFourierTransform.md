@@ -163,9 +163,10 @@ To construct the final output, we can either concatenate the processed segments 
 
 
 ### Window Size Vs. Chirp Speed
-Let's start with considering this example: Generating a long Sinusoidal signal with a fixed frequency.  
+Let's start with considering this example: Window-based FRFT of a long Sinusoidal signal with a fixed frequency.  
 The way we can apply FRFT, is either we apply it to the entire signal at once, or we can chop the signal into smaller non-overlapping segments and apply the FRFT to each segment separately.
-Because the spectral content in each of the cases (regardless of the segment size) is the same, visually, the resulting spectrograms look similar. 
+Because the spectral content in each of the cases (regardless of the segment size) is the same (all containing a single horizontal line representing the frequency of the sine signal), 
+the resulting spectrograms look similar. 
 However, when we play each of the resulting outputs, the speed at which the textures evolve over time is different.
 This can be observed in the following demo in which on the left we use a window size of 131072 samples and on the right we use half this size i.e. 32768 samples):
 
