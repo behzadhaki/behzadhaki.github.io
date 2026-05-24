@@ -230,6 +230,7 @@
 
   .hint, .note, .tip, .important, .warning, .caution {
     position: relative;
+    margin: $base-spacing-unit * 1.5 0;
     padding: 20px 0 20px 52px;
     border-radius: 4px;
     color: $white;
@@ -251,6 +252,33 @@
 
   .hint {
     &::after { content: "ℹ️"; }
+  }
+
+  // Consistent vertical gap around standalone images and equations
+  p > img {
+    display: block;
+    margin: $base-spacing-unit * 1.5 auto;
+  }
+
+  // When callout classes are placed on a blockquote (via {: .note } before >),
+  // reset the theme's blockquote styles so the callout renders correctly.
+  blockquote {
+    &.hint, &.note, &.tip, &.important, &.warning, &.caution {
+      margin-left: 0;
+      margin-right: 0;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+
+      &::before { content: none; }
+
+      p, li {
+        color: inherit;
+        font-style: normal;
+        font-weight: inherit;
+        font-size: inherit;
+      }
+    }
   }
 }
 
@@ -1004,6 +1032,7 @@
     }
 
     p { margin: 0 0 0.6rem; }
+    p.hint, p.note, p.tip, p.important, p.warning, p.caution { margin-top: $base-spacing-unit * 1.5; }
     ul, ol { padding-left: 1.4rem; margin: 0 0 0.6rem; }
     li { margin-bottom: 0.2rem; }
 
