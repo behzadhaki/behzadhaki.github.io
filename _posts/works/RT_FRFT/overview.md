@@ -199,9 +199,8 @@ For $\alpha = 2$, the output is the time-reversed version of the input. (**Try l
 Here is a demo of α-synthesis:
 
 <div style="position:relative; width:50%; padding-bottom:28.125%; height:0; overflow:hidden;">
-  <iframe src="https://drive.google.com/file/d/1wgp8pIMo_8Ye4UCpQvrCDDTYt-wx2ml-/preview"
+  <iframe src="https://mega.nz/embed/lRMglIJC#x1-0izGMYDBJDejl0a0sS2-CO3WDXVZKmsZkHp09e18"
           style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
-          allow="autoplay"
           allowfullscreen>
   </iframe>
 </div>
@@ -214,9 +213,8 @@ Change the resolution of the videos to 1080p to be able to better see the detail
 And here is a demo of α-processing applied to a number of different source materials:
 
 <div style="position:relative; width:50%; padding-bottom:28.125%; height:0; overflow:hidden;">
-  <iframe src="https://drive.google.com/file/d/1PDfhVvl7HEwhdSMTG-QTKxYPEQWj1BJP/preview"
+  <iframe src="https://mega.nz/embed/5MMF2bpY#Uww6IfjK_M15DDsVVS9oaOWMnEkHJ6T2DMATsMriK30"
           style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
-          allow="autoplay"
           allowfullscreen>
   </iframe>
 </div>
@@ -228,13 +226,11 @@ And here is a demo of α-processing applied to a number of different source mate
 This results in very interesting rhythmic textures. Here is a demo:
 
 <div style="position:relative; width:50%; padding-bottom:28.125%; height:0; overflow:hidden;">
-  <iframe src="https://drive.google.com/file/d/1owyOJK0dKVNRrwO9ck7-xg-BP97u1D1O/preview"
+  <iframe src="https://mega.nz/embed/NUt0VIrJ#DIoL3BbiBKHu7KaDS6AUvxLF7l9-znaiiQ2plPvbCi4"
           style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
-          allow="autoplay"
           allowfullscreen>
   </iframe>
 </div>
-
 
 {: .note }
 In the last demo, we can clear see that having continuous control over Overlap Add, Window Size, and Window Type parameters can be very useful for modifying the textures without interruption. 
@@ -263,9 +259,8 @@ At α = 1 this is identical to standard frequency-domain convolution. At other v
 Here is a demo of convolving a sine wave with a square wave in the fractional domain:
 
 <div style="position:relative; width:50%; padding-bottom:28.125%; height:0; overflow:hidden;">
-  <iframe src="https://drive.google.com/file/d/1TSLebrbH7NApw1V8_bU0y03ZXPQDfxl7/preview"
+  <iframe src="https://mega.nz/embed/QBlw0AIZ#zjHsYznDEwSBCirF0QYlhsGPe_BAzSNO8Myz7a3dUG0"
           style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
-          allow="autoplay"
           allowfullscreen>
   </iframe>
 </div>
@@ -275,13 +270,11 @@ Here is a demo of convolving a sine wave with a square wave in the fractional do
 Here is a demo of convolving a looping recording of a voice with un-synced version of itself in the fractional domain:
 
 <div style="position:relative; width:50%; padding-bottom:28.125%; height:0; overflow:hidden;">
-  <iframe src="https://drive.google.com/file/d/1pTCZurnkxYkEUvMy3rDYknENUcoQaNp0/preview"
+  <iframe src="https://mega.nz/embed/lQckHQ5C#oeSku4bKgWrxl45aBy8mxNQiSZMSSKanpSZr01gOtL8"
           style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
-          allow="autoplay"
           allowfullscreen>
   </iframe>
 </div>
-
 
 
 
@@ -305,9 +298,8 @@ In the max patch, we filter white noise and then feed it to the same α-convolut
 Here is a demo of α-filtering applied to a vocal recording:
 
 <div style="position:relative; width:50%; padding-bottom:28.125%; height:0; overflow:hidden;">
-  <iframe src="https://drive.google.com/file/d/1dB5Bn6RI_zdDtUg_w-4SyCSTdydojLE4/preview"
+  <iframe src="https://mega.nz/embed/tNlHTDKY#6iywNN4Oh_tcID7UPLAKGgergwilXPyj3-4GKK_-P7Y"
           style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
-          allow="autoplay"
           allowfullscreen>
   </iframe>
 </div>
@@ -339,9 +331,8 @@ Try different combinations of α₁ and α₂ to see how the resulting textures 
 Here is a demo of ring modulating two triangle wave oscillators with different frequencies in the fractional domain:
 
 <div style="position:relative; width:50%; padding-bottom:28.125%; height:0; overflow:hidden;">
-  <iframe src="https://drive.google.com/file/d/1itMSevbl7QaD1JU6a-385IKlCpW8sBZf/preview"
+  <iframe src="https://mega.nz/embed/cBUAmCII#I6peUD5FUMosgMx-R7lsPTHPER4ZR8X4druJgFFNUhU"
           style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
-          allow="autoplay"
           allowfullscreen>
   </iframe>
 </div>
@@ -351,13 +342,11 @@ Here is a demo of ring modulating two triangle wave oscillators with different f
 Here is a demo of ring modulating a guitar recording with a sine wave in the fractional domain:
 
 <div style="position:relative; width:50%; padding-bottom:28.125%; height:0; overflow:hidden;">
-  <iframe src="https://drive.google.com/file/d/15Zt9EypAbU9dmWosSPS6yWfWJ6m0QfSU/preview"
+  <iframe src="https://mega.nz/embed/ZZVEkIgK#hMmsiaUnKtgg7AeT1T1XwVzuhd0hHq-fE6ZlKqAbNn0"
           style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
-          allow="autoplay"
           allowfullscreen>
   </iframe>
 </div>
-
 
 ### Other Methods
 
@@ -368,9 +357,8 @@ We encourage you to experiment with the `frft` external and come up with your ow
 As an example, here are two demos of a more complex patch that uses a FRFT operation in a feedback loop (in the pfft environment) to create evolving textures from a simple input signal:
 
 <div style="position:relative; width:50%; padding-bottom:28.125%; height:0; overflow:hidden;">
-  <iframe src="https://drive.google.com/file/d/178WMXyC9_nmrvuKoKFwjunIfotcVPE95/preview"
+  <iframe src="https://mega.nz/embed/BYUzWZjQ#2zCGMgFfuQlFD-AZTgn4YoWJLTcNDbLa0BoNb8RQMIU"
           style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
-          allow="autoplay"
           allowfullscreen>
   </iframe>
 </div>
@@ -378,9 +366,8 @@ As an example, here are two demos of a more complex patch that uses a FRFT opera
 <br>
 
 <div style="position:relative; width:50%; padding-bottom:28.125%; height:0; overflow:hidden;">
-  <iframe src="https://drive.google.com/file/d/1IGrcSlA7hCava5ZG_WhqG0OxMS_lk25P/preview"
+  <iframe src="https://mega.nz/embed/YVcSHCaT#7DXteytOqrNKLey8TBKED6dQwYVC3z1GbobE72QS6ZA"
           style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
-          allow="autoplay"
           allowfullscreen>
   </iframe>
 </div>
