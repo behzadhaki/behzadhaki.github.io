@@ -6,26 +6,26 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Works — Hardware</title>
-  <meta name='description' content='Researcher &amp; Developer · Music Technology · Barcelona'>
+  <title>Synthesis Using Fractional Fourier Transform (FRFT)</title>
+  <meta name='description' content='A tutorial on the 'Fractional Fourier Transform Sound Synthesis' paper by Gutiérrez et. al.'>
 
   <link rel="icon" type="image/png" href="/assets/img/favicon.png">
   <link rel="apple-touch-icon" href="/assets/img/favicon.png">
-  <link rel="canonical" href="https://behzadhaki.github.io/works/hardware/">
+  <link rel="canonical" href="https://behzadhaki.github.io/tutorials/fractional-fourier-transform-frft/">
   <link rel="alternate" type="application/rss+xml" title="Behzad Haki" href="/feed.xml">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Works — Hardware – Behzad Haki">
-  <meta name="twitter:description" content="">
-  <meta name="twitter:image:src" content="">
+  <meta name="twitter:title" content="Synthesis Using Fractional Fourier Transform (FRFT) – Behzad Haki">
+  <meta name="twitter:description" content="A tutorial on the &apos;Fractional Fourier Transform Sound Synthesis&apos; paper by Gutiérrez et. al.">
+  <meta name="twitter:image:src" content="https://behzadhaki.github.io/assets/tutorials/FractionalFourierTransform_tutorial/frft_tutorial3.gif">
 
   <!-- Facebook OpenGraph -->
-  <meta property="og:title" content="Works — Hardware – Behzad Haki">
-  <meta property="og:description" content="">
-  <meta property="og:image" content="">
-  <meta property="og:url" content="https://behzadhaki.github.io/works/hardware/">
-  <meta property="og:type" content="website">
+  <meta property="og:title" content="Synthesis Using Fractional Fourier Transform (FRFT) – Behzad Haki">
+  <meta property="og:description" content="A tutorial on the &apos;Fractional Fourier Transform Sound Synthesis&apos; paper by Gutiérrez et. al.">
+  <meta property="og:image" content="https://behzadhaki.github.io/assets/tutorials/FractionalFourierTransform_tutorial/frft_tutorial3.gif">
+  <meta property="og:url" content="https://behzadhaki.github.io/tutorials/fractional-fourier-transform-frft/">
+  <meta property="og:type" content="article">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -119,7 +119,7 @@ initTheme(localStorage.getItem("theme"));
   
 
 <!-- begin header -->
-<header class="header header--top">
+<header class="header ">
   <div class="container">
     <div class="row">
       <div class="header__inner col col-12">
@@ -665,72 +665,1323 @@ initTheme(localStorage.getItem("theme"));
 
   <!-- begin content -->
   <main class="content" aria-label="Content">
-    <!-- begin hero -->
-
-<!-- end hero -->
-
-<!-- begin page -->
-<div class="container page--no-hero">
-  <article class="page animate">
-    <div class="page__content">
+    <div class="post-head">
+  <div class="container">
+    <div class="row">
       
+      <div class="col col-4 col-t-12">
+        <div class="image-box">
+          <img class="post-image lazy" data-src="/assets/tutorials/FractionalFourierTransform_tutorial/frft_tutorial3.gif" alt="Synthesis Using Fractional Fourier Transform (FRFT)">
+        </div>
+      </div>
+      
+
+      <div class="col col-8 col-t-12">
+        <div class="post-head__box">
+          <h2 class="post__title">Synthesis Using Fractional Fourier Transform (FRFT)<time class="post__date" datetime="2026-05-14T00:00:00+00:00">May 14, 2026</time></h2>
+
+          
+          <p class="post__description">A tutorial on the 'Fractional Fourier Transform Sound Synthesis' paper by Gutiérrez et. al.</p>
+          
+
+          <div class="post__bottom">
+            <div class="post__bottom-meta">
+
+              
+              <span class="post-tags">
+                
+                <span class="post__tag">FRFT</span>
+                
+                <span class="post__tag">Synthesis</span>
+                
+                <span class="post__tag">Processor</span>
+                
+                <span class="post__tag">Tutorial</span>
+                
+              </span>
+              
+
+              
+
+            </div>
+          </div>
+          
+
+
+<div class="proj-btn-row proj-btn-row--header">
+  
+    
+    
+    
+    
+
+    
+    
+      
+        
+
+
+
+
+
+<a class="proj-btn proj-btn--web" href="temp.com" target="_blank" rel="noopener">
+  <span class="proj-btn__badge">
+    <i class="fa-solid fa-globe"></i>
+    
+  </span>
+  <span class="proj-btn__label">Real-time Version (MAX/M4L)</span>
+</a>
+
+
+        
+      
+    
+    
+    
+
+
+
+
+
+<a class="proj-btn proj-btn--email" href="mailto:behzad.haki@upf.edu?subject=RE%3A%20Synthesis%20Using%20Fractional%20Fourier%20Transform%20%28FRFT%29%20-%20Report%20an%20Issue">
+  <span class="proj-btn__badge">
+    <i class="fa-solid fa-envelope"></i>
+    
+  </span>
+  <span class="proj-btn__label">Report an Issue</span>
+</a>
+
+
+    
+    <button class="proj-btn proj-btn--cite" onclick="document.getElementById('proj-cite-modal').style.display='flex'" type="button">
+      <span class="proj-btn__badge"><i class="fa-solid fa-quote-right"></i></span><span class="proj-btn__label">Cite Publications</span>
+    </button>
+    
+    
+    <button class="proj-btn proj-btn--license" onclick="document.getElementById('proj-license-modal').style.display='flex'" type="button">
+      <span class="proj-btn__badge"><i class="fa-solid fa-scale-balanced"></i></span><span class="proj-btn__label">License</span>
+    </button>
+    
+  
+  <button class="proj-btn proj-btn--share" id="share-btn" type="button" aria-label="Share">
+  <span class="proj-btn__badge"><i class="fa-solid fa-share-nodes"></i></span>
+  <span class="proj-btn__label">Share</span>
+</button>
+<div class="share-dropdown" id="share-dropdown" hidden>
+  <a class="share-dropdown__item" href="https://wa.me/?text=Synthesis+Using+Fractional+Fourier+Transform+%28FRFT%29%20https%3A%2F%2Fbehzadhaki.github.io%2Ftutorials%2Ffractional-fourier-transform-frft%2F" target="_blank" rel="noopener noreferrer">
+    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+  </a>
+  <a class="share-dropdown__item" href="https://twitter.com/intent/tweet?text=Synthesis+Using+Fractional+Fourier+Transform+%28FRFT%29&url=https%3A%2F%2Fbehzadhaki.github.io%2Ftutorials%2Ffractional-fourier-transform-frft%2F" target="_blank" rel="noopener noreferrer">
+    <i class="fa-brands fa-x-twitter"></i> X / Twitter
+  </a>
+  <a class="share-dropdown__item" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fbehzadhaki.github.io%2Ftutorials%2Ffractional-fourier-transform-frft%2F" target="_blank" rel="noopener noreferrer">
+    <i class="fa-brands fa-linkedin-in"></i> LinkedIn
+  </a>
+  <button class="share-dropdown__item" id="share-copy-link" type="button">
+    <i class="fa-solid fa-link"></i> Copy link
+  </button>
+</div>
+<script>
+(function () {
+  var btn      = document.getElementById('share-btn');
+  var dropdown = document.getElementById('share-dropdown');
+  var copyBtn  = document.getElementById('share-copy-link');
+  var pageUrl   = "https://behzadhaki.github.io/tutorials/fractional-fourier-transform-frft/";
+  var pageTitle = "Synthesis Using Fractional Fourier Transform (FRFT)";
+  var pageDesc  = "A tutorial on the 'Fractional Fourier Transform Sound Synthesis' paper by Gutiérrez et. al.";
+
+  function positionDropdown() {
+    var row = btn.closest('.proj-btn-row');
+    var btnRect = btn.getBoundingClientRect();
+    var rowRect = row.getBoundingClientRect();
+    dropdown.style.left = (btnRect.left - rowRect.left) + 'px';
+    dropdown.style.top  = (btnRect.bottom - rowRect.top + 4) + 'px';
+  }
+
+  btn.addEventListener('click', function () {
+    if (!dropdown.hidden) {
+      dropdown.hidden = true;
+    } else {
+      positionDropdown();
+      dropdown.hidden = false;
+    }
+  });
+
+  copyBtn.addEventListener('click', function () {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(pageUrl).then(function () {
+        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+        setTimeout(function () {
+          copyBtn.innerHTML = '<i class="fa-solid fa-link"></i> Copy link';
+        }, 2000);
+      });
+    }
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.hidden = true;
+    }
+  });
+})();
+</script>
+
+</div>
+
+
+<div class="proj-note"><p>This tutorial was prepared by <a href="https://cordutie.github.io/">Esteban Gutiérrez</a> and me. The content is based on the work done by Esteban and his colleagues in the paper “Fourier Transform Sound Synthesis” published in 2025.</p>
+</div>
+
+
+
+  
+  <div id="proj-cite-modal" class="proj-modal" onclick="if(event.target===this)this.style.display='none'">
+    <div class="proj-modal__box markdown-body">
+      <button class="proj-modal__close" onclick="document.getElementById('proj-cite-modal').style.display='none'" type="button" aria-label="Close">&times;</button>
+      <div class="project-pubs">
+        
+          <ol class="bibliography"></ol>
+          <ol class="bibliography"><li><div class="pub-card"><div class="pub-card__preview"><img src="/assets/img/publication_preview/frft_icmc.png" alt="Fractional Fourier Sound Synthesis" loading="lazy"></div><div class="pub-card__body">
+
+    <!-- Title + badge -->
+    <div class="pub-card__title-row">
+      <h3 class="pub-card__title" id="gutierrez2025fractionalfouriersoundsynthesis">Fractional Fourier Sound Synthesis</h3></div>
+
+    <!-- Authors --><div class="pub-card__authors">Esteban Gutiérrez,&nbsp;Rodrigo Cádiz,&nbsp;Carlos Sing Long, and 2 more</div><!-- Venue + year -->
+    <div class="pub-card__venue"><em>Proceedings of the International Computer Music Conference (ICMC)</em><span class="pub-card__year">&nbsp;·&nbsp;2025</span></div>
+
+    <!-- External links -->
+    <div class="pub-card__links"><a href="https://arxiv.org/abs/2506.09189" class="pub-link" target="_blank">PDF</a><a href="https://cordutie.github.io/frft_sound_synthesis/" class="pub-link" target="_blank">Website</a></div>
+
+    <!-- Collapsible abstract --><details class="pub-card__details">
+      <summary>Abstract</summary>
+      <p>This paper explores the innovative application of the Fractional Fourier Transform (FrFT) in sound synthesis, highlighting its potential to redefine time-frequency analysis in audio processing. As an extension of the classical Fourier Transform, the FrFT introduces fractional order parameters, enabling a continuous interpolation between time and frequency domains and unlocking unprecedented flexibility in signal manipulation. Crucially, the FrFT also opens the possibility of directly synthesizing sounds in the alpha-domain, providing a unique framework for creating timbral and dynamic characteristics unattainable through conventional methods. This work delves into the mathematical principles of the FrFT, its historical evolution, and its capabilities for synthesizing complex audio textures. Through experimental analyses, we showcase novel sound design techniques, such as alpha-synthesis and alpha-filtering, which leverage the FrFT’s time-frequency rotation properties to produce innovative sonic results. The findings affirm the FrFT’s value as a transformative tool for composers, sound designers, and researchers seeking to push the boundaries of auditory creativity.</p>
+    </details><!-- Collapsible BibTeX --><details class="pub-card__details">
+      <summary>
+        BibTeX
+        <button class="bibtex-copy-btn" title="Copy BibTeX" onclick="event.stopPropagation(); copyBibtex(this)" aria-label="Copy BibTeX to clipboard">
+          <i class="fa-regular fa-copy"></i>
+        </button>
+      </summary>
+      <div class="pub-card__bibtex">
+        <figure class="highlight"><pre><code class="language-bibtex" data-lang="bibtex"><span class="nc">@inproceedings</span><span class="p">{</span><span class="nl">gutierrez2025fractionalfouriersoundsynthesis</span><span class="p">,</span>
+  <span class="na">title</span> <span class="p">=</span> <span class="s">{Fractional Fourier Sound Synthesis}</span><span class="p">,</span>
+  <span class="na">author</span> <span class="p">=</span> <span class="s">{Guti{\'e}rrez, Esteban and C{\'a}diz, Rodrigo and Long, Carlos Sing and Font, Frederic and Serra, Xavier}</span><span class="p">,</span>
+  <span class="na">year</span> <span class="p">=</span> <span class="s">{2025}</span><span class="p">,</span>
+  <span class="na">eprint</span> <span class="p">=</span> <span class="s">{2506.09189}</span><span class="p">,</span>
+  <span class="na">archiveprefix</span> <span class="p">=</span> <span class="s">{arXiv}</span><span class="p">,</span>
+  <span class="na">primaryclass</span> <span class="p">=</span> <span class="s">{cs.SD}</span><span class="p">,</span>
+  <span class="na">booktitle</span> <span class="p">=</span> <span class="s">{Proceedings of the International Computer Music Conference (ICMC)}</span>
+<span class="p">}</span></code></pre></figure>
+      </div>
+    </details></div>
+</div>
+</li></ol>
+        
+      </div>
+    </div>
+  </div>
+  
+
+  
+  <div id="proj-license-modal" class="proj-modal" onclick="if(event.target===this)this.style.display='none'">
+    <div class="proj-modal__box markdown-body">
+      <button class="proj-modal__close" onclick="document.getElementById('proj-license-modal').style.display='none'" type="button" aria-label="Close">&times;</button>
+      
+
+
+
+
+  
+<p>MIT</p>
+
+
+
+    </div>
+  </div>
+  
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- begin post -->
+<div class="container">
+  
+  <nav class="post-navbar" id="post-navbar" aria-label="Page sections"></nav>
+  
+  <article class="post animate">
+    <div class="post__content">
+      
+
+      
+
+
+
+
+<section class="project-section" id="overview">
+  <h2 class="project-section__header">
+    Overview
+    <a class="section-anchor" href="#overview" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
+  </h2>
+  <div class="project-section__body markdown-body">
+    
+    
+    
+
+
+
+
+  
+<p>In this tutorial, we will go over an innovative synthesis method proposed by Gutiérrez et al.:</p>
+
+<div class="project-pubs" style="max-width: 600px;">
+  <ol class="bibliography"><li><div class="pub-card"><div class="pub-card__preview"><img src="/assets/img/publication_preview/frft_icmc.png" alt="Fractional Fourier Sound Synthesis" loading="lazy" /></div><div class="pub-card__body">
+
+    <!-- Title + badge -->
+    <div class="pub-card__title-row">
+      <h3 class="pub-card__title" id="gutierrez2025fractionalfouriersoundsynthesis">Fractional Fourier Sound Synthesis</h3></div>
+
+    <!-- Authors --><div class="pub-card__authors">Esteban Gutiérrez,&nbsp;Rodrigo Cádiz,&nbsp;Carlos Sing Long, and 2 more</div><!-- Venue + year -->
+    <div class="pub-card__venue"><em>Proceedings of the International Computer Music Conference (ICMC)</em><span class="pub-card__year">&nbsp;·&nbsp;2025</span></div>
+
+    <!-- External links -->
+    <div class="pub-card__links"><a href="https://arxiv.org/abs/2506.09189" class="pub-link" target="_blank">PDF</a><a href="https://cordutie.github.io/frft_sound_synthesis/" class="pub-link" target="_blank">Website</a></div>
+
+    <!-- Collapsible abstract --><details class="pub-card__details">
+      <summary>Abstract</summary>
+      <p>This paper explores the innovative application of the Fractional Fourier Transform (FrFT) in sound synthesis, highlighting its potential to redefine time-frequency analysis in audio processing. As an extension of the classical Fourier Transform, the FrFT introduces fractional order parameters, enabling a continuous interpolation between time and frequency domains and unlocking unprecedented flexibility in signal manipulation. Crucially, the FrFT also opens the possibility of directly synthesizing sounds in the alpha-domain, providing a unique framework for creating timbral and dynamic characteristics unattainable through conventional methods. This work delves into the mathematical principles of the FrFT, its historical evolution, and its capabilities for synthesizing complex audio textures. Through experimental analyses, we showcase novel sound design techniques, such as alpha-synthesis and alpha-filtering, which leverage the FrFT’s time-frequency rotation properties to produce innovative sonic results. The findings affirm the FrFT’s value as a transformative tool for composers, sound designers, and researchers seeking to push the boundaries of auditory creativity.</p>
+    </details><!-- Collapsible BibTeX --><details class="pub-card__details">
+      <summary>
+        BibTeX
+        <button class="bibtex-copy-btn" title="Copy BibTeX" onclick="event.stopPropagation(); copyBibtex(this)" aria-label="Copy BibTeX to clipboard">
+          <i class="fa-regular fa-copy"></i>
+        </button>
+      </summary>
+      <div class="pub-card__bibtex">
+        <figure class="highlight"><pre><code class="language-bibtex" data-lang="bibtex"><span class="nc">@inproceedings</span><span class="p">{</span><span class="nl">gutierrez2025fractionalfouriersoundsynthesis</span><span class="p">,</span>
+  <span class="na">title</span> <span class="p">=</span> <span class="s">{Fractional Fourier Sound Synthesis}</span><span class="p">,</span>
+  <span class="na">author</span> <span class="p">=</span> <span class="s">{Guti{\'e}rrez, Esteban and C{\'a}diz, Rodrigo and Long, Carlos Sing and Font, Frederic and Serra, Xavier}</span><span class="p">,</span>
+  <span class="na">year</span> <span class="p">=</span> <span class="s">{2025}</span><span class="p">,</span>
+  <span class="na">eprint</span> <span class="p">=</span> <span class="s">{2506.09189}</span><span class="p">,</span>
+  <span class="na">archiveprefix</span> <span class="p">=</span> <span class="s">{arXiv}</span><span class="p">,</span>
+  <span class="na">primaryclass</span> <span class="p">=</span> <span class="s">{cs.SD}</span><span class="p">,</span>
+  <span class="na">booktitle</span> <span class="p">=</span> <span class="s">{Proceedings of the International Computer Music Conference (ICMC)}</span>
+<span class="p">}</span></code></pre></figure>
+      </div>
+    </details></div>
+</div>
+</li></ol>
+</div>
+
+<p>We will start with a quick refresher on the Fourier Transform (FT).</p>
+
+<p>Subsequently, we introduce the concept of the Fractional Fourier Transform (FRFT) and discuss its properties and how it relates to the FT.</p>
+
+<p>Then, we will explore how to utilize the FRFT for sound synthesis and processing.</p>
+
+
+
+  </div>
+</section>
+
+
+
+<section class="project-section" id="fourier-transform">
+  <h2 class="project-section__header">
+    Fourier Transform
+    <a class="section-anchor" href="#fourier-transform" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
+  </h2>
+  <div class="project-section__body markdown-body">
+    
+    
+    
+
+
+
+
+  
+<p>Let’s start with a quick refresher on the Fourier Transform (FT).</p>
+
+<h2 id="what-is-fourier-transform">What is Fourier Transform?</h2>
+<p>The FT is a mathematical transformation that decomposes a signal into its constituent frequencies.</p>
+
+<p>Basicaly, <code class="language-plaintext highlighter-rouge">FT</code> transforms a <code class="language-plaintext highlighter-rouge">time-domain</code> signal into a <code class="language-plaintext highlighter-rouge">frequency-domain</code> representation.</p>
+
+<p>For instance, if you have a pure tone at 1000 Hz, FT results in a representation such as the following:</p>
+
+<div style="margin:1em 0; width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/frft/demos/embed_fft_spectrum.html?w=600&amp;h=220&amp;type=sine&amp;win=exact&amp;freq=1000" style="width:100%; height:220px; border:none; display:block" allow="autoplay">
+  </iframe>
+</div>
+
+<p>In this repesentation, the x-axis corresponds to frequency, and the y-axis corresponds to the amplitude of each frequency component.
+Now, if you add harmonics to the pure tone, you will get a more complex spectrum (try it out by changing the waveform type in the demo above).</p>
+
+<p class="note">FT results in a complex-valued signal, here we are only showing the magnitude of this complex signal for simplicity.</p>
+
+<p class="note">When we perform FT on a real signal (like an audio signal), we get a spectrum that is symmetric (as in the example above). 
+In such cases, commonly we work with the positive frequencies (the right half of the spectrum) since the negative frequencies are just a mirror image of the positive ones.
+That said, in this tutorial, we will be working with the full spectrum. This will be important when we discuss Fractional Fourier Transform (FRFT) later on.</p>
+
+<h2 id="fourier-transform-for-synthesis-and-processing">Fourier Transform for Synthesis and Processing</h2>
+
+<p>There are many applications of the FT in sound synthesis and processing.</p>
+
+<p>Most common methods rely on the inversibility of the FT, which means that we can transform a signal to the frequency domain and also perform the inverse operation to get back to time domain.</p>
+
+\[x[n] \xrightarrow{\text{FT}} X[k]  \xrightarrow{\text{IFT}} x[n]\]
+
+<p>With this property, we can synthesize/process sounds by applying IFT to a spectrum created from scratch or a spectrum obtained from an existing signal,</p>
+
+\[Y[k] \xrightarrow{\text{IFT}} y[n]\]
+
+\[x[n] \xrightarrow{\text{FT}} X[k]  \xrightarrow{\text{Manipulation}} \tilde{X}[k] \xrightarrow{\text{IFT}} \tilde{x}[n]\]
+
+<p class="note">The frequency-domain signals are generally complex-valued, which means that they have both a real part and an imaginary part.
+To ensure that the resulting time-domain signal is real-valued, the complex spectrum must satisfy the conjugate symmetry property, which states that the negative frequency components are the complex conjugate of the positive frequency components:
+\(X[-k] = X[k]^*\)</p>
+
+<h2 id="treating-fourier-transform-components-as-audio-signals">Treating Fourier Transform Components as Audio Signals</h2>
+
+<p>In the above examples, to listen to the spectrum, we applied the IFT to the complex spectrum to get back to the time domain.</p>
+
+<p>However, it is also possible to listen to the real, imaginary parts of the complex spectrum directly without applying IFT.</p>
+
+\[x[n] \xrightarrow{\text{FT}} X[k] \xrightarrow{\text{Real Part}} \text{Re}\{X[k]\}\]
+
+<p>or</p>
+
+\[x[n] \xrightarrow{\text{FT}} X[k] \xrightarrow{\text{Imaginary Part}} \text{Im}\{X[k]\}\]
+
+<p><strong>In other words, we treat the real or the imaginary component of the complex spectrum as an audio signal directly.</strong></p>
+
+<p>In the following demo, you can try out different waveforms and listen to the real (or imaginary) part of their Fourier Transform directly, while treating them as audio signals:</p>
+
+<div style="margin:1em 0; width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/frft/demos/embed_ft_listen.html?w=600&amp;h=220&amp;type=sine&amp;part=imag&amp;freq=440" style="width:100%; height:220px; border:none; display:block" allow="autoplay">
+  </iframe>
+</div>
+
+<p>Try out different waveforms: sine, square, triangle, and sawtooth. In these cases, the resulting sound is a squence of clicks, 
+as the Fourier Transform of these waveforms consists of a series of impulses at the harmonic frequencies.</p>
+
+<p class="note">When interacting with the demo, notice the X-axis transforming from frequency to time as soon as you play the sound.
+In the rest of this tutorial, we will be listening to the real part of any complex signal, whether obtained from the FT or any other operation.</p>
+
+<h2 id="rotational-behavior-of-fourier-transform">Rotational Behavior of Fourier Transform</h2>
+
+<p>As discussed above, the FT transforms a signal from the time domain to the frequency domain. 
+Likewise, there is an inverse operation called the Inverse Fourier Transform (IFT) that transforms a signal from the frequency domain back to the time domain.</p>
+
+\[x[n] \xrightarrow{\text{FT}} X[k]  \xrightarrow{\text{IFT}} x[n]\]
+
+<p>An interesting property of the FT is that if we apply the FT four times consecutively, you will get back to the original signal:</p>
+
+\[x[n] \xrightarrow{\text{FT}} X[k] \xrightarrow{\text{FT}} x[-n] \xrightarrow{\text{FT}} X[-k] \xrightarrow{\text{FT}} x[n]\]
+
+<p>To conceptualize this, we can think of the time-frequency plane as a 2D space where the x-axis represents time and the y-axis represents frequency.
+As such, applying the FT corresponds to a 90-degree rotation in this plane. The following demo visualizes this rotational behavior of the FT:</p>
+
+<div style="margin:1em 0; width:100%; max-width:400px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/frft/demos/embed_frft_rotation.html?w=400&amp;h=400&amp;wave=sine&amp;disp=wave&amp;dalpha=dft&amp;win=hann&amp;freq=1004" style="width:100%; height:400px; border:none; display:block" allow="autoplay">
+  </iframe>
+</div>
+
+<p class="note">Press on the waveforms to listen to the corresponding time-domain or frequency-domain signals</p>
+
+<p class="note">The waveforms at the frequency domain are the real part of the Fourier Transform.</p>
+
+<p class="note">To understand the impact of time reversal, use the “Freq sweep” input and also switch to “Spectrogram” visualization.</p>
+
+
+
+
+  </div>
+</section>
+
+
+
+<section class="project-section" id="fractional-fourier-transform">
+  <h2 class="project-section__header">
+    Fractional Fourier Transform
+    <a class="section-anchor" href="#fractional-fourier-transform" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
+  </h2>
+  <div class="project-section__body markdown-body">
+    
+    
+    
+
+
+
+
+  
+<h2 id="frft-as-a-generalization-of-fourier-transform">FRFT as a Generalization of Fourier Transform</h2>
+
+<p>We ended the previous section by mentioning that the Fourier Transform (FT) can be thought of as a rotation in a conceptual time-frequency plane.</p>
+
+<p>That is, in this 2D conceptual space, a 90-degree rotation corresponds to a single application of the FT, and
+given its rotational behavior, applying the FT four times will bring you back to the original signal.</p>
+
+<p>Now, the question is: <strong>Can we apply a rotation that is not necessarily 90 degrees? If so, what sort of intermediary 
+sounds would be achieved?</strong></p>
+
+<p>This is exactly what the Fractional Fourier Transform (FRFT) allows us to do. 
+The FRFT is a generalization of the FT that enables us to perform rotations by arbitrary angles in the time-frequency plane.</p>
+
+<p>Here is an extended version of the previous demo that also allows for intermediate rotations using the FRFT:</p>
+
+<div style="margin:1em 0; width:100%; max-width:400px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/frft/demos/embed_frft_rotation.html?w=400&amp;h=400&amp;wave=sine&amp;disp=scope&amp;dalpha=0.333&amp;win=hann&amp;freq=440" style="width:100%; height:400px; border:none; display:block" allow="autoplay">
+  </iframe>
+</div>
+
+<p class="note">Notice that in this demo (as opposed to the previous one), instead of showing angles of 0, 90, 180, and 270 degrees, 
+we are using integer values of 0, 1, 2, and 3 to represent the same angles. 
+This is because in the context of the FRFT, a rotation of 90 degrees corresponds to a value of 1.
+We call this value the <code class="language-plaintext highlighter-rouge">fractional order</code> or <code class="language-plaintext highlighter-rouge">rotation factor</code> of the FRFT, and we typically denote it by the symbol $\alpha$ (alpha).
+\(\text{Rotation Angle} = \alpha \times 90^\circ\)</p>
+
+<p class="note">Switch between the <code class="language-plaintext highlighter-rouge">Waveform/Spectrogram</code> tabs to visualize the waveforms or their spectral content at different rotation factors.</p>
+
+<p>Looking at the spectrograms for a single static sine input, you can see that at non-integer values of $\alpha$ (i.e. in between the time and frequency domains), 
+the resulting waveforms have a more complex structure. For instance:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A single tone (visible as a horizontal line in the time domain) is transformed into chirp-like structures (visible as multiple diagonal line in the spectrogram) at intermediate rotation factors.
+</code></pre></div></div>
+
+<h2 id="some-useful-properties-of-frft">Some Useful Properties of FRFT</h2>
+
+<p>In this section, we will go over some useful properties of the FRFT that are relevant to sound synthesis and processing.</p>
+
+<p>We won’t get into the mathematical details of these properties, but we will provide some intuition and examples to illustrate them. (The paper on which this tutorial is based provides a rigorous mathematical treatment of these properties, so we encourage you to check it out for more details if you’re interested.)</p>
+
+<h3 id="special-cases-of-frft">Special Cases of FRFT</h3>
+
+<p>We have already discussed that the FRFT is a generalization of the FT, and as such, it has some special cases that correspond to specific values of the rotation factor $\alpha$:</p>
+
+<ul>
+  <li>When $\alpha = 0$, the FRFT reduces to the identity operation, meaning that the output is the same as the input signal.</li>
+  <li>When $\alpha = 1$, the FRFT reduces to the standard Fourier Transform</li>
+  <li>When $\alpha = 2$, the FRFT corresponds to a reversal operation</li>
+  <li>When $\alpha = 3$, the FRFT corresponds to an inverse Fourier Transform</li>
+</ul>
+
+<p>The following demo illustrates these special cases applying the FRFT to a sine sweep input:</p>
+
+<div style="margin:1em 0; width:100%; max-width:400px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/frft/demos/embed_frft_rotation.html?w=400&amp;h=430&amp;wave=sweep&amp;disp=scope&amp;dalpha=1&amp;win=hann&amp;interactive=0" style="width:100%; height:430px; border:none; display:block" allow="autoplay">
+  </iframe>
+</div>
+
+<h3 id="inverting-the-frft">Inverting the FRFT</h3>
+
+<p>Remember that in the case of the FT, we had a dedicated inverse operation called the Inverse Fourier Transform (IFT) that allowed us to transform a signal from the frequency domain back to the time domain.</p>
+
+<p>In the case of the FRFT, there is no separate inverse operation. Instead, the inverse of the FRFT is also a FRFT, but with a negative rotation factor.</p>
+
+\[x[n] \xrightarrow{\mathcal{F}^{\alpha}} X_\alpha[k] \xrightarrow{\mathcal{F}^{-\alpha}} x[n]\]
+
+<p class="note">A positive rotation factor $\alpha$ corresponds to a counter-clockwise rotation in the time-frequency plane, 
+while a negative rotation factor corresponds to a clockwise rotation.</p>
+
+<p>In the following demo, you can transform a signal into the alpha domain and then apply the inverse transformation to get back to the original signal:</p>
+
+<div style="margin:1em 0; width:100%; max-width:500px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/frft/demos/embed_frft_additivity.html?w=500&amp;h=400&amp;wave=triangle&amp;disp=wave&amp;win=hann&amp;alpha1=0.5&amp;alpha2=-0.5&amp;freq=440&amp;inversion=1" style="width:100%; height:400px; border:none; display:block" allow="autoplay">
+  </iframe>
+</div>
+
+<p>Here you can see that the final output after $\alpha$ and $-\alpha$ transformations is almost identical to the original input signal.</p>
+
+<p class="note">In this demo, we visualize the error between the two paths. For a perfect mathematically accurate implementation of the FRFT, this error should be zero. 
+However, in here, we are using a light-weight implementation of the FRFT which is highly optimized for real-time performance at the cost of some accuracy.
+Hence, the error is not exactly zero, but it is still very small and inaudible in most cases. 
+That said, in pure mathematical terms, the error should be zero, and the original signal should be perfectly 
+reconstructed after applying the FRFT and its inverse.</p>
+
+<h3 id="index-additivity">Index Additivity</h3>
+
+<p>The FRFT has an interesting property called <code class="language-plaintext highlighter-rouge">index additivity</code>, which states that if you apply two FRFTs with rotation factors $\alpha_1$ and $\alpha_2$ consecutively, it is equivalent to applying a single FRFT with a rotation factor that is the sum of the two individual rotation factors:</p>
+
+\[\begin{array}{c}
+x[n] \xrightarrow{\mathcal{F}^{\alpha_1}} X_{\alpha_1}[k] \xrightarrow{\mathcal{F}^{\alpha_2}} X_{\alpha_1+\alpha_2}[k] \\[6pt]
+x[n] \xrightarrow[\mathcal{F}^{\alpha_1+\alpha_2}]{\hspace{14em}} X_{\alpha_1+\alpha_2}[k]
+\end{array}\]
+
+<p>In the following demo, you can apply two consecutive FRFTs and observe the resulting waveforms and spectrograms at each step, as well as the final result of applying a single FRFT with the combined rotation factor:</p>
+
+<div style="margin:1em 0; width:100%; max-width:500px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/frft/demos/embed_frft_additivity.html?w=500&amp;h=400&amp;wave=sawtooth&amp;disp=scope&amp;win=hann&amp;alpha1=0.15&amp;alpha2=0.62&amp;freq=440" style="width:100%; height:400px; border:none; display:block" allow="autoplay">
+  </iframe>
+</div>
+
+<h2 id="impact-of-input-signals-and-alpha-on-the-resulting-textures">Impact of Input Signals and $alpha$ on the Resulting Textures</h2>
+
+<p>The resulting sounds obtained from applying the FRFT to an input signal can vary greatly depending on the characteristics of the input signal and the chosen rotation factor $\alpha$.</p>
+
+<p>In this part, we will see how the spectral content of a sound, as well as the choice of $\alpha$, can impact the resulting textures obtained from applying the FRFT.</p>
+
+<p>To start with, let’s look at the following demo in which we use a sine sweep input signal and apply the FRFT with different values of $\alpha$ to observe the resulting waveforms and spectrograms:</p>
+
+<div style="margin:1em 0; width:100%; max-width:500px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/frft/demos/embed_frft_rotation.html?w=500&amp;h=500&amp;wave=sweep&amp;disp=scope&amp;dalpha=0.333&amp;win=hann" style="width:100%; height:500px; border:none; display:block" allow="autoplay">
+  </iframe>
+</div>
+
+<p>The first observation here is that the spectral content of the textures in the right and left half of the time-frequency plane are mirrored versions of each other. Moreover, similar textures can be obtained in the top-right and bottom-right quadrants.
+With these observations in mind, for the remainder of this section, we will focus on the top-right quadrant of the time-frequency plane, which corresponds to fractional orders between 0 and 1 $(\alpha \in [0, 1])$.</p>
+
+<p>In the following demo, for a specific input type, we render many different combinations of $\alpha$ and the input frequency content.
+We suggest interacting with the demo and exploring the impact of these parameters on the resulting textures.</p>
+
+<div style="margin:1em 0; width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/frft/demos/embed_alpha_sweep_frft.html?w=600&amp;h=300&amp;wave=sine&amp;win=hann&amp;halfspec=0&amp;freqidx=3&amp;alpha=0.5" style="width:100%; height:300px; border:none; display:block" allow="autoplay">
+  </iframe>
+</div>
+
+<p class="note">Select the ‘BOTH’ option, to visualize and listen to the source and transformation concurrently. 
+For now, we suggest not modifying the source panel (except for the source type)</p>
+
+<p>We suggest the following steps to explore the impact of $\alpha$ and the input spectral content on the resulting textures:</p>
+
+<ul>
+  <li>At a fixed value of $\alpha$, move the frequency slider to explore the impact of the input spectral content on the resulting textures.</li>
+  <li>At a fixed input frequency, move the $\alpha$ slider to explore the impact of $\alpha$ on the resulting textures.</li>
+  <li>Try out different waveforms (sine, square, triangle, and sawtooth) to explore the impact of the input waveform on the resulting textures.</li>
+</ul>
+
+<h2 id="impact-of-windowing">Impact of Windowing</h2>
+
+<p>The way we’ve been applying the FRFT so far is by taking the entire input signal, applying the FRFT to it, and then listening to the resulting output.</p>
+
+<p>That said, just like most spectral processing techniques, the FRFT can also be applied in a windowed manner, where we take a short segment of the input signal (called a window), apply the FRFT to that segment, and then move the window across the entire signal to process it in chunks.</p>
+
+<p>To construct the final output, we can either concatenate the processed segments together (non-overlapping windows) or we can overlap and add the processed segments together (overlapping windows).</p>
+
+<h3 id="window-size-vs-chirp-speed">Window Size Vs. Chirp Speed</h3>
+<p>Let’s start with considering this example: Window-based FRFT of a long Sinusoidal signal with a fixed frequency.<br />
+The way we can apply FRFT, is either we apply it to the entire signal at once, or we can chop the signal into smaller non-overlapping segments and apply the FRFT to each segment separately.
+Because the spectral content in each of the cases (regardless of the segment size) is the same (all containing a single horizontal line representing the frequency of the sine signal), 
+the resulting spectrograms look similar. 
+However, when we play each of the resulting outputs, the speed at which the textures evolve over time is different.
+This can be observed in the following demo in which on the left we use a window size of 131072 samples and on the right we use half this size i.e. 32768 samples):</p>
+
+<div style="margin:1em 0; display:flex; gap:1rem; flex-wrap:wrap;">
+  <div style="flex:1; min-width:280px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+    <iframe src="/assets/web/frft/demos/embed_ola_frft.html?w=600&amp;h=250&amp;wave=sine&amp;freq=440&amp;alpha=0.50&amp;blocksize=131072&amp;overlap=1&amp;halfspec=0&amp;lock=1" style="width:100%; height:250px; border:none; display:block" allow="autoplay">
+    </iframe>
+  </div>
+  <div style="flex:1; min-width:280px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+    <iframe src="/assets/web/frft/demos/embed_ola_frft.html?w=600&amp;h=250&amp;wave=sine&amp;freq=440&amp;alpha=0.50&amp;blocksize=32768&amp;overlap=1&amp;halfspec=0&amp;lock=1" style="width:100%; height:250px; border:none; display:block" allow="autoplay">
+    </iframe>
+  </div>
+</div>
+
+<p>As you notice, while the spectral content look the same, the textures for the smaller window size (on the right) evolve faster over time compared to the larger window size (on the left).</p>
+
+<p class="note">The smearing of the spectrum on the write panel is due to the smaller window size, which results in a lower frequency resolution.</p>
+
+<h3 id="overlapping-windows">Overlapping Windows</h3>
+
+<p>We can also apply the FRFT in an overlapping manner, where we take overlapping segments of the input signal, apply the FRFT to each segment separately, and then overlap and add the processed segments together.
+In this case, you can clearly see that the chirp-like structures from one window bleed into the next window:</p>
+
+<div style="margin:1em 0; width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/frft/demos/embed_ola_frft.html?w=600&amp;h=250&amp;wave=sine&amp;freq=440&amp;alpha=0.50&amp;blocksize=32768&amp;overlap=4&amp;halfspec=0" style="width:100%; height:250px; border:none; display:block" allow="autoplay">
+  </iframe>
+</div>
+
+<p>Change the <code class="language-plaintext highlighter-rouge">overlap</code> parameter to see the impact of different overlap amounts on the resulting textures. 
+Increasing it, results in faster textures with more chirp-like structures.</p>
+
+<h3 id="effect-of-windowing-functions">Effect of Windowing Functions</h3>
+<p>In these demos, we apply a Hann window to each segment before applying the FRFT, which helps to reduce spectral leakage and create smoother transitions between the segments when they are overlapped and added together.
+If you don’t apply any windowing function (i.e. use a rectangular window), you will get more abrupt transitions between the segments, which can result in additional chirp-like structures in the spectrograms.</p>
+
+<div style="margin:1em 0; width:100%; max-width:600px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/frft/demos/embed_ola_frft.html?w=600&amp;h=250&amp;wave=sine&amp;freq=440&amp;alpha=0.50&amp;blocksize=32768&amp;overlap=1&amp;halfspec=0&amp;win=rect" style="width:100%; height:250px; border:none; display:block" allow="autoplay">
+  </iframe>
+</div>
+
+
+
+
+  </div>
+</section>
+
+
+
+<section class="project-section" id="synthesis-with-frft">
+  <h2 class="project-section__header">
+    Synthesis with FRFT
+    <a class="section-anchor" href="#synthesis-with-frft" title="Copy link to this section" aria-label="Copy link to this section"><i class="fa-solid fa-link"></i></a>
+  </h2>
+  <div class="project-section__body markdown-body">
+    
+    
+    
+
+
+
+
+  
+<h2 id="basic-synthesis-and-processing-with-frft">Basic Synthesis and Processing with FRFT</h2>
+
+<p>In fact, in many of the examples we have seen so far, we have been using the FRFT for synthesis and processing without explicitly mentioning it.</p>
+
+<p>In these examples, we discussed how we can create (i.e. synthesize) quite complex dynamically evolving sounds by simply applying FRFT to simple signals such as a pure tone.</p>
+
+<p>While for simplicity, we usually focused on pure tone inputs, we occasionally discussed that we can use more harmonically rich signals.</p>
+
+<p>The following demo allows you to experiment with different input waveforms and listen to the resulting sound after applying FRFT to them.</p>
+
+<div style="margin:1em 0; width:100%; max-width:800px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/frft/demos/embed_interactive_frft.html?w=800&amp;h=220&amp;dur=10&amp;alpha=0.05&amp;type=triangle&amp;blocksize=65536&amp;overlap=4" style="width:100%; height:220px; border:none; display:block" allow="autoplay">
+  </iframe>
+</div>
+
+<p>Moreover, we can use the same processing chain for sound processing as well. That is, instead of synthesizing complex sounds
+from simple inputs, we can take an existing sound and apply FRFT to it to get a transformed version of the original sound.</p>
+
+<p>Here are some example of processing audio recordings with FRFT:</p>
+
+<div style="margin:1em 0; width:100%; max-width:800px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/frft/demos/embed_interactive_frft.html?w=800&amp;h=220&amp;dur=10&amp;alpha=0.05&amp;type=file&amp;blocksize=65536&amp;overlap=4&amp;url=/assets/web/frft/audio/613395__elzozo__double-bass-glissendo-upright-bass.m4a" style="width:100%; height:220px; border:none; display:block" allow="autoplay">
+  </iframe>
+</div>
+
+<div style="margin:1em 0; width:100%; max-width:800px; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+  <iframe src="/assets/web/frft/demos/embed_interactive_frft.html?w=800&amp;h=220&amp;dur=10&amp;alpha=0.01&amp;type=file&amp;blocksize=16384&amp;overlap=4&amp;url=/assets/web/frft/audio/628817__owstu__female-vocal-long.wav" style="width:100%; height:220px; border:none; display:block" allow="autoplay">
+  </iframe>
+</div>
+
+<p class="note">The audio demos here correspond to the following freesound.org recordings: <a href="https://freesound.org/people/elzozo/sounds/613395/">https://freesound.org/people/elzozo/sounds/613395/</a> and <a href="https://freesound.org/people/owstu/sounds/628817/">https://freesound.org/people/owstu/sounds/628817/</a>
+. Press the folder icon to try with your own audio files.</p>
+
+<h2 id="a-few-final-notes">A Few Final Notes</h2>
+
+<h3 id="other-ways-to-use-frft-for-synthesisprocessing">Other Ways to Use FRFT for Synthesis/Processing</h3>
+
+<p>So far we just applied a single FRFT to a single source and listened to the real part of the resulting signal. However, there are many other ways to use the FRFT for synthesis and processing.</p>
+
+<p>For exmaple, we can manipulate a signal in alpha domain and then apply the inverse FRFT to listen to the resulting sound directly in time domain.</p>
+
+\[x[n] \xrightarrow{\mathcal{F}^{\alpha}}X[k] \xrightarrow{\text{Manipulation}} \tilde{X}[k] \xrightarrow{\mathcal{F}^{-\alpha}} \tilde{x}[n]\]
+
+<p>Alternatively, instead of applying FRFT to a single source, we can apply it to multiple sources and combine the resulting spectra in different ways to create new sounds.
+The two sounds can be combined either in the same alpha domain or in different alpha domains. 
+If the two sources are transformed to the same alpha domain, we can listen to the result in the time domain directly by applying the inverse FRFT to the resulting spectrum.
+If they are transformed to different alpha domains, we can listen to the real part of the resulting spectrum directly in alpha domain without applying the inverse FRFT.</p>
+
+<p>Here are some examples of these different methods:</p>
+
+<h4 id="filtering">Filtering</h4>
+
+<p>In filtering, we take a signal to the alpha domain, apply a filter to it, and then bring it back to time domain.</p>
+
+\[x[n] \xrightarrow{\mathcal{F}^{\alpha}}X[k]\]
+
+\[H[k] = \text{Filter Response}\]
+
+\[Y[k] = X[k] \odot H[k]\]
+
+\[Y[k] \xrightarrow{\mathcal{F}^{-\alpha}} \text{Filtered Signal}\]
+
+<p class="note">If you use $\alpha = 1.0$, the operations above are identical to filtering in the frequency domain using the Fourier Transform</p>
+
+<h4 id="convolution">Convolution</h4>
+
+<p>In convolution, we take two signals to the same alpha domain, multiply them together, and then bring the result back to time domain.</p>
+
+\[x_1[n] \xrightarrow{\mathcal{F}^{\alpha}}X_1[k]\]
+
+\[x_2[n] \xrightarrow{\mathcal{F}^{\alpha}}X_2[k]\]
+
+\[Y[k] = X_1[k] \odot X_2[k]\]
+
+\[Y[k] \xrightarrow{\mathcal{F}^{-\alpha}} \text{Convolution Result}\]
+
+<p class="note">If you use $\alpha = 1.0$, the operations above are identical to convolution in the frequency domain using the Fourier Transform</p>
+
+<h4 id="ring-mod">Ring Mod</h4>
+
+<p>In ring modulation, we take two signals to different alpha domains, multiply them together, and then listen to the real part of the resulting signal directly in alpha domain.</p>
+
+\[x_1[n] \xrightarrow{\mathcal{F}^{\alpha_1}}X_1[k]\]
+
+\[x_2[n] \xrightarrow{\mathcal{F}^{\alpha_2}}X_2[k]\]
+
+\[Y[k] = X_1[k] \odot X_2[k]\]
+
+\[Y[k] \xrightarrow{\text{Real Part}} \text{Ring Mod Output}\]
+
+<h3 id="half-spectrum-synthesisprocessing">Half-Spectrum Synthesis/Processing</h3>
+
+<p>The FRFT assumes a full spectrum representation (i.e. both positive and negative frequencies). In all the demos so far, we have been using the full spectrum for synthesis and processing.</p>
+
+<p>Despite that FRFT internally assumes a full spectrum, we can still feed it with a half spectrum (i.e. only positive frequencies) and it will still work. 
+That said, the resulting sounds will be different from the one obtained by feeding it with a full spectrum.</p>
+
+<p>We suggest going back through some of the demos above and modify the full/half spectrum setting to see how it affects the resulting sounds.</p>
+
+<h2 id="using-frft-in-real-time">Using FRFT in Real-Time</h2>
+
+<p>We have developed a real-time version of the FRFT dedicated for MAX/MSP and Max for Live.</p>
+
+<p>The developed real-time version allows for real-time synthesis and processing, filtering, convolution, ring modulation, and more using the FRFT.</p>
+
+<p>Please refer to the following post to read more about this:</p>
+
 <div class="works-card-grid">
+  
+  
 
 
 
 
-
-
-<div class="work-card" data-types="hardware">
-  <a class="work-card__link" href="/works/hardware/groove-transformer-eurorack/">
+<div class="work-card" data-types="max">
+  <a class="work-card__link" href="/works/max/frft/">
 
     <!-- Image header -->
     <div class="work-card__header">
       
-      <img class="work-card__image lazy" data-src="/assets/works/GrooveTransformerEurorack/groovetransformereurorack.jpg" alt="GrooveTransformer Eurorack" />
+      <img class="work-card__image lazy" data-src="/assets/works/FRFT/frft_max.gif" alt="Real-time Fractional Fourier Transform (FRFT)" />
       
     </div>
 
     <!-- Body -->
     <div class="work-card__body">
       <div class="work-card__content">
-        <h3 class="work-card__title">GrooveTransformer Eurorack</h3>
+        <h3 class="work-card__title">Real-time Fractional Fourier Transform (FRFT)</h3>
         
-        <p class="work-card__description">A Generative Control Voltage Sequencer</p>
+        <p class="work-card__description">Real-time Fractional Fourier Transform (FRFT) implementation for audio processing and synthesis, designed for Max and Max for Live</p>
         
         
         <div class="work-card__tags">
           
-          <span class="work-card__tag">Eurorack</span>
+          <span class="work-card__tag">Max</span>
           
-          <span class="work-card__tag">Generative</span>
+          <span class="work-card__tag">Max4Live</span>
           
-          <span class="work-card__tag">CV-sequencer</span>
+          <span class="work-card__tag">Synthesizer</span>
           
-          <span class="work-card__tag">Real-Time</span>
+          <span class="work-card__tag">Processor</span>
           
           
-          <span class="work-card__tag work-card__tag--more">+5</span>
+          <span class="work-card__tag work-card__tag--more">+1</span>
           
         </div>
         
       </div>
       <div class="work-card__footer">
-        <span class="work-card__type-badge">Hardware</span>
-        <span class="work-card__date">May 2025</span>
+        <span class="work-card__type-badge">MAX/M4L</span>
+        <span class="work-card__date">May 2026</span>
       </div>
     </div>
 
   </a>
 </div>
 
-
 </div>
+
+
+
+
+  </div>
+</section>
+
+
+
 
     </div>
   </article>
 </div>
-<!-- end page -->
+<!-- end post -->
+
+
+
+<script>
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    ['proj-license-modal', 'proj-cite-modal'].forEach(function(id) {
+      var m = document.getElementById(id);
+      if (m) m.style.display = 'none';
+    });
+  }
+});
+</script>
+
+<!-- Section & Content Anchor JavaScript -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    // STEP 1: Inject anchor icons into headings within section bodies
+    document.querySelectorAll(".project-section__body h1,.project-section__body h2,.project-section__body h3,.project-section__body h4,.project-section__body h5,.project-section__body h6").forEach(function (heading) {
+      var text = heading.textContent.trim();
+      var id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      if (!id) return;
+      heading.id = id;
+      var anchor = document.createElement("a");
+      anchor.className = "heading-anchor";
+      anchor.href = "#" + id;
+      anchor.title = "Copy link to this heading";
+      anchor.setAttribute("aria-label", "Copy link to this heading");
+      anchor.innerHTML = '<i class="fa-solid fa-link"></i>';
+      (function (headingId) {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          var url = window.location.origin + window.location.pathname + "#" + headingId;
+          history.replaceState(null, "", "#" + headingId);
+          if (navigator.clipboard) navigator.clipboard.writeText(url).catch(function () {});
+        });
+      })(id);
+      heading.prepend(anchor);
+    });
+
+    // STEP 1b: Wrap heading content into outline blocks for indented tree display
+    document.querySelectorAll(".project-section__body").forEach(function(body) {
+      function wrapLevel(container, tag) {
+        var nodes = Array.from(container.childNodes);
+        var wrapper = null;
+        nodes.forEach(function(node) {
+          if (node.nodeName === tag) {
+            wrapper = document.createElement('div');
+            wrapper.className = 'outline-block outline-block--' + tag.toLowerCase();
+            container.insertBefore(wrapper, node);
+            wrapper.appendChild(node);
+          } else if (wrapper) {
+            wrapper.appendChild(node);
+          }
+        });
+      }
+      wrapLevel(body, 'H2');
+      body.querySelectorAll('.outline-block--h2').forEach(function(b) { wrapLevel(b, 'H3'); });
+      body.querySelectorAll('.outline-block--h3').forEach(function(b) { wrapLevel(b, 'H4'); });
+      body.querySelectorAll('.outline-block--h4').forEach(function(b) { wrapLevel(b, 'H5'); });
+    });
+
+    // STEP 2: Hash navigation — expand containing section then scroll
+    function openFromHash() {
+      var hash = window.location.hash.slice(1);
+      if (!hash) return;
+      var target = document.getElementById(hash);
+      if (!target) return;
+      var parentSection = target.closest("section.project-section");
+      if (parentSection) {
+        parentSection.classList.remove("is-collapsed");
+      }
+      // Wait two frames so the layout settles after expanding any collapsed section,
+      // then reuse scrollToEl which correctly accounts for the sticky section header.
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          scrollToEl(target);
+        });
+      });
+    }
+
+    // STEP 3: Section-level anchor clicks
+    document.querySelectorAll(".section-anchor").forEach(function (anchor) {
+      anchor.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var section = this.closest("section.project-section");
+        if (section && section.id) {
+          var url = window.location.origin + window.location.pathname + "#" + section.id;
+          history.replaceState(null, "", "#" + section.id);
+          if (navigator.clipboard) navigator.clipboard.writeText(url).catch(function () {});
+        }
+      });
+    });
+
+    // STEP 4: Section headers toggle collapse (always, even without navbar)
+    document.querySelectorAll("section.project-section").forEach(function (section) {
+      var header = section.querySelector(".project-section__header");
+      if (!header) return;
+      header.addEventListener("click", function (e) {
+        if (e.target.closest(".section-anchor")) return;
+        section.classList.toggle("is-collapsed");
+      });
+    });
+
+    // STEP 4b: Single-section posts — hide the redundant section header (independent of navbar)
+    var allPostSections = document.querySelectorAll("section.project-section[id]");
+    if (allPostSections.length === 1) {
+      allPostSections[0].classList.add('no-section-header');
+      var onlyHeader = allPostSections[0].querySelector('.project-section__header');
+      if (onlyHeader) onlyHeader.style.display = 'none';
+    }
+
+    // STEP 5: Build 3-row horizontal navbar (Section | H2 | H3)
+    var navbar = document.getElementById("post-navbar");
+    if (!navbar) return;
+    var sections = Array.from(document.querySelectorAll("section.project-section[id]"));
+    if (sections.length === 0) return;
+
+    // Build data tree — auto-detect min heading level per section
+    var tree = sections.map(function (section) {
+      var header = section.querySelector(".project-section__header");
+      var label = header ? header.childNodes[0].textContent.trim() : section.id.replace(/-/g, " ");
+      var body = section.querySelector(".project-section__body");
+      var h2s = [];
+      if (body) {
+        var allSub = Array.from(body.querySelectorAll("h1,h2,h3,h4,h5,h6"));
+        if (allSub.length > 0) {
+          var minLevel = Math.min.apply(null, allSub.map(function (h) { return parseInt(h.tagName[1]); }));
+          var l2Tag = "H" + minLevel;
+          var l3Tag = "H" + (minLevel + 1);
+          var currentH2 = null;
+          allSub.forEach(function (h) {
+            var hId = h.id || h.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+            if (!h.id) h.id = hId;
+            var hLabel = h.textContent.trim();
+            if (h.tagName === l2Tag) {
+              currentH2 = { id: hId, label: hLabel, el: h, h3s: [] };
+              h2s.push(currentH2);
+            } else if (h.tagName === l3Tag && currentH2) {
+              currentH2.h3s.push({ id: hId, label: hLabel, el: h });
+            }
+          });
+        }
+      }
+      return { id: section.id, label: label, el: section, h2s: h2s };
+    });
+
+    var singleSection = tree.length === 1;
+
+    // Create inner wrapper and 3 row elements
+    var navInner = document.createElement("div");
+    navInner.className = "post-navbar__rows";
+    navbar.appendChild(navInner);
+
+    var row1 = document.createElement("div");
+    row1.className = "navbar-row navbar-row--1";
+    var row2 = document.createElement("div");
+    row2.className = "navbar-row navbar-row--2";
+    var row3 = document.createElement("div");
+    row3.className = "navbar-row navbar-row--3";
+    if (!singleSection) navInner.appendChild(row1);
+    navInner.appendChild(row2);
+    navInner.appendChild(row3);
+
+    // Show only as many rows as the content has levels (determined once at init)
+    var hasH2s = tree.some(function (s) { return s.h2s.length > 0; });
+    var hasH3s = tree.some(function (s) { return s.h2s.some(function (h2) { return h2.h3s.length > 0; }); });
+    if (!hasH2s) row2.style.display = 'none';
+    if (!hasH3s) row3.style.display = 'none';
+
+    // Set CSS variable AFTER rows are shown/hidden so offsetHeight reflects actual navbar height.
+    function updateNavbarHeightVar() {
+      document.documentElement.style.setProperty('--navbar-height', navbar.offsetHeight + 'px');
+    }
+    updateNavbarHeightVar();
+    window.addEventListener('resize', updateNavbarHeightVar);
+
+    var activeSection = null;
+    var activeH2 = null;
+    var activeH3 = null;
+
+    function navbarOffset() {
+      return navbar.offsetHeight + 24;
+    }
+
+    function scrollToEl(el) {
+      var offset = navbarOffset();
+      // When scrolling to a heading inside a section body, also offset for the sticky section header
+      if (el.closest && el.closest('.project-section__body')) {
+        var section = el.closest('.project-section');
+        if (section) {
+          var sectionHeader = section.querySelector('.project-section__header');
+          if (sectionHeader) offset += sectionHeader.offsetHeight;
+        }
+      }
+      var top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: top, behavior: "instant" });
+    }
+
+    function makeLink(label, id, cls, onClick) {
+      var a = document.createElement("a");
+      a.href = "#" + id;
+      a.className = "post-nav-link " + cls;
+      a.textContent = label;
+      a.title = label;
+      a.dataset.id = id;
+      a.addEventListener("click", function (e) { e.preventDefault(); onClick(); });
+      return a;
+    }
+
+    function highlightRow(row, id) {
+      Array.from(row.querySelectorAll(".post-nav-link")).forEach(function (l) {
+        var active = l.dataset.id === id;
+        l.classList.toggle("is-active", active);
+        if (active) l.scrollIntoView({ block: "nearest", inline: "center" });
+      });
+    }
+
+    function renderRow2(sectionNode) {
+      row2.innerHTML = "";
+      row3.innerHTML = "";
+      activeH2 = null;
+      activeH3 = null;
+      if (!sectionNode || sectionNode.h2s.length === 0) return;
+      sectionNode.h2s.forEach(function (h2) {
+        var a = makeLink(h2.label, h2.id, "post-nav-link--l2", function () {
+          history.pushState(null, "", "#" + h2.id);
+          scrollToEl(h2.el);
+          activeH2 = h2.id;
+          activeH3 = null;
+          highlightRow(row2, h2.id);
+          renderRow3(h2);
+        });
+        a.addEventListener("mouseenter", function () { renderRow3(h2); });
+        row2.appendChild(a);
+      });
+    }
+
+    function renderRow3(h2Node) {
+      row3.innerHTML = "";
+      activeH3 = null;
+      if (!h2Node || h2Node.h3s.length === 0) return;
+      h2Node.h3s.forEach(function (h3) {
+        row3.appendChild(makeLink(h3.label, h3.id, "post-nav-link--l3", function () {
+          history.pushState(null, "", "#" + h3.id);
+          scrollToEl(h3.el);
+          activeH3 = h3.id;
+          highlightRow(row3, h3.id);
+        }));
+      });
+    }
+
+    // ── Hover preview helpers ────────────────────────────────────────────────
+    var isPreviewing = false;
+
+    function restoreRows() {
+      isPreviewing = false;
+      row2.innerHTML = "";
+      row3.innerHTML = "";
+      var actSNode = tree.find(function (s) { return s.id === activeSection; });
+      if (!actSNode || actSNode.h2s.length === 0) return;
+      actSNode.h2s.forEach(function (h2) {
+        var a = makeLink(h2.label, h2.id, "post-nav-link--l2", function () {
+          history.pushState(null, "", "#" + h2.id);
+          scrollToEl(h2.el);
+          activeH2 = h2.id;
+          activeH3 = null;
+          highlightRow(row2, h2.id);
+          renderRow3(h2);
+        });
+        a.addEventListener("mouseenter", function () { renderRow3(h2); });
+        row2.appendChild(a);
+      });
+      highlightRow(row2, activeH2);
+      if (activeH2) {
+        var actH2Node = actSNode.h2s.find(function (h) { return h.id === activeH2; });
+        if (actH2Node && actH2Node.h3s.length > 0) {
+          actH2Node.h3s.forEach(function (h3) {
+            row3.appendChild(makeLink(h3.label, h3.id, "post-nav-link--l3", function () {
+              history.pushState(null, "", "#" + h3.id);
+              scrollToEl(h3.el);
+              activeH3 = h3.id;
+              highlightRow(row3, h3.id);
+            }));
+          });
+          highlightRow(row3, activeH3);
+        }
+      }
+    }
+
+    function previewRow3(h2Node, sNode) {
+      row3.innerHTML = "";
+      if (!h2Node || h2Node.h3s.length === 0) return;
+      h2Node.h3s.forEach(function (h3) {
+        row3.appendChild(makeLink(h3.label, h3.id, "post-nav-link--l3", function () {
+          sNode.el.classList.remove("is-collapsed");
+          history.pushState(null, "", "#" + h3.id);
+          scrollToEl(h3.el);
+          activeSection = sNode.id;
+          activeH2 = h2Node.id;
+          activeH3 = h3.id;
+          highlightRow(row1, activeSection);
+          renderRow2(sNode);
+          highlightRow(row2, activeH2);
+          renderRow3(h2Node);
+          highlightRow(row3, activeH3);
+          isPreviewing = false;
+        }));
+      });
+    }
+
+    function previewRow2(sNode) {
+      isPreviewing = true;
+      row2.innerHTML = "";
+      row3.innerHTML = "";
+      if (!sNode || sNode.h2s.length === 0) return;
+      sNode.h2s.forEach(function (h2) {
+        var a = makeLink(h2.label, h2.id, "post-nav-link--l2", function () {
+          sNode.el.classList.remove("is-collapsed");
+          history.pushState(null, "", "#" + h2.id);
+          scrollToEl(h2.el);
+          activeSection = sNode.id;
+          activeH2 = h2.id;
+          activeH3 = null;
+          highlightRow(row1, activeSection);
+          highlightRow(row2, activeH2);
+          renderRow3(h2);
+          isPreviewing = false;
+        });
+        a.addEventListener("mouseenter", function () { previewRow3(h2, sNode); });
+        row2.appendChild(a);
+      });
+    }
+
+    // Render row1
+    tree.forEach(function (sectionNode) {
+      var a = makeLink(sectionNode.label, sectionNode.id, "post-nav-link--l1", function () {
+        history.pushState(null, "", "#" + sectionNode.id);
+        sectionNode.el.classList.remove("is-collapsed");
+        activeSection = sectionNode.id;
+        highlightRow(row1, sectionNode.id);
+        renderRow2(sectionNode);
+        var top = sectionNode.el.getBoundingClientRect().top + window.pageYOffset - navbar.offsetHeight;
+        window.scrollTo({ top: top, behavior: "instant" });
+        isPreviewing = false;
+      });
+      a.addEventListener("mouseenter", function () {
+        if (sectionNode.id !== activeSection) {
+          previewRow2(sectionNode);
+        } else if (isPreviewing) {
+          restoreRows();
+        }
+      });
+      row1.appendChild(a);
+    });
+
+    // Mouse leaves the whole navbar → restore active state
+    navInner.addEventListener("mouseleave", function () {
+      if (isPreviewing) restoreRows();
+    });
+
+    // Initialise with first section active, all expanded
+    if (tree.length) {
+      activeSection = tree[0].id;
+      highlightRow(row1, activeSection);
+      renderRow2(tree[0]);
+    }
+
+    // Scroll-spy: observe sections, H2s, H3s
+    var observables = [];
+    tree.forEach(function (s) {
+      observables.push({ el: s.el, sectionId: s.id, h2Id: null, h3Id: null, sectionNode: s, h2Node: null });
+      s.h2s.forEach(function (h2) {
+        observables.push({ el: h2.el, sectionId: s.id, h2Id: h2.id, h3Id: null, sectionNode: s, h2Node: h2 });
+        h2.h3s.forEach(function (h3) {
+          observables.push({ el: h3.el, sectionId: s.id, h2Id: h2.id, h3Id: h3.id, sectionNode: s, h2Node: h2 });
+        });
+      });
+    });
+
+    // Ensure the last section can scroll up to just below the navbar.
+    // Adds bottom padding so that maxScrollY >= lastSection.offsetTop - navbarHeight.
+    (function () {
+      if (!tree.length) return;
+      var post = document.querySelector(".post__content");
+      if (!post) return;
+      var lastSection = tree[tree.length - 1].el;
+      var navH = navbarOffset();
+      var lastTop = lastSection.getBoundingClientRect().top + window.pageYOffset;
+      var spaceAfter = document.body.scrollHeight - lastTop;
+      var needed = window.innerHeight - navH;
+      var extra = Math.max(0, needed - spaceAfter);
+      if (extra > 0) post.style.paddingBottom = extra + "px";
+    })();
+
+    // Call openFromHash now that navbar is built and offset is known
+    openFromHash();
+
+    // Scroll-spy: find the last observable whose top is at or above its effective cutoff.
+    // For headings inside a section body the cutoff also includes the sticky section header,
+    // matching the offset used in scrollToEl so spy and scroller stay in sync.
+    function stickyOffset(el) {
+      var offset = navbarOffset() + 4;
+      if (el.closest && el.closest('.project-section__body')) {
+        var sec = el.closest('.project-section');
+        if (sec) {
+          var hdr = sec.querySelector('.project-section__header');
+          if (hdr) offset += hdr.offsetHeight;
+        }
+      }
+      return offset;
+    }
+
+    function findActiveObs() {
+      var result = -1;
+      for (var i = 0; i < observables.length; i++) {
+        var el = observables[i].el;
+        if (el.getBoundingClientRect().top <= stickyOffset(el)) {
+          result = i;
+        } else {
+          break;
+        }
+      }
+      return observables[result >= 0 ? result : 0] || null;
+    }
+
+    function applyActiveObs(obs) {
+      if (!obs) return;
+      if (obs.sectionId !== activeSection) {
+        activeSection = obs.sectionId;
+        highlightRow(row1, activeSection);
+        renderRow2(obs.sectionNode);
+        if (obs.h2Node) {
+          activeH2 = obs.h2Id;
+          highlightRow(row2, activeH2);
+          renderRow3(obs.h2Node);
+        }
+        if (obs.h3Id) {
+          activeH3 = obs.h3Id;
+          highlightRow(row3, activeH3);
+        }
+      } else if (obs.h2Id !== activeH2) {
+        activeH2 = obs.h2Id;
+        highlightRow(row2, activeH2);
+        if (obs.h2Node) renderRow3(obs.h2Node);
+        if (obs.h3Id) {
+          activeH3 = obs.h3Id;
+          highlightRow(row3, activeH3);
+        }
+      } else if (obs.h3Id && obs.h3Id !== activeH3) {
+        activeH3 = obs.h3Id;
+        highlightRow(row3, activeH3);
+      }
+    }
+
+    var scrollTicking = false;
+    window.addEventListener("scroll", function () {
+      if (!scrollTicking) {
+        window.requestAnimationFrame(function () {
+          applyActiveObs(findActiveObs());
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
+    }, { passive: true });
+
+    window.addEventListener("hashchange", openFromHash);
+  });
+</script>
+  <!-- MathJax -->
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        tags: 'ams',
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    };
+  </script>
+  <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
   </main>
   <!-- end content -->

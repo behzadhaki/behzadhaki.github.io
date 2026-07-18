@@ -1,30 +1,231 @@
----
-layout: null
----
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>{{ site.data.settings.title | xml_escape }}</title>
-    <description>{{ site.data.settings.description | xml_escape }}</description>
-    <link>{{ site.url }}{{ site.baseurl }}/</link>
-    <atom:link href="{{ "/feed.xml" | absolute_url }}" rel="self" type="application/rss+xml"/>
-    <pubDate>{{ site.time | date_to_rfc822 }}</pubDate>
-    <lastBuildDate>{{ site.time | date_to_rfc822 }}</lastBuildDate>
-    <generator>Jekyll v{{ jekyll.version }}</generator>
-    {% for post in site.posts limit:10 %}
+    <title>Behzad Haki</title>
+    <description>Researcher &amp;amp; Developer · Music Technology · Barcelona</description>
+    <link>https://behzadhaki.github.io/</link>
+    <atom:link href="https://behzadhaki.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 18 Jul 2026 16:02:21 +0000</pubDate>
+    <lastBuildDate>Sat, 18 Jul 2026 16:02:21 +0000</lastBuildDate>
+    <generator>Jekyll v4.4.1</generator>
+    
       <item>
-        <title>{{ post.title | xml_escape }}</title>
-        <description>{{ post.content | xml_escape }}</description>
-        <pubDate>{{ post.date | date_to_rfc822 }}</pubDate>
-        <link>{{ post.url | absolute_url }}</link>
-        <guid isPermaLink="true">{{ post.url | absolute_url }}</guid>
-        {% for tag in post.tags %}
-        <category>{{ tag | xml_escape }}</category>
-        {% endfor %}
-        {% for cat in post.categories %}
-        <category>{{ cat | xml_escape }}</category>
-        {% endfor %}
+        <title>Real-time Fractional Fourier Transform (FRFT)</title>
+        <description>
+</description>
+        <pubDate>Sat, 23 May 2026 00:00:00 +0000</pubDate>
+        <link>https://behzadhaki.github.io/works/max/frft/</link>
+        <guid isPermaLink="true">https://behzadhaki.github.io/works/max/frft/</guid>
+        
+        <category>Max</category>
+        
+        <category>Max4Live</category>
+        
+        <category>Synthesizer</category>
+        
+        <category>Processor</category>
+        
+        <category>Effect</category>
+        
+        
       </item>
-    {% endfor %}
+    
+      <item>
+        <title>Synthesis Using Fractional Fourier Transform (FRFT)</title>
+        <description>
+</description>
+        <pubDate>Thu, 14 May 2026 00:00:00 +0000</pubDate>
+        <link>https://behzadhaki.github.io/tutorials/fractional-fourier-transform-frft/</link>
+        <guid isPermaLink="true">https://behzadhaki.github.io/tutorials/fractional-fourier-transform-frft/</guid>
+        
+        <category>FRFT</category>
+        
+        <category>Synthesis</category>
+        
+        <category>Processor</category>
+        
+        <category>Tutorial</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>FRFT in the Browser</title>
+        <description>
+</description>
+        <pubDate>Sun, 01 Mar 2026 00:00:00 +0000</pubDate>
+        <link>https://behzadhaki.github.io/works/web-widgets/frft-in-the-browser/</link>
+        <guid isPermaLink="true">https://behzadhaki.github.io/works/web-widgets/frft-in-the-browser/</guid>
+        
+        <category>FRFT</category>
+        
+        <category>WebAssembly</category>
+        
+        <category>Web-widget</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Freesound Rack Plugin</title>
+        <description>
+</description>
+        <pubDate>Sat, 06 Sep 2025 00:00:00 +0000</pubDate>
+        <link>https://behzadhaki.github.io/works/plugins/freesound-rack/</link>
+        <guid isPermaLink="true">https://behzadhaki.github.io/works/plugins/freesound-rack/</guid>
+        
+        <category>VST</category>
+        
+        <category>AuV2</category>
+        
+        <category>Standalone</category>
+        
+        <category>Freesound</category>
+        
+        <category>Sampler</category>
+        
+        <category>Looper</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Freesound API V2</title>
+        <description>
+</description>
+        <pubDate>Wed, 20 Aug 2025 00:00:00 +0000</pubDate>
+        <link>https://behzadhaki.github.io/tutorials/freesound-juce-tutorial/</link>
+        <guid isPermaLink="true">https://behzadhaki.github.io/tutorials/freesound-juce-tutorial/</guid>
+        
+        <category>VST</category>
+        
+        <category>AuV2</category>
+        
+        <category>Standalone</category>
+        
+        <category>JUCE</category>
+        
+        <category>Freesound-API</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>MultiStream Rhythmic Modulations</title>
+        <description>
+</description>
+        <pubDate>Thu, 22 May 2025 00:00:00 +0000</pubDate>
+        <link>https://behzadhaki.github.io/works/max/multistream-rhythmic-mods/</link>
+        <guid isPermaLink="true">https://behzadhaki.github.io/works/max/multistream-rhythmic-mods/</guid>
+        
+        <category>Max4Live</category>
+        
+        <category>Generative</category>
+        
+        <category>pitch-sequencer</category>
+        
+        <category>Real-Time</category>
+        
+        <category>Performance-oriented</category>
+        
+        <category>Midi2Midi</category>
+        
+        <category>Audio2Midi</category>
+        
+        <category>Markov-based</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>HumanizeCandombe VST</title>
+        <description>
+</description>
+        <pubDate>Thu, 22 May 2025 00:00:00 +0000</pubDate>
+        <link>https://behzadhaki.github.io/works/plugins/humanize-candombe-vst/</link>
+        <guid isPermaLink="true">https://behzadhaki.github.io/works/plugins/humanize-candombe-vst/</guid>
+        
+        <category>VST</category>
+        
+        <category>AuV2</category>
+        
+        <category>Midi2Midi</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Markov Accompaniment Patch</title>
+        <description>
+</description>
+        <pubDate>Sat, 17 May 2025 00:00:00 +0000</pubDate>
+        <link>https://behzadhaki.github.io/works/max/markov-accompaniment/</link>
+        <guid isPermaLink="true">https://behzadhaki.github.io/works/max/markov-accompaniment/</guid>
+        
+        <category>Max4Live</category>
+        
+        <category>Generative</category>
+        
+        <category>Modulation-Source</category>
+        
+        <category>Real-Time</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>GrooveTransformer VST</title>
+        <description>
+</description>
+        <pubDate>Tue, 13 May 2025 00:00:00 +0000</pubDate>
+        <link>https://behzadhaki.github.io/works/plugins/groove-transformer/</link>
+        <guid isPermaLink="true">https://behzadhaki.github.io/works/plugins/groove-transformer/</guid>
+        
+        <category>VST</category>
+        
+        <category>Generative</category>
+        
+        <category>rhythm-sequencer</category>
+        
+        <category>Real-Time</category>
+        
+        <category>Performance-oriented</category>
+        
+        <category>Midi2Midi</category>
+        
+        <category>Audio2Midi</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>GrooveTransformer Eurorack</title>
+        <description>
+</description>
+        <pubDate>Mon, 05 May 2025 00:00:00 +0000</pubDate>
+        <link>https://behzadhaki.github.io/works/hardware/groove-transformer-eurorack/</link>
+        <guid isPermaLink="true">https://behzadhaki.github.io/works/hardware/groove-transformer-eurorack/</guid>
+        
+        <category>Eurorack</category>
+        
+        <category>Generative</category>
+        
+        <category>CV-sequencer</category>
+        
+        <category>Real-Time</category>
+        
+        <category>Performance-oriented</category>
+        
+        <category>MidiIn</category>
+        
+        <category>AudioIn</category>
+        
+        <category>MidiOut</category>
+        
+        <category>CVOut</category>
+        
+        
+      </item>
+    
   </channel>
 </rss>

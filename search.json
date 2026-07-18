@@ -1,15 +1,183 @@
----
-layout: null
----
 [
-  {% for post in site.posts %}
+  
     {
-      "title"    : "{{ post.title | escape }}",
-      "category" : "{{ post.category }}",
-      "tags"     : "{{ post.tags | array_to_sentence_string }}",
-      "url"      : "{{ site.baseurl }}{{ post.url }}",
-      "date"     : "{{ post.date | date: '%b %-d, %Y' }}",
-      "article"  : "<li class='search-result-item'><a class='search-result__link' href='{{post.url | relative_url}}'>{% if post.image %}<img class='search-result__avatar' src='{{post.image | relative_url}}' alt=''>{% endif %}<span class='search-result__text'><span class='search-result__title'>{{post.title | escape}}</span><span class='search-result__meta'>{{ post.date | date: '%b %-d, %Y' }}{% if post.description %} &mdash; {{ post.description | escape | truncate: 80 }}{% endif %}</span></span></a></li>"
-    } {% unless forloop.last %},{% endunless %}
-  {% endfor %}
+      "title"    : "Real-time Fractional Fourier Transform (FRFT)",
+      "category" : "",
+      "tags"     : "Max, Max4Live, Synthesizer, Processor, and Effect",
+      "url"      : "/works/max/frft/",
+      "date"     : "May 23, 2026",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/works/max/frft/'><img class='search-result__avatar' src='/assets/works/FRFT/frft_max.gif' alt=''><span class='search-result__text'><span class='search-result__title'>Real-time Fractional Fourier Transform (FRFT)</span><span class='search-result__meta'>May 23, 2026 &mdash; Real-time Fractional Fourier Transform (FRFT) implementation for audio proces...</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "Synthesis Using Fractional Fourier Transform (FRFT)",
+      "category" : "",
+      "tags"     : "FRFT, Synthesis, Processor, and Tutorial",
+      "url"      : "/tutorials/fractional-fourier-transform-frft/",
+      "date"     : "May 14, 2026",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/tutorials/fractional-fourier-transform-frft/'><img class='search-result__avatar' src='/assets/tutorials/FractionalFourierTransform_tutorial/frft_tutorial3.gif' alt=''><span class='search-result__text'><span class='search-result__title'>Synthesis Using Fractional Fourier Transform (FRFT)</span><span class='search-result__meta'>May 14, 2026 &mdash; A tutorial on the &#39;Fractional Fourier Transform Sound Synthesis&#39; pape...</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "FRFT in the Browser",
+      "category" : "",
+      "tags"     : "FRFT, WebAssembly, and Web-widget",
+      "url"      : "/works/web-widgets/frft-in-the-browser/",
+      "date"     : "Mar 1, 2026",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/works/web-widgets/frft-in-the-browser/'><img class='search-result__avatar' src='/assets/works/FRFTInTheBrowser/frft_widget_avatar2.gif' alt=''><span class='search-result__text'><span class='search-result__title'>FRFT in the Browser</span><span class='search-result__meta'>Mar 1, 2026 &mdash; WebAssembly ports of the Fractional Fourier Transform with a collection of re...</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "Freesound Rack Plugin",
+      "category" : "",
+      "tags"     : "VST, AuV2, Standalone, Freesound, Sampler, and Looper",
+      "url"      : "/works/plugins/freesound-rack/",
+      "date"     : "Sep 6, 2025",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/works/plugins/freesound-rack/'><img class='search-result__avatar' src='/assets/works/FreesoundRack/FreesoundRack.gif' alt=''><span class='search-result__text'><span class='search-result__title'>Freesound Rack Plugin</span><span class='search-result__meta'>Sep 6, 2025 &mdash; Access the Freesound database directly from your DAW</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "Freesound API V2",
+      "category" : "",
+      "tags"     : "VST, AuV2, Standalone, JUCE, and Freesound-API",
+      "url"      : "/tutorials/freesound-juce-tutorial/",
+      "date"     : "Aug 20, 2025",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/tutorials/freesound-juce-tutorial/'><img class='search-result__avatar' src='/assets/works/FreesoundSimpleSampler/FreesoundSimpleSampler.png' alt=''><span class='search-result__text'><span class='search-result__title'>Freesound API V2</span><span class='search-result__meta'>Aug 20, 2025 &mdash; Developing audio applications and plugins with JUCE and Freesound API V2</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "MultiStream Rhythmic Modulations",
+      "category" : "",
+      "tags"     : "Max4Live, Generative, pitch-sequencer, Real-Time, Performance-oriented, Midi2Midi, Audio2Midi, and Markov-based",
+      "url"      : "/works/max/multistream-rhythmic-mods/",
+      "date"     : "May 22, 2025",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/works/max/multistream-rhythmic-mods/'><img class='search-result__avatar' src='/assets/works/MultistreamRhythmicMods/prototype.png' alt=''><span class='search-result__text'><span class='search-result__title'>MultiStream Rhythmic Modulations</span><span class='search-result__meta'>May 22, 2025 &mdash; A Max4Live patch that generates multiple parallel modulation curves that are ...</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "HumanizeCandombe VST",
+      "category" : "",
+      "tags"     : "VST, AuV2, and Midi2Midi",
+      "url"      : "/works/plugins/humanize-candombe-vst/",
+      "date"     : "May 22, 2025",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/works/plugins/humanize-candombe-vst/'><img class='search-result__avatar' src='/assets/works/HumanizeCandombe-VST/candombe-vst.png' alt=''><span class='search-result__text'><span class='search-result__title'>HumanizeCandombe VST</span><span class='search-result__meta'>May 22, 2025 &mdash; Adds velocity and micro-timing to quantized MIDI sequences</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "Markov Accompaniment Patch",
+      "category" : "",
+      "tags"     : "Max4Live, Generative, Modulation-Source, and Real-Time",
+      "url"      : "/works/max/markov-accompaniment/",
+      "date"     : "May 17, 2025",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/works/max/markov-accompaniment/'><img class='search-result__avatar' src='/assets/works/MarkovAccompaniment/markov_hero.png' alt=''><span class='search-result__text'><span class='search-result__title'>Markov Accompaniment Patch</span><span class='search-result__meta'>May 17, 2025 &mdash; A Max4Live patch that generates accompaniment tracks using Markov Chains.</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "GrooveTransformer VST",
+      "category" : "",
+      "tags"     : "VST, Generative, rhythm-sequencer, Real-Time, Performance-oriented, Midi2Midi, and Audio2Midi",
+      "url"      : "/works/plugins/groove-transformer/",
+      "date"     : "May 13, 2025",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/works/plugins/groove-transformer/'><img class='search-result__avatar' src='/assets/works/GrooveTransformer/GT_Teaser_gif.gif' alt=''><span class='search-result__text'><span class='search-result__title'>GrooveTransformer VST</span><span class='search-result__meta'>May 13, 2025 &mdash; A Performance-Oriented Generative rhythm-sequencer</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "GrooveTransformer Eurorack",
+      "category" : "",
+      "tags"     : "Eurorack, Generative, CV-sequencer, Real-Time, Performance-oriented, MidiIn, AudioIn, MidiOut, and CVOut",
+      "url"      : "/works/hardware/groove-transformer-eurorack/",
+      "date"     : "May 5, 2025",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/works/hardware/groove-transformer-eurorack/'><img class='search-result__avatar' src='/assets/works/GrooveTransformerEurorack/groovetransformereurorack.jpg' alt=''><span class='search-result__text'><span class='search-result__title'>GrooveTransformer Eurorack</span><span class='search-result__meta'>May 5, 2025 &mdash; A Generative Control Voltage Sequencer</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "Palau Güell Live Show — Nov 2024",
+      "category" : "",
+      "tags"     : "Performance, Live, Organ, and Generative",
+      "url"      : "/showcases/palau-guell-live-2024/",
+      "date"     : "Nov 1, 2024",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/showcases/palau-guell-live-2024/'><img class='search-result__avatar' src='/assets/showcases/Palau_Guell_2024/guell.png' alt=''><span class='search-result__text'><span class='search-result__title'>Palau Güell Live Show — Nov 2024</span><span class='search-result__meta'>Nov 1, 2024 &mdash; A generative organ performance at Palau Güell in Barcelona</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "CCCB Live Show — Feb 2024",
+      "category" : "",
+      "tags"     : "Performance, Live, GrooveTransformer, and Generative",
+      "url"      : "/showcases/cccb-live-show-2024/",
+      "date"     : "Feb 1, 2024",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/showcases/cccb-live-show-2024/'><img class='search-result__avatar' src='/assets/showcases/CCCB_Live_2024/CCCB_GT_RF.png' alt=''><span class='search-result__text'><span class='search-result__title'>CCCB Live Show — Feb 2024</span><span class='search-result__meta'>Feb 1, 2024 &mdash; A public showcase of the GrooveTransformer system at the Centre de Cultura Co...</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "TapTamDrum",
+      "category" : "",
+      "tags"     : "Dataset, Drum-Patterns, ISMIR, and MIDI",
+      "url"      : "/works/datasets/tap-tam-drum/",
+      "date"     : "Nov 6, 2023",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/works/datasets/tap-tam-drum/'><img class='search-result__avatar' src='/assets/works/TapTamDrum/taptamdrum.png' alt=''><span class='search-result__text'><span class='search-result__title'>TapTamDrum</span><span class='search-result__meta'>Nov 6, 2023 &mdash; A dataset of drummer-performed two-hand reductions of complex drum patterns</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "El Bongosero",
+      "category" : "",
+      "tags"     : "Dataset, Bongo, Percussion, and Interactive-Installation",
+      "url"      : "/works/datasets/el-bongosero/",
+      "date"     : "Oct 18, 2023",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/works/datasets/el-bongosero/'><img class='search-result__avatar' src='/assets/works/ElBongosero/elbongosero.png' alt=''><span class='search-result__text'><span class='search-result__title'>El Bongosero</span><span class='search-result__meta'>Oct 18, 2023 &mdash; A Dataset of Hand-Played Bongo Grooves Accompanying Drum Patterns</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "CCCB: Artificial Intelligence Exhibition",
+      "category" : "",
+      "tags"     : "Installation, Interactive, Generative, and Public-Engagement",
+      "url"      : "/showcases/cccb-ai-exhibition/",
+      "date"     : "Oct 1, 2023",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/showcases/cccb-ai-exhibition/'><img class='search-result__avatar' src='/assets/showcases/CCCB_AI_Exhibition/cccb-IA.png' alt=''><span class='search-result__text'><span class='search-result__title'>CCCB: Artificial Intelligence Exhibition</span><span class='search-result__meta'>Oct 1, 2023 &mdash; A six-month interactive installation at the Centre de Cultura Contemporània d...</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "NeuralMidiFx",
+      "category" : "",
+      "tags"     : "VST3, JUCE, PyTorch, Neural-Network, and Template",
+      "url"      : "/works/frameworks/neural-midi-fx/",
+      "date"     : "Aug 20, 2023",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/works/frameworks/neural-midi-fx/'><img class='search-result__avatar' src='/assets/dev-resources/NeuralMidiFx/nmfx.png' alt=''><span class='search-result__text'><span class='search-result__title'>NeuralMidiFx</span><span class='search-result__meta'>Aug 20, 2023 &mdash; A Wrapper Template for Deploying Neural Networks as VST3 Plugins</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "Sónar+D Music Festival 2023",
+      "category" : "",
+      "tags"     : "Showcase, Eurorack, Generative, and Festival",
+      "url"      : "/showcases/sonar-d-2023/",
+      "date"     : "Jun 15, 2023",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/showcases/sonar-d-2023/'><img class='search-result__avatar' src='/assets/showcases/SonarD_2023/sonarDGTEuro.png' alt=''><span class='search-result__text'><span class='search-result__title'>Sónar+D Music Festival 2023</span><span class='search-result__meta'>Jun 15, 2023 &mdash; Showcased the GrooveTransformer Eurorack module to the general public at the ...</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "+RAIN Film Festival 2023",
+      "category" : "",
+      "tags"     : "Performance, Eurorack, Generative, and Live",
+      "url"      : "/showcases/rain-2023/",
+      "date"     : "Jun 1, 2023",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/showcases/rain-2023/'><img class='search-result__avatar' src='/assets/showcases/RAIN_2023/RAIN_GTEuro.png' alt=''><span class='search-result__text'><span class='search-result__title'>+RAIN Film Festival 2023</span><span class='search-result__meta'>Jun 1, 2023 &mdash; A live performance involving the GrooveTransformer Eurorack module at the +RA...</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "Freesound Simple Sampler",
+      "category" : "",
+      "tags"     : "VST, AuV2, Standalone, and Freesound-API",
+      "url"      : "/works/plugins/freesound-simple-sampler/",
+      "date"     : "May 22, 2023",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/works/plugins/freesound-simple-sampler/'><img class='search-result__avatar' src='/assets/works/FreesoundSimpleSampler/FreesoundSimpleSampler.png' alt=''><span class='search-result__text'><span class='search-result__title'>Freesound Simple Sampler</span><span class='search-result__meta'>May 22, 2023 &mdash; An updated version of Ramires and Font&#39;s Freesound Simple Sampler, adapte...</span></span></a></li>"
+    } ,
+  
+    {
+      "title"    : "Groove2Drum Plugin",
+      "category" : "",
+      "tags"     : "VST3, MIDI, Drum-Accompaniment, Real-Time, and Transformer",
+      "url"      : "/works/plugins/groove2drum/",
+      "date"     : "Sep 15, 2022",
+      "article"  : "<li class='search-result-item'><a class='search-result__link' href='/works/plugins/groove2drum/'><img class='search-result__avatar' src='/assets/works/Groove2Drum/groove2drum.jpg' alt=''><span class='search-result__text'><span class='search-result__title'>Groove2Drum Plugin</span><span class='search-result__meta'>Sep 15, 2022 &mdash; A VST3 plugin for generating MIDI drum accompaniments in real-time</span></span></a></li>"
+    } 
+  
 ]

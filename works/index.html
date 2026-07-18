@@ -6,25 +6,25 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Works — Hardware</title>
-  <meta name='description' content='Researcher &amp; Developer · Music Technology · Barcelona'>
+  <title>Works</title>
+  <meta name='description' content='Software, hardware, and datasets I have developed.'>
 
   <link rel="icon" type="image/png" href="/assets/img/favicon.png">
   <link rel="apple-touch-icon" href="/assets/img/favicon.png">
-  <link rel="canonical" href="https://behzadhaki.github.io/works/hardware/">
+  <link rel="canonical" href="https://behzadhaki.github.io/works/">
   <link rel="alternate" type="application/rss+xml" title="Behzad Haki" href="/feed.xml">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Works — Hardware – Behzad Haki">
-  <meta name="twitter:description" content="">
+  <meta name="twitter:title" content="Works – Behzad Haki">
+  <meta name="twitter:description" content="Software, hardware, and datasets I have developed.">
   <meta name="twitter:image:src" content="">
 
   <!-- Facebook OpenGraph -->
-  <meta property="og:title" content="Works — Hardware – Behzad Haki">
-  <meta property="og:description" content="">
+  <meta property="og:title" content="Works – Behzad Haki">
+  <meta property="og:description" content="Software, hardware, and datasets I have developed.">
   <meta property="og:image" content="">
-  <meta property="og:url" content="https://behzadhaki.github.io/works/hardware/">
+  <meta property="og:url" content="https://behzadhaki.github.io/works/">
   <meta property="og:type" content="website">
 
   <!-- Fonts -->
@@ -140,7 +140,7 @@ initTheme(localStorage.getItem("theme"));
     
     
     <li class="nav__item has-dropdown">
-      <a href="/works/" class="nav__link ">
+      <a href="/works/" class="nav__link nav__link--active">
         Works
         
           <span class="dropdown-indicator">▼</span>
@@ -402,7 +402,7 @@ initTheme(localStorage.getItem("theme"));
     
     
     <li class="nav__item has-dropdown">
-      <a href="/works/" class="nav__link ">
+      <a href="/works/" class="nav__link nav__link--active">
         Works
         
           <span class="dropdown-indicator">▼</span>
@@ -674,9 +674,355 @@ initTheme(localStorage.getItem("theme"));
   <article class="page animate">
     <div class="page__content">
       
-<div class="works-card-grid">
+<div class="works-filter" id="works-filter">
+  <button class="works-filter__btn is-active" data-filter="all">All</button>
+  <button class="works-filter__btn" data-filter="max">MAX / M4L</button>
+  
+  <button class="works-filter__btn" data-filter="plugins">Plugins</button>
+  
+  <button class="works-filter__btn" data-filter="hardware">Hardware</button>
+  <button class="works-filter__btn" data-filter="datasets">Datasets</button>
+  <button class="works-filter__btn" data-filter="frameworks">Frameworks</button>
+  
+  <button class="works-filter__btn" data-filter="web-widgets">Web Widgets</button>
+</div>
+
+<div class="works-card-grid" id="works-grid">
+  
+  
 
 
+
+
+<div class="work-card" data-types="max">
+  <a class="work-card__link" href="/works/max/frft/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/works/FRFT/frft_max.gif" alt="Real-time Fractional Fourier Transform (FRFT)" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">Real-time Fractional Fourier Transform (FRFT)</h3>
+        
+        <p class="work-card__description">Real-time Fractional Fourier Transform (FRFT) implementation for audio processing and synthesis, designed for Max and Max for Live</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">Max</span>
+          
+          <span class="work-card__tag">Max4Live</span>
+          
+          <span class="work-card__tag">Synthesizer</span>
+          
+          <span class="work-card__tag">Processor</span>
+          
+          
+          <span class="work-card__tag work-card__tag--more">+1</span>
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">MAX/M4L</span>
+        <span class="work-card__date">May 2026</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+  
+  
+
+
+
+
+<div class="work-card" data-types="web-widgets">
+  <a class="work-card__link" href="/works/web-widgets/frft-in-the-browser/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/works/FRFTInTheBrowser/frft_widget_avatar2.gif" alt="FRFT in the Browser" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">FRFT in the Browser</h3>
+        
+        <p class="work-card__description">WebAssembly ports of the Fractional Fourier Transform with a collection of ready-to-embed interactive browser widgets.</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">FRFT</span>
+          
+          <span class="work-card__tag">WebAssembly</span>
+          
+          <span class="work-card__tag">Web-widget</span>
+          
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">Web Widget</span>
+        <span class="work-card__date">Mar 2026</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+  
+  
+
+
+
+
+<div class="work-card" data-types="plugins">
+  <a class="work-card__link" href="/works/plugins/freesound-rack/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/works/FreesoundRack/FreesoundRack.gif" alt="Freesound Rack Plugin" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">Freesound Rack Plugin</h3>
+        
+        <p class="work-card__description">Access the Freesound database directly from your DAW</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">VST</span>
+          
+          <span class="work-card__tag">AuV2</span>
+          
+          <span class="work-card__tag">Standalone</span>
+          
+          <span class="work-card__tag">Freesound</span>
+          
+          
+          <span class="work-card__tag work-card__tag--more">+2</span>
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">Plugin</span>
+        <span class="work-card__date">Sep 2025</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+  
+  
+
+
+
+
+<div class="work-card" data-types="plugins">
+  <a class="work-card__link" href="/works/plugins/humanize-candombe-vst/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/works/HumanizeCandombe-VST/candombe-vst.png" alt="HumanizeCandombe VST" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">HumanizeCandombe VST</h3>
+        
+        <p class="work-card__description">Adds velocity and micro-timing to quantized MIDI sequences</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">VST</span>
+          
+          <span class="work-card__tag">AuV2</span>
+          
+          <span class="work-card__tag">Midi2Midi</span>
+          
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">Plugin</span>
+        <span class="work-card__date">May 2025</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+  
+  
+
+
+
+
+<div class="work-card" data-types="max">
+  <a class="work-card__link" href="/works/max/multistream-rhythmic-mods/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/works/MultistreamRhythmicMods/prototype.png" alt="MultiStream Rhythmic Modulations" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">MultiStream Rhythmic Modulations</h3>
+        
+        <p class="work-card__description">A Max4Live patch that generates multiple parallel modulation curves that are rhythmically interlocked.</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">Max4Live</span>
+          
+          <span class="work-card__tag">Generative</span>
+          
+          <span class="work-card__tag">pitch-sequencer</span>
+          
+          <span class="work-card__tag">Real-Time</span>
+          
+          
+          <span class="work-card__tag work-card__tag--more">+4</span>
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">MAX/M4L</span>
+        <span class="work-card__date">May 2025</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+  
+  
+
+
+
+
+<div class="work-card" data-types="max">
+  <a class="work-card__link" href="/works/max/markov-accompaniment/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/works/MarkovAccompaniment/markov_hero.png" alt="Markov Accompaniment Patch" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">Markov Accompaniment Patch</h3>
+        
+        <p class="work-card__description">A Max4Live patch that generates accompaniment tracks using Markov Chains.</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">Max4Live</span>
+          
+          <span class="work-card__tag">Generative</span>
+          
+          <span class="work-card__tag">Modulation-Source</span>
+          
+          <span class="work-card__tag">Real-Time</span>
+          
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">MAX/M4L</span>
+        <span class="work-card__date">May 2025</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+  
+  
+
+
+
+
+<div class="work-card" data-types="plugins">
+  <a class="work-card__link" href="/works/plugins/groove-transformer/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/works/GrooveTransformer/GT_Teaser_gif.gif" alt="GrooveTransformer VST" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">GrooveTransformer VST</h3>
+        
+        <p class="work-card__description">A Performance-Oriented Generative rhythm-sequencer</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">VST</span>
+          
+          <span class="work-card__tag">Generative</span>
+          
+          <span class="work-card__tag">rhythm-sequencer</span>
+          
+          <span class="work-card__tag">Real-Time</span>
+          
+          
+          <span class="work-card__tag work-card__tag--more">+3</span>
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">Plugin</span>
+        <span class="work-card__date">May 2025</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+  
+  
 
 
 
@@ -724,8 +1070,281 @@ initTheme(localStorage.getItem("theme"));
   </a>
 </div>
 
+  
+  
 
+
+
+
+<div class="work-card" data-types="datasets">
+  <a class="work-card__link" href="/works/datasets/tap-tam-drum/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/works/TapTamDrum/taptamdrum.png" alt="TapTamDrum" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">TapTamDrum</h3>
+        
+        <p class="work-card__description">A dataset of drummer-performed two-hand reductions of complex drum patterns</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">Dataset</span>
+          
+          <span class="work-card__tag">Drum-Patterns</span>
+          
+          <span class="work-card__tag">ISMIR</span>
+          
+          <span class="work-card__tag">MIDI</span>
+          
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">Dataset</span>
+        <span class="work-card__date">Nov 2023</span>
+      </div>
+    </div>
+
+  </a>
 </div>
+
+  
+  
+
+
+
+
+<div class="work-card" data-types="datasets">
+  <a class="work-card__link" href="/works/datasets/el-bongosero/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/works/ElBongosero/elbongosero.png" alt="El Bongosero" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">El Bongosero</h3>
+        
+        <p class="work-card__description">A Dataset of Hand-Played Bongo Grooves Accompanying Drum Patterns</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">Dataset</span>
+          
+          <span class="work-card__tag">Bongo</span>
+          
+          <span class="work-card__tag">Percussion</span>
+          
+          <span class="work-card__tag">Interactive-Installation</span>
+          
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">Dataset</span>
+        <span class="work-card__date">Oct 2023</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+  
+  
+
+
+
+
+<div class="work-card" data-types="frameworks">
+  <a class="work-card__link" href="/works/frameworks/neural-midi-fx/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/dev-resources/NeuralMidiFx/nmfx.png" alt="NeuralMidiFx" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">NeuralMidiFx</h3>
+        
+        <p class="work-card__description">A Wrapper Template for Deploying Neural Networks as VST3 Plugins</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">VST3</span>
+          
+          <span class="work-card__tag">JUCE</span>
+          
+          <span class="work-card__tag">PyTorch</span>
+          
+          <span class="work-card__tag">Neural-Network</span>
+          
+          
+          <span class="work-card__tag work-card__tag--more">+1</span>
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">Framework</span>
+        <span class="work-card__date">Aug 2023</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+  
+  
+
+
+
+
+<div class="work-card" data-types="plugins">
+  <a class="work-card__link" href="/works/plugins/freesound-simple-sampler/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/works/FreesoundSimpleSampler/FreesoundSimpleSampler.png" alt="Freesound Simple Sampler" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">Freesound Simple Sampler</h3>
+        
+        <p class="work-card__description">An updated version of Ramires and Font's Freesound Simple Sampler, adapted for V2 of the Freesound API</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">VST</span>
+          
+          <span class="work-card__tag">AuV2</span>
+          
+          <span class="work-card__tag">Standalone</span>
+          
+          <span class="work-card__tag">Freesound-API</span>
+          
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">Plugin</span>
+        <span class="work-card__date">May 2023</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+  
+  
+
+
+
+
+<div class="work-card" data-types="plugins">
+  <a class="work-card__link" href="/works/plugins/groove2drum/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/works/Groove2Drum/groove2drum.jpg" alt="Groove2Drum Plugin" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">Groove2Drum Plugin</h3>
+        
+        <p class="work-card__description">A VST3 plugin for generating MIDI drum accompaniments in real-time</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">VST3</span>
+          
+          <span class="work-card__tag">MIDI</span>
+          
+          <span class="work-card__tag">Drum-Accompaniment</span>
+          
+          <span class="work-card__tag">Real-Time</span>
+          
+          
+          <span class="work-card__tag work-card__tag--more">+1</span>
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">Plugin</span>
+        <span class="work-card__date">Sep 2022</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+  
+</div>
+
+<script>
+(function () {
+  var btns  = Array.from(document.querySelectorAll("#works-filter .works-filter__btn"));
+  var cards = Array.from(document.querySelectorAll("#works-grid .work-card"));
+
+  function applyFilter(filter) {
+    btns.forEach(function (b) { b.classList.toggle("is-active", b.dataset.filter === filter); });
+    cards.forEach(function (card) {
+      var types = (card.dataset.types || "").split(" ");
+      var show  = filter === "all" || types.indexOf(filter) !== -1;
+      card.classList.toggle("work-card--hidden", !show);
+    });
+  }
+
+  btns.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var filter = this.dataset.filter;
+      history.replaceState(null, "", filter === "all" ? location.pathname : "#" + filter);
+      applyFilter(filter);
+    });
+  });
+
+  function applyFromHash() {
+    var hash = location.hash.slice(1);
+    var matched = btns.find(function (b) { return b.dataset.filter === hash; });
+    applyFilter(matched ? hash : "all");
+  }
+
+  window.addEventListener("hashchange", applyFromHash);
+  applyFromHash();
+})();
+</script>
+
 
     </div>
   </article>

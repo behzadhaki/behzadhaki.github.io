@@ -1,9 +1,0 @@
-{%- assign _section = nil -%}
-{%- for s in site.data.settings.sections -%}
-{%- if s.title == include.title -%}
-{%- assign _section = s -%}
-{%- endif -%}
-{%- endfor -%}
-{%- if _section -%}
-<div style="max-width: 280px; margin-bottom: 1.5rem;"><a href="{{ _section.url | relative_url }}" class="section-card" style="display:block; text-decoration: none;"><div class="section-card__inner">{%- if _section.image -%}<div class="section-card__image"><img src="{{ _section.image | relative_url }}" alt="{{ _section.title }}" loading="lazy"></div>{%- endif -%}<div class="section-card__content"><h2 class="section-card__title">{{ _section.title }}</h2><p class="section-card__excerpt">{{ _section.description }}</p></div></div></a></div>
-{%- endif -%}

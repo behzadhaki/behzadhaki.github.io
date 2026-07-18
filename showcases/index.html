@@ -6,25 +6,25 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Works — Hardware</title>
+  <title>Showcases</title>
   <meta name='description' content='Researcher &amp; Developer · Music Technology · Barcelona'>
 
   <link rel="icon" type="image/png" href="/assets/img/favicon.png">
   <link rel="apple-touch-icon" href="/assets/img/favicon.png">
-  <link rel="canonical" href="https://behzadhaki.github.io/works/hardware/">
+  <link rel="canonical" href="https://behzadhaki.github.io/showcases/">
   <link rel="alternate" type="application/rss+xml" title="Behzad Haki" href="/feed.xml">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Works — Hardware – Behzad Haki">
+  <meta name="twitter:title" content="Showcases – Behzad Haki">
   <meta name="twitter:description" content="">
   <meta name="twitter:image:src" content="">
 
   <!-- Facebook OpenGraph -->
-  <meta property="og:title" content="Works — Hardware – Behzad Haki">
+  <meta property="og:title" content="Showcases – Behzad Haki">
   <meta property="og:description" content="">
   <meta property="og:image" content="">
-  <meta property="og:url" content="https://behzadhaki.github.io/works/hardware/">
+  <meta property="og:url" content="https://behzadhaki.github.io/showcases/">
   <meta property="og:type" content="website">
 
   <!-- Fonts -->
@@ -334,7 +334,7 @@ initTheme(localStorage.getItem("theme"));
     
     
     <li class="nav__item ">
-      <a href="/showcases/" class="nav__link ">
+      <a href="/showcases/" class="nav__link nav__link--active">
         Showcases
         
       </a>
@@ -596,7 +596,7 @@ initTheme(localStorage.getItem("theme"));
     
     
     <li class="nav__item ">
-      <a href="/showcases/" class="nav__link ">
+      <a href="/showcases/" class="nav__link nav__link--active">
         Showcases
         
       </a>
@@ -674,50 +674,243 @@ initTheme(localStorage.getItem("theme"));
   <article class="page animate">
     <div class="page__content">
       
-<div class="works-card-grid">
+<div class="works-filter" id="showcases-filter">
+  <button class="works-filter__btn is-active" data-filter="all">All</button>
+  <button class="works-filter__btn" data-filter="installation">Installation</button>
+  <button class="works-filter__btn" data-filter="live-performance">Live Performance</button>
+  <button class="works-filter__btn" data-filter="demo">Demo</button>
+</div>
+
+<div class="works-card-grid" id="showcases-grid">
 
 
 
 
 
 
-<div class="work-card" data-types="hardware">
-  <a class="work-card__link" href="/works/hardware/groove-transformer-eurorack/">
+<div class="work-card" data-types="showcases" data-showcase-type="live-performance">
+  <a class="work-card__link" href="/showcases/palau-guell-live-2024/">
 
     <!-- Image header -->
     <div class="work-card__header">
       
-      <img class="work-card__image lazy" data-src="/assets/works/GrooveTransformerEurorack/groovetransformereurorack.jpg" alt="GrooveTransformer Eurorack" />
+      <img class="work-card__image lazy" data-src="/assets/showcases/Palau_Guell_2024/guell.png" alt="Palau Güell Live Show — Nov 2024" />
       
     </div>
 
     <!-- Body -->
     <div class="work-card__body">
       <div class="work-card__content">
-        <h3 class="work-card__title">GrooveTransformer Eurorack</h3>
+        <h3 class="work-card__title">Palau Güell Live Show — Nov 2024</h3>
         
-        <p class="work-card__description">A Generative Control Voltage Sequencer</p>
+        <p class="work-card__description">A generative organ performance at Palau Güell in Barcelona</p>
         
         
         <div class="work-card__tags">
           
-          <span class="work-card__tag">Eurorack</span>
+          <span class="work-card__tag">Performance</span>
+          
+          <span class="work-card__tag">Live</span>
+          
+          <span class="work-card__tag">Organ</span>
           
           <span class="work-card__tag">Generative</span>
           
-          <span class="work-card__tag">CV-sequencer</span>
-          
-          <span class="work-card__tag">Real-Time</span>
-          
-          
-          <span class="work-card__tag work-card__tag--more">+5</span>
           
         </div>
         
       </div>
       <div class="work-card__footer">
-        <span class="work-card__type-badge">Hardware</span>
-        <span class="work-card__date">May 2025</span>
+        <span class="work-card__type-badge">Live Performance</span>
+        <span class="work-card__date">Nov 2024</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+
+
+
+
+
+
+<div class="work-card" data-types="showcases" data-showcase-type="live-performance">
+  <a class="work-card__link" href="/showcases/cccb-live-show-2024/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/showcases/CCCB_Live_2024/CCCB_GT_RF.png" alt="CCCB Live Show — Feb 2024" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">CCCB Live Show — Feb 2024</h3>
+        
+        <p class="work-card__description">A public showcase of the GrooveTransformer system at the Centre de Cultura Contemporània de Barcelona.</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">Performance</span>
+          
+          <span class="work-card__tag">Live</span>
+          
+          <span class="work-card__tag">GrooveTransformer</span>
+          
+          <span class="work-card__tag">Generative</span>
+          
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">Live Performance</span>
+        <span class="work-card__date">Feb 2024</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+
+
+
+
+
+
+<div class="work-card" data-types="showcases" data-showcase-type="installation">
+  <a class="work-card__link" href="/showcases/cccb-ai-exhibition/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/showcases/CCCB_AI_Exhibition/cccb-IA.png" alt="CCCB: Artificial Intelligence Exhibition" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">CCCB: Artificial Intelligence Exhibition</h3>
+        
+        <p class="work-card__description">A six-month interactive installation at the Centre de Cultura Contemporània de Barcelona in which over 3,000 members of the public engaged with a generative sonic system.</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">Installation</span>
+          
+          <span class="work-card__tag">Interactive</span>
+          
+          <span class="work-card__tag">Generative</span>
+          
+          <span class="work-card__tag">Public-Engagement</span>
+          
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">Installation</span>
+        <span class="work-card__date">Oct 2023</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+
+
+
+
+
+
+<div class="work-card" data-types="showcases" data-showcase-type="demo">
+  <a class="work-card__link" href="/showcases/sonar-d-2023/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/showcases/SonarD_2023/sonarDGTEuro.png" alt="Sónar+D Music Festival 2023" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">Sónar+D Music Festival 2023</h3>
+        
+        <p class="work-card__description">Showcased the GrooveTransformer Eurorack module to the general public at the Sónar+D festival in Barcelona.</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">Showcase</span>
+          
+          <span class="work-card__tag">Eurorack</span>
+          
+          <span class="work-card__tag">Generative</span>
+          
+          <span class="work-card__tag">Festival</span>
+          
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">Demo</span>
+        <span class="work-card__date">Jun 2023</span>
+      </div>
+    </div>
+
+  </a>
+</div>
+
+
+
+
+
+
+
+<div class="work-card" data-types="showcases" data-showcase-type="live-performance">
+  <a class="work-card__link" href="/showcases/rain-2023/">
+
+    <!-- Image header -->
+    <div class="work-card__header">
+      
+      <img class="work-card__image lazy" data-src="/assets/showcases/RAIN_2023/RAIN_GTEuro.png" alt="+RAIN Film Festival 2023" />
+      
+    </div>
+
+    <!-- Body -->
+    <div class="work-card__body">
+      <div class="work-card__content">
+        <h3 class="work-card__title">+RAIN Film Festival 2023</h3>
+        
+        <p class="work-card__description">A live performance involving the GrooveTransformer Eurorack module at the +RAIN Film Festival at UPF, Barcelona.</p>
+        
+        
+        <div class="work-card__tags">
+          
+          <span class="work-card__tag">Performance</span>
+          
+          <span class="work-card__tag">Eurorack</span>
+          
+          <span class="work-card__tag">Generative</span>
+          
+          <span class="work-card__tag">Live</span>
+          
+          
+        </div>
+        
+      </div>
+      <div class="work-card__footer">
+        <span class="work-card__type-badge">Live Performance</span>
+        <span class="work-card__date">Jun 2023</span>
       </div>
     </div>
 
@@ -726,6 +919,39 @@ initTheme(localStorage.getItem("theme"));
 
 
 </div>
+
+<script>
+(function () {
+  var btns  = Array.from(document.querySelectorAll("#showcases-filter .works-filter__btn"));
+  var cards = Array.from(document.querySelectorAll("#showcases-grid .work-card"));
+
+  function applyFilter(filter) {
+    btns.forEach(function (b) { b.classList.toggle("is-active", b.dataset.filter === filter); });
+    cards.forEach(function (card) {
+      var show = filter === "all" || card.dataset.showcaseType === filter;
+      card.classList.toggle("work-card--hidden", !show);
+    });
+  }
+
+  btns.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var filter = this.dataset.filter;
+      history.replaceState(null, "", filter === "all" ? location.pathname : "#" + filter);
+      applyFilter(filter);
+    });
+  });
+
+  function applyFromHash() {
+    var hash = location.hash.slice(1);
+    var matched = btns.find(function (b) { return b.dataset.filter === hash; });
+    applyFilter(matched ? hash : "all");
+  }
+
+  window.addEventListener("hashchange", applyFromHash);
+  applyFromHash();
+}());
+</script>
+
 
     </div>
   </article>
