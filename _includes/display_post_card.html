@@ -24,7 +24,7 @@
 {% endcase %}
 
 <div class="work-card{% if include.layout == 'horizontal' %} work-card--horizontal{% endif %}" data-types="{{ doc.project_types | join: ' ' }}"{% if doc.showcase_type %} data-showcase-type="{{ doc.showcase_type }}"{% endif %}>
-  <a class="work-card__link" href="{{ doc.url | relative_url }}">
+  <a class="work-card__link" {% if doc.external_url %}href="{{ doc.external_url }}" target="_blank" rel="noopener"{% else %}href="{{ doc.url | relative_url }}"{% endif %}>
 
     <!-- Image header -->
     <div class="work-card__header">
